@@ -1,0 +1,887 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.21.2.final using JasperReports Library version 6.21.2-8434a0bd7c3bbc37cbf916f2968d35e4b165821a  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4" pageWidth="595" pageHeight="842" columnWidth="470" leftMargin="85" rightMargin="40" topMargin="14" bottomMargin="0" uuid="d946ebe6-2e92-44c5-aed7-8f7380925278">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.unit." value="cm"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ASPPREV"/>
+	<subDataset name="Logo" uuid="e9f90e01-6f3f-44b6-9906-95c12f91afd0">
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="IPRESB"/>
+		<queryString language="SQL">
+			<![CDATA[Select  IMG_IMGFUNDO_IMGORG
+ from dbo."IMAGEMORGANIZACAO"  
+ where  "N_ORG_ORG" = 42]]>
+		</queryString>
+		<field name="IMG_IMGFUNDO_IMGORG" class="java.awt.Image"/>
+	</subDataset>
+	<subDataset name="Rodape" uuid="848c67d2-d15a-4bee-a03e-4616d865bbac">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="IPRESB"/>
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<queryString>
+			<![CDATA[Select dbo."IMAGEMORGANIZACAO"."IMG_IMGFUNDO_IMGORG" 
+ from dbo."IMAGEMORGANIZACAO" 
+ where  dbo."IMAGEMORGANIZACAO"."N_ORG_ORG" = 43]]>
+		</queryString>
+		<field name="IMG_IMGFUNDO_IMGORG" class="java.awt.Image"/>
+	</subDataset>
+	<parameter name="NumProt" class="java.lang.String"/>
+	<parameter name="AnoProt" class="java.lang.String"/>
+	<parameter name="MUsuario" class="java.lang.String"/>
+	<parameter name="TxtAdic1" class="java.lang.String"/>
+	<parameter name="TxtAdic2" class="java.lang.String"/>
+	<parameter name="dt_port" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[SET LANGUAGE PORTUGUÊS
+
+USE aspprev2_baruerisp_prd
+
+DECLARE @numprot INT
+SET @numprot = $P{NumProt}
+
+DECLARE @anoprot INT
+SET @anoprot = $P{AnoProt}
+
+DECLARE @MUsuario INT
+SET @MUsuario = $P{MUsuario}
+
+DECLARE @TxtAdic1 AS VARCHAR(1000)
+SET @TxtAdic1 = $P{TxtAdic1}
+
+DECLARE @TxtAdic2 AS VARCHAR(1000)
+SET @TxtAdic2 = $P{TxtAdic2}
+
+DECLARE @dt_port AS VARCHAR(1000)
+SET @dt_port = $P{dt_port}
+
+SELECT    TOP 1	 @numprot AS NUMPROT
+
+				,@anoprot AS ANOPROT
+
+				,ASSENTAMENTOANEXOCONCESSAO.N_ATO_ASSENTANEXOCONCES AS [PORTARIA]
+
+				,CONVERT(varchar(02),DATEPART(DAY,CONVERT(VARCHAR,@dt_port,103))) + ' de ' + DATENAME(MONTH,CONVERT(VARCHAR,@dt_port,103)) + ' de ' + CONVERT(varchar(04),DATEPART(YEAR,CONVERT(VARCHAR,@dt_port,103))) as [DATA PORTARIA EXTENSO]
+
+				,CONVERT(VARCHAR,ASSENTAMENTOANEXOCONCESSAO.DT_PUBL_ASSENTANEXOCONCES,103) AS [DATA ASSENTAMENTO]
+
+				,CONVERT(varchar(02),DATEPART(DAY,ASSENTAMENTOANEXOCONCESSAO.DT_PUBL_ASSENTANEXOCONCES)) + ' de ' + DATENAME(MONTH,ASSENTAMENTOANEXOCONCESSAO.DT_PUBL_ASSENTANEXOCONCES) + ' de ' + CONVERT(varchar(04),DATEPART(YEAR,ASSENTAMENTOANEXOCONCESSAO.DT_PUBL_ASSENTANEXOCONCES)) as [DATA ASSENTAMENTO EXTENSO]
+
+				,FORMAT(SERVICOPESSOA.DT_SLCT_SERVPESSOA,'dd/MM/yyyy') AS DATA_SOLICITAÇAO
+
+				,dbo.FN_PRIMEIRALETRAMAIUSCULA(LOWER(TIPOSERVICO.S_DCRSERV_TIPSERV)) AS BENEFICIO
+
+				,TIPOBENEFICIO.S_DCR_TIPBNF AS [BENEFICIO DETALHADO]
+				
+				,(CASE WHEN PESSOA.S_SEXO_PESSOA = 'M' 
+					
+					THEN
+						
+					(CASE TIPOBENEFICIO.N_TIPBNF_TIPBNF 
+					
+						WHEN 19 THEN 'do servidor ativo' 
+						WHEN 20 THEN 'do servidor aposentado'
+					
+					END) 
+					
+					WHEN PESSOA.S_SEXO_PESSOA = 'F'
+					
+					THEN
+
+					(CASE TIPOBENEFICIO.N_TIPBNF_TIPBNF 
+					
+						WHEN 19 THEN 'da servidora ativa' 
+						WHEN 20 THEN 'da servidora aposentada'
+					
+					END) 
+										
+					
+				END) AS [DESCRIÇÃO ATIVO APOSENTADO]
+				
+				,(CASE	WHEN TIPOSERVICO.N_TIPSERV_TIPSERV IN (8,9,32,41,42,43,57,66,91) THEN 'concedida'
+						WHEN TIPOSERVICO.N_TIPSERV_TIPSERV IN (6) THEN 'emitida'
+						WHEN TIPOSERVICO.N_TIPSERV_TIPSERV IN (7,58) THEN 'n/a'
+						WHEN TIPOSERVICO.N_TIPSERV_TIPSERV IN (21,88) THEN 'concedida'
+						WHEN TIPOSERVICO.N_TIPSERV_TIPSERV IN (10) THEN 'n/a'
+						WHEN TIPOSERVICO.N_TIPSERV_TIPSERV IN (64) THEN 'n/a'
+						ELSE 'n/a'
+				END) AS [EMITIDA OU CONCEDIDA]
+
+				,SERVICOPESSOA.N_PESSOA_PESSOA AS PESSOA
+
+				,ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA AS MATRICULA
+
+				,PESSOA.S_NOM_PESSOA AS NOME
+				
+				,dbo.[FN_PRIMEIRALETRAMAIUSCULA](UPPER(CARGOORGANIZACAOPESSOA.S_DCRCARGO_CARGOORGPESSOA)) AS [CARGO]
+
+				,@MUsuario AS MATRICULA_USUARIO_IPRESB
+
+				,USUARIO_IPRESB.Nome AS USUARIO
+
+				,USUARIO_IPRESB.Cargo AS CARGO_USUARIO
+
+				,(CASE	WHEN TIPOSERVICO.N_TIPSERV_TIPSERV IN (8,9,32,41,42,43,57,66,91)  THEN 
+							(CASE WHEN ORGANIZACAOPESSOA.N_ORG_ORG = 1 THEN 'Secretaria de Administração / Div. Tec. Afast. E Controle de Inativo'
+							 WHEN ORGANIZACAOPESSOA.N_ORG_ORG = 2 THEN 'Câmara Municipal de Barueri / Departamento de Recursos Humanos'
+							 WHEN ORGANIZACAOPESSOA.N_ORG_ORG = 3 THEN 'FIEB / Departamento de Recursos Humanos'
+							 WHEN ORGANIZACAOPESSOA.N_ORG_ORG = 4 THEN 'IPRESB / Unidade de Gestão de Administração' END)
+
+						WHEN TIPOSERVICO.N_TIPSERV_TIPSERV IN (6) THEN
+							(CASE WHEN ORGANIZACAOPESSOA.N_ORG_ORG = 1 THEN 'Secretaria de Administração'
+							 WHEN ORGANIZACAOPESSOA.N_ORG_ORG = 2 THEN 'Câmara Municipal de Barueri / Departamento de Recursos Humanos'
+							 WHEN ORGANIZACAOPESSOA.N_ORG_ORG = 3 THEN 'FIEB / Departamento de Recursos Humanos'
+							 WHEN ORGANIZACAOPESSOA.N_ORG_ORG = 4 THEN 'IPRESB / Unidade de Gestão de Administração' END)
+						
+						WHEN TIPOSERVICO.N_TIPSERV_TIPSERV IN (21,88) THEN
+							(CASE WHEN ORGANIZACAOPESSOA.N_ORG_ORG = 1 THEN 'Secretaria de Administração / Div. Tec. Afast. E Controle de Inativo'
+							 WHEN ORGANIZACAOPESSOA.N_ORG_ORG = 2 THEN 'Câmara Municipal de Barueri / Departamento de Recursos Humanos'
+							 WHEN ORGANIZACAOPESSOA.N_ORG_ORG = 3 THEN 'FIEB / Departamento de Recursos Humanos'
+							 WHEN ORGANIZACAOPESSOA.N_ORG_ORG = 4 THEN 'IPRESB / Unidade de Gestão de Administração' END)
+
+				END) AS [DESTINATÁRIO]
+
+				,(CASE	WHEN TIPOSERVICO.N_TIPSERV_TIPSERV IN (8,9,32,41,42,43,57,66,91)  THEN 'Comunicado de Concessão de Aposentadoria'
+
+						WHEN TIPOSERVICO.N_TIPSERV_TIPSERV IN (6) THEN 'Certidão para Fins de Abono de Permanência'
+
+						WHEN TIPOSERVICO.N_TIPSERV_TIPSERV IN (21,88) THEN 'Comunicado de Concessão de Pensão por Morte'
+
+				END) AS [REF]
+				
+				,(CASE	WHEN TIPOSERVICO.N_TIPSERV_TIPSERV IN (8,9,32,41,42,43,57,66,91)  THEN 'AP'
+
+						WHEN TIPOSERVICO.N_TIPSERV_TIPSERV IN (6) THEN 'AB'
+
+						WHEN TIPOSERVICO.N_TIPSERV_TIPSERV IN (21,88) THEN 'PM'
+
+				END) AS [CONDICAO BENEF]
+
+				,(CASE	WHEN @TxtAdic1 = '' THEN null
+						ELSE @TxtAdic1
+						END) AS [TEXTO ADIC 1]
+
+				,(CASE	WHEN @TxtAdic2 = '' THEN null
+						ELSE @TxtAdic2
+						END) AS [TEXTO ADIC 2]
+
+				--DEPENDENTE 1 
+				,
+				dbo.FN_PRIMEIRALETRAMAIUSCULA(LOWER(Dependente_1.Nome)) AS [NOME DEP 1],
+				Dependente_1.GrauParentesco AS [PARANTESCO DEP 1],
+				CONVERT(VARCHAR,dbo.FN_PRIMEIRALETRAMAIUSCULA(LOWER(Dependente_1.Nome))) + ' (' + CONVERT(VARCHAR,Dependente_1.GrauParentesco)+')' AS [DESCRICAO DEP 1],
+				Dependente_1.Nascimento AS [NASCIMENTO DEP 1],
+				Dependente_1.Duração AS [DURAÇÃO DEP 1],
+				Dependente_1.RG AS [RG DEP 1],
+				Dependente_1.CPF AS [CPF DEP 1],
+				Dependente_1.PISPASEP AS [PISPASEP DEP 1],
+
+				--DEPENDENTE 2
+				
+				dbo.FN_PRIMEIRALETRAMAIUSCULA(LOWER(Dependente_2.Nome)) AS [NOME DEP 2],
+				Dependente_2.GrauParentesco AS [PARANTESCO DEP 2],
+				CONVERT(VARCHAR,dbo.FN_PRIMEIRALETRAMAIUSCULA(LOWER(Dependente_2.Nome))) + ' (' + CONVERT(VARCHAR,Dependente_2.GrauParentesco)+')' AS [DESCRICAO DEP 2],
+				Dependente_2.Nascimento AS [NASCIMENTO DEP 2],
+				Dependente_2.Duração AS [DURAÇÃO DEP 2],
+				Dependente_2.RG AS [RG DEP 2],
+				Dependente_2.CPF AS [CPF DEP 2],
+				Dependente_2.PISPASEP AS [PISPASEP DEP 2],
+
+				--DEPENDENTE 3
+				
+				dbo.FN_PRIMEIRALETRAMAIUSCULA(LOWER(Dependente_3.Nome)) AS [NOME DEP 3],
+				Dependente_3.GrauParentesco AS [PARANTESCO DEP 3],
+				CONVERT(VARCHAR,dbo.FN_PRIMEIRALETRAMAIUSCULA(LOWER(Dependente_3.Nome))) + ' (' + CONVERT(VARCHAR,Dependente_3.GrauParentesco)+')' AS [DESCRICAO DEP 3],
+				Dependente_3.Nascimento AS [NASCIMENTO DEP 3],
+				Dependente_3.Duração AS [DURAÇÃO DEP 3],
+				Dependente_3.RG AS [RG DEP 3],
+				Dependente_3.CPF AS [CPF DEP 3],
+				Dependente_3.PISPASEP AS [PISPASEP DEP 3],
+				
+				--DEPENDENTE 4
+
+				dbo.FN_PRIMEIRALETRAMAIUSCULA(LOWER(Dependente_4.Nome)) AS [NOME DEP 4],
+				Dependente_4.GrauParentesco AS [PARANTESCO DEP 4],
+				CONVERT(VARCHAR,dbo.FN_PRIMEIRALETRAMAIUSCULA(LOWER(Dependente_4.Nome))) + ' (' + CONVERT(VARCHAR,Dependente_4.GrauParentesco)+')' AS [DESCRICAO DEP 4],
+				Dependente_4.Nascimento AS [NASCIMENTO DEP 4],
+				Dependente_4.Duração AS [DURAÇÃO DEP 4],
+				Dependente_4.RG AS [RG DEP 4],
+				Dependente_4.CPF AS [CPF DEP 4],
+				Dependente_4.PISPASEP AS [PISPASEP DEP 4]
+
+FROM            
+
+				SERVICOPESSOA 
+                INNER JOIN TIPOSERVICO ON SERVICOPESSOA.N_TIPSERV_TIPSERV = TIPOSERVICO.N_TIPSERV_TIPSERV 
+				INNER JOIN ORGANIZACAOPESSOA ON SERVICOPESSOA.N_CODORI_ORGPESSOA = ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA  
+				AND SERVICOPESSOA.N_ORG_ORG = ORGANIZACAOPESSOA.N_ORG_ORG 
+				INNER JOIN PESSOA ON ORGANIZACAOPESSOA.N_PESSOA_PESSOA = PESSOA.N_PESSOA_PESSOA
+				INNER JOIN CARGOORGANIZACAOPESSOA ON PESSOA.N_PESSOA_PESSOA = CARGOORGANIZACAOPESSOA.N_PESSOA_PESSOA
+				INNER JOIN CARGO ON CARGOORGANIZACAOPESSOA.N_CARGO_CARGO = CARGO.N_CARGO_CARGO
+				AND ORGANIZACAOPESSOA.N_ORG_ORG = CARGO.N_ORG_ORG
+				FULL OUTER JOIN TIPOBENEFICIO ON SERVICOPESSOA.N_TIPBNF_TIPBNF = TIPOBENEFICIO.N_TIPBNF_TIPBNF
+				
+				FULL OUTER JOIN BENEFICIOPESSOA ON SERVICOPESSOA.N_PROT_SERVPESSOA = BENEFICIOPESSOA.N_PROT_SERVPESSOA
+
+				FULL OUTER JOIN ASSENTAMENTOANEXOCONCESSAO ON BENEFICIOPESSOA.N_PROT_BNFPESSOA = ASSENTAMENTOANEXOCONCESSAO.N_PROT_BNFPESSOA
+
+--CONSULTA PARALELA PARA PUXAR DADOS DO USUÁRIO IPRESB
+OUTER APPLY
+
+				(SELECT        
+
+								dbo.FN_PRIMEIRALETRAMAIUSCULA(LOWER(PESSOA_3.S_NOM_PESSOA))
+								,dbo.FN_PRIMEIRALETRAMAIUSCULA(LOWER(CARGO_3.S_DCR_CARGO))
+
+				FROM           
+								PESSOA AS PESSOA_3
+								INNER JOIN ORGANIZACAOPESSOA AS ORGANIZACAOPESSOA_3 ON PESSOA_3.N_PESSOA_PESSOA = ORGANIZACAOPESSOA_3.N_PESSOA_PESSOA 
+								INNER JOIN CARGOORGANIZACAOPESSOA AS CARGOORGANIZACAOPESSOA_3 ON ORGANIZACAOPESSOA_3.N_CODORI_ORGPESSOA = CARGOORGANIZACAOPESSOA_3.N_CODORI_ORGPESSOA
+								AND ORGANIZACAOPESSOA_3.N_ORG_ORG = CARGOORGANIZACAOPESSOA_3.N_ORG_ORG
+								INNER JOIN CARGO AS CARGO_3 ON CARGOORGANIZACAOPESSOA_3.N_ORG_ORG = CARGO_3.N_ORG_ORG AND CARGOORGANIZACAOPESSOA_3.N_CARGO_CARGO = CARGO_3.N_CARGO_CARGO
+
+				WHERE        
+
+								(ORGANIZACAOPESSOA_3.N_ORG_ORG = 4) AND (ORGANIZACAOPESSOA_3.N_CODORI_ORGPESSOA = @MUsuario))
+				
+								USUARIO_IPRESB(Nome,Cargo)
+
+				--Dependentes
+				
+				--Dependente 1
+				OUTER APPLY 
+
+				(SELECT * FROM
+
+						(SELECT			
+			
+										ROW_NUMBER() OVER(ORDER BY RELACAOPESSOA.N_GRAUPARENT_GRAUPARENT) as [NumLinha]
+										,P_DEPENDENTE.S_NOM_PESSOA AS [NomeDep]
+										,P_DEPENDENTE.S_SEXO_PESSOA AS [SEXO DEPENDENTE]
+										,(CASE WHEN P_DEPENDENTE.S_SEXO_PESSOA = 'M' THEN
+
+											(CASE RELACAOPESSOA.N_GRAUPARENT_GRAUPARENT 
+											WHEN 0 THEN 'descrever'
+											WHEN 1 THEN 'cônjuge'
+											WHEN 2 THEN 'companheiro'
+											WHEN 3 THEN 'filho'
+											WHEN 4 THEN 'filho inválido'
+											WHEN 5 THEN 'pai'
+											WHEN 6 THEN 'irmão'
+											WHEN 7 THEN 'irmão inválido'
+											WHEN 8 THEN 'enteado'
+											WHEN 9 THEN 'enteado inválido'
+											WHEN 10 THEN 'menor tutelado'
+											WHEN 11 THEN 'menor tutelado inválido'
+											WHEN 99 THEN 'pensão alimenticia'
+											END) 
+
+										ELSE
+											
+											(CASE RELACAOPESSOA.N_GRAUPARENT_GRAUPARENT 
+											WHEN 0 THEN 'descrever'
+											WHEN 1 THEN 'cônjuge'
+											WHEN 2 THEN 'companheira'
+											WHEN 3 THEN 'filha'
+											WHEN 4 THEN 'filha inválida'
+											WHEN 5 THEN 'mãe'
+											WHEN 6 THEN 'irmã'
+											WHEN 7 THEN 'irmã inválida'
+											WHEN 8 THEN 'enteada'
+											WHEN 9 THEN 'enteada inválida'
+											WHEN 10 THEN 'menor tutelada'
+											WHEN 11 THEN 'menor tutelada inválida'
+											WHEN 99 THEN 'pensão alimenticia'
+											END)
+											
+										END) AS [GRAUPARENTESCO]
+
+										,CONVERT(VARCHAR, P_DEPENDENTE.DT_NASC_PESSOA, 103) AS [NASCIMENTO]
+
+										,(CASE RELACAOPESSOA.N_GRAUPARENT_GRAUPARENT 
+
+											WHEN 0 THEN 'a definir'
+											WHEN 1 THEN 'caráter vitalício'
+											WHEN 2 THEN 'caráter vitalício'
+											WHEN 3 THEN CONVERT(VARCHAR,DATEADD(year, 21, P_DEPENDENTE.DT_NASC_PESSOA),103)
+											WHEN 4 THEN 'caráter vitalício'
+											WHEN 5 THEN 'caráter vitalício'
+											WHEN 6 THEN CONVERT(VARCHAR,DATEADD(year, 21, P_DEPENDENTE.DT_NASC_PESSOA),103)
+											WHEN 7 THEN 'caráter vitalício'
+											WHEN 8 THEN CONVERT(VARCHAR,DATEADD(year, 21, P_DEPENDENTE.DT_NASC_PESSOA),103)
+											WHEN 9 THEN 'caráter vitalício'
+											WHEN 10 THEN CONVERT(VARCHAR,DATEADD(year, 21, P_DEPENDENTE.DT_NASC_PESSOA),103)
+											WHEN 11 THEN 'caráter vitalício'
+											WHEN 99 THEN 'a definir'
+
+										END) [DURAÇÃO]
+
+										,P_DEPENDENTE.S_RG_PESSOA AS [RG]
+
+										,RTRIM(SUBSTRING(P_DEPENDENTE.S_CPF_PESSOA,1,3)+'.'+SUBSTRING(P_DEPENDENTE.S_CPF_PESSOA,4,3)+'.'+SUBSTRING(P_DEPENDENTE.S_CPF_PESSOA,7,3)+'-'+SUBSTRING(P_DEPENDENTE.S_CPF_PESSOA,10,2)) AS [CPF]
+
+										,RTRIM(SUBSTRING(P_DEPENDENTE.S_PISPASEP_PESSOA,1,3)+'.'+SUBSTRING(P_DEPENDENTE.S_PISPASEP_PESSOA,4,5)+'.'+SUBSTRING(P_DEPENDENTE.S_PISPASEP_PESSOA,9,2)+'-'+SUBSTRING(P_DEPENDENTE.S_PISPASEP_PESSOA,11,1)) AS [NIT]
+
+										--DATA INÍCIO DA PENSÃO
+						FROM			
+
+										RELACAOPESSOA
+										INNER JOIN ESPECIFICACAOPESSOA ON RELACAOPESSOA.N_PESSOARELAC_PESSOA = ESPECIFICACAOPESSOA.N_PESSOA_PESSOA
+										INNER JOIN GRAUDEPARENTESCO ON RELACAOPESSOA.N_GRAUPARENT_GRAUPARENT = GRAUDEPARENTESCO.N_GRAUPARENT_GRAUPARENT
+										INNER JOIN PESSOA P_DEPENDENTE ON P_DEPENDENTE.N_PESSOA_PESSOA = RELACAOPESSOA.N_PESSOARELAC_PESSOA
+										INNER JOIN GRUPOFAMILIAR ON RELACAOPESSOA.N_PESSOARELAC_PESSOA = GRUPOFAMILIAR.N_PESSOARELAC_PESSOA
+										INNER JOIN HISTORICOENDERECOPESSOA ON P_DEPENDENTE.N_PESSOA_PESSOA = HISTORICOENDERECOPESSOA.N_PESSOA_PESSOA 
+				
+
+						WHERE			
+
+										RELACAOPESSOA.N_PESSOA_PESSOA = PESSOA.N_PESSOA_PESSOA
+										AND ESPECIFICACAOPESSOA.N_TIPPESSOA_TIPPESSOA = 3
+										AND RELACAOPESSOA.N_GRAUPARENT_GRAUPARENT IN (0,1,2,3,4,5,6,7,8,9,10,11)
+										AND (GRUPOFAMILIAR.DT_FIMVIG_GRPFAM IS NULL OR GRUPOFAMILIAR.DT_FIMVIG_GRPFAM >= GETDATE())
+										AND HISTORICOENDERECOPESSOA.DT_FIMVIG_HISTENDPESSOA IS NULL
+										) SUB  
+								
+				WHERE NumLinha = 1) 
+				
+				Dependente_1 (Num_Linha,Nome,Sexo,GrauParentesco,Nascimento,Duração,RG,CPF,PISPASEP)  
+
+				--Dependente 2
+				OUTER APPLY 
+
+				(SELECT * FROM
+
+						(SELECT			
+			
+										ROW_NUMBER() OVER(ORDER BY RELACAOPESSOA.N_GRAUPARENT_GRAUPARENT) as [NumLinha]
+										,P_DEPENDENTE.S_NOM_PESSOA AS [NomeDep]
+										,P_DEPENDENTE.S_SEXO_PESSOA AS [SEXO DEPENDENTE]
+										,(CASE WHEN P_DEPENDENTE.S_SEXO_PESSOA = 'M' THEN
+
+											(CASE RELACAOPESSOA.N_GRAUPARENT_GRAUPARENT 
+											WHEN 0 THEN 'descrever'
+											WHEN 1 THEN 'cônjuge'
+											WHEN 2 THEN 'companheiro'
+											WHEN 3 THEN 'filho'
+											WHEN 4 THEN 'filho inválido'
+											WHEN 5 THEN 'pai'
+											WHEN 6 THEN 'irmão'
+											WHEN 7 THEN 'irmão inválido'
+											WHEN 8 THEN 'enteado'
+											WHEN 9 THEN 'enteado inválido'
+											WHEN 10 THEN 'menor tutelado'
+											WHEN 11 THEN 'menor tutelado inválido'
+											WHEN 99 THEN 'pensão alimenticia'
+											END) 
+
+										ELSE
+											
+											(CASE RELACAOPESSOA.N_GRAUPARENT_GRAUPARENT 
+											WHEN 0 THEN 'descrever'
+											WHEN 1 THEN 'cônjuge'
+											WHEN 2 THEN 'companheira'
+											WHEN 3 THEN 'filha'
+											WHEN 4 THEN 'filha inválida'
+											WHEN 5 THEN 'mãe'
+											WHEN 6 THEN 'irmã'
+											WHEN 7 THEN 'irmã inválida'
+											WHEN 8 THEN 'enteada'
+											WHEN 9 THEN 'enteada inválida'
+											WHEN 10 THEN 'menor tutelada'
+											WHEN 11 THEN 'menor tutelada inválida'
+											WHEN 99 THEN 'pensão alimenticia'
+											END)
+											
+										END) AS [GRAUPARENTESCO]
+
+										,CONVERT(VARCHAR, P_DEPENDENTE.DT_NASC_PESSOA, 103) AS [NASCIMENTO]
+
+										,(CASE RELACAOPESSOA.N_GRAUPARENT_GRAUPARENT 
+
+											WHEN 0 THEN 'a definir'
+											WHEN 1 THEN 'caráter vitalício'
+											WHEN 2 THEN 'caráter vitalício'
+											WHEN 3 THEN CONVERT(VARCHAR,DATEADD(year, 21, P_DEPENDENTE.DT_NASC_PESSOA),103)
+											WHEN 4 THEN 'caráter vitalício'
+											WHEN 5 THEN 'caráter vitalício'
+											WHEN 6 THEN CONVERT(VARCHAR,DATEADD(year, 21, P_DEPENDENTE.DT_NASC_PESSOA),103)
+											WHEN 7 THEN 'caráter vitalício'
+											WHEN 8 THEN CONVERT(VARCHAR,DATEADD(year, 21, P_DEPENDENTE.DT_NASC_PESSOA),103)
+											WHEN 9 THEN 'caráter vitalício'
+											WHEN 10 THEN CONVERT(VARCHAR,DATEADD(year, 21, P_DEPENDENTE.DT_NASC_PESSOA),103)
+											WHEN 11 THEN 'caráter vitalício'
+											WHEN 99 THEN 'a definir'
+
+										END) [DURAÇÃO]
+
+										,P_DEPENDENTE.S_RG_PESSOA AS [RG]
+
+										,RTRIM(SUBSTRING(P_DEPENDENTE.S_CPF_PESSOA,1,3)+'.'+SUBSTRING(P_DEPENDENTE.S_CPF_PESSOA,4,3)+'.'+SUBSTRING(P_DEPENDENTE.S_CPF_PESSOA,7,3)+'-'+SUBSTRING(P_DEPENDENTE.S_CPF_PESSOA,10,2)) AS [CPF]
+
+										,RTRIM(SUBSTRING(P_DEPENDENTE.S_PISPASEP_PESSOA,1,3)+'.'+SUBSTRING(P_DEPENDENTE.S_PISPASEP_PESSOA,4,5)+'.'+SUBSTRING(P_DEPENDENTE.S_PISPASEP_PESSOA,9,2)+'-'+SUBSTRING(P_DEPENDENTE.S_PISPASEP_PESSOA,11,1)) AS [NIT]
+
+										--DATA INÍCIO DA PENSÃO
+						FROM			
+
+										RELACAOPESSOA
+										INNER JOIN ESPECIFICACAOPESSOA ON RELACAOPESSOA.N_PESSOARELAC_PESSOA = ESPECIFICACAOPESSOA.N_PESSOA_PESSOA
+										INNER JOIN GRAUDEPARENTESCO ON RELACAOPESSOA.N_GRAUPARENT_GRAUPARENT = GRAUDEPARENTESCO.N_GRAUPARENT_GRAUPARENT
+										INNER JOIN PESSOA P_DEPENDENTE ON P_DEPENDENTE.N_PESSOA_PESSOA = RELACAOPESSOA.N_PESSOARELAC_PESSOA
+										INNER JOIN GRUPOFAMILIAR ON RELACAOPESSOA.N_PESSOARELAC_PESSOA = GRUPOFAMILIAR.N_PESSOARELAC_PESSOA
+				
+
+						WHERE			
+
+										RELACAOPESSOA.N_PESSOA_PESSOA = PESSOA.N_PESSOA_PESSOA
+										AND ESPECIFICACAOPESSOA.N_TIPPESSOA_TIPPESSOA = 3
+										AND RELACAOPESSOA.N_GRAUPARENT_GRAUPARENT IN (0,1,2,3,4,5,6,7,8,9,10,11)
+										AND (GRUPOFAMILIAR.DT_FIMVIG_GRPFAM IS NULL OR GRUPOFAMILIAR.DT_FIMVIG_GRPFAM >= GETDATE())
+										) SUB  
+								
+				WHERE NumLinha = 2) 
+				
+				Dependente_2 (Num_Linha,Nome,Sexo,GrauParentesco,Nascimento,Duração,RG,CPF,PISPASEP) 
+
+
+				--Dependente 3
+				OUTER APPLY 
+
+				(SELECT * FROM
+
+						(SELECT			
+			
+										ROW_NUMBER() OVER(ORDER BY RELACAOPESSOA.N_GRAUPARENT_GRAUPARENT) as [NumLinha]
+										,P_DEPENDENTE.S_NOM_PESSOA AS [NomeDep]
+										,P_DEPENDENTE.S_SEXO_PESSOA AS [SEXO DEPENDENTE]
+										,(CASE WHEN P_DEPENDENTE.S_SEXO_PESSOA = 'M' THEN
+
+											(CASE RELACAOPESSOA.N_GRAUPARENT_GRAUPARENT 
+											WHEN 0 THEN 'descrever'
+											WHEN 1 THEN 'cônjuge'
+											WHEN 2 THEN 'companheiro'
+											WHEN 3 THEN 'filho'
+											WHEN 4 THEN 'filho inválido'
+											WHEN 5 THEN 'pai'
+											WHEN 6 THEN 'irmão'
+											WHEN 7 THEN 'irmão inválido'
+											WHEN 8 THEN 'enteado'
+											WHEN 9 THEN 'enteado inválido'
+											WHEN 10 THEN 'menor tutelado'
+											WHEN 11 THEN 'menor tutelado inválido'
+											WHEN 99 THEN 'pensão alimenticia'
+											END) 
+
+										ELSE
+											
+											(CASE RELACAOPESSOA.N_GRAUPARENT_GRAUPARENT 
+											WHEN 0 THEN 'descrever'
+											WHEN 1 THEN 'cônjuge'
+											WHEN 2 THEN 'companheira'
+											WHEN 3 THEN 'filha'
+											WHEN 4 THEN 'filha inválida'
+											WHEN 5 THEN 'mãe'
+											WHEN 6 THEN 'irmã'
+											WHEN 7 THEN 'irmã inválida'
+											WHEN 8 THEN 'enteada'
+											WHEN 9 THEN 'enteada inválida'
+											WHEN 10 THEN 'menor tutelada'
+											WHEN 11 THEN 'menor tutelada inválida'
+											WHEN 99 THEN 'pensão alimenticia'
+											END)
+											
+										END) AS [GRAUPARENTESCO]
+
+										,CONVERT(VARCHAR, P_DEPENDENTE.DT_NASC_PESSOA, 103) AS [NASCIMENTO]
+
+										,(CASE RELACAOPESSOA.N_GRAUPARENT_GRAUPARENT 
+
+											WHEN 0 THEN 'a definir'
+											WHEN 1 THEN 'caráter vitalício'
+											WHEN 2 THEN 'caráter vitalício'
+											WHEN 3 THEN CONVERT(VARCHAR,DATEADD(year, 21, P_DEPENDENTE.DT_NASC_PESSOA),103)
+											WHEN 4 THEN 'caráter vitalício'
+											WHEN 5 THEN 'caráter vitalício'
+											WHEN 6 THEN CONVERT(VARCHAR,DATEADD(year, 21, P_DEPENDENTE.DT_NASC_PESSOA),103)
+											WHEN 7 THEN 'caráter vitalício'
+											WHEN 8 THEN CONVERT(VARCHAR,DATEADD(year, 21, P_DEPENDENTE.DT_NASC_PESSOA),103)
+											WHEN 9 THEN 'caráter vitalício'
+											WHEN 10 THEN CONVERT(VARCHAR,DATEADD(year, 21, P_DEPENDENTE.DT_NASC_PESSOA),103)
+											WHEN 11 THEN 'caráter vitalício'
+											WHEN 99 THEN 'a definir'
+
+										END) [DURAÇÃO]
+
+										,P_DEPENDENTE.S_RG_PESSOA AS [RG]
+
+										,RTRIM(SUBSTRING(P_DEPENDENTE.S_CPF_PESSOA,1,3)+'.'+SUBSTRING(P_DEPENDENTE.S_CPF_PESSOA,4,3)+'.'+SUBSTRING(P_DEPENDENTE.S_CPF_PESSOA,7,3)+'-'+SUBSTRING(P_DEPENDENTE.S_CPF_PESSOA,10,2)) AS [CPF]
+
+										,RTRIM(SUBSTRING(P_DEPENDENTE.S_PISPASEP_PESSOA,1,3)+'.'+SUBSTRING(P_DEPENDENTE.S_PISPASEP_PESSOA,4,5)+'.'+SUBSTRING(P_DEPENDENTE.S_PISPASEP_PESSOA,9,2)+'-'+SUBSTRING(P_DEPENDENTE.S_PISPASEP_PESSOA,11,1)) AS [NIT]
+
+										--DATA INÍCIO DA PENSÃO
+						FROM			
+
+										RELACAOPESSOA
+										INNER JOIN ESPECIFICACAOPESSOA ON RELACAOPESSOA.N_PESSOARELAC_PESSOA = ESPECIFICACAOPESSOA.N_PESSOA_PESSOA
+										INNER JOIN GRAUDEPARENTESCO ON RELACAOPESSOA.N_GRAUPARENT_GRAUPARENT = GRAUDEPARENTESCO.N_GRAUPARENT_GRAUPARENT
+										INNER JOIN PESSOA P_DEPENDENTE ON P_DEPENDENTE.N_PESSOA_PESSOA = RELACAOPESSOA.N_PESSOARELAC_PESSOA
+										INNER JOIN GRUPOFAMILIAR ON RELACAOPESSOA.N_PESSOARELAC_PESSOA = GRUPOFAMILIAR.N_PESSOARELAC_PESSOA
+				
+
+						WHERE			
+
+										RELACAOPESSOA.N_PESSOA_PESSOA = PESSOA.N_PESSOA_PESSOA
+										AND ESPECIFICACAOPESSOA.N_TIPPESSOA_TIPPESSOA = 3
+										AND RELACAOPESSOA.N_GRAUPARENT_GRAUPARENT IN (0,1,2,3,4,5,6,7,8,9,10,11)
+										AND (GRUPOFAMILIAR.DT_FIMVIG_GRPFAM IS NULL OR GRUPOFAMILIAR.DT_FIMVIG_GRPFAM >= GETDATE())
+										) SUB  
+								
+				WHERE NumLinha = 3) 
+				
+				Dependente_3 (Num_Linha,Nome,Sexo,GrauParentesco,Nascimento,Duração,RG,CPF,PISPASEP)  
+
+
+				--Dependente 4
+				OUTER APPLY 
+
+				(SELECT * FROM
+
+						(SELECT			
+			
+										ROW_NUMBER() OVER(ORDER BY RELACAOPESSOA.N_GRAUPARENT_GRAUPARENT) as [NumLinha]
+										,P_DEPENDENTE.S_NOM_PESSOA AS [NomeDep]
+										,P_DEPENDENTE.S_SEXO_PESSOA AS [SEXO DEPENDENTE]
+										,(CASE WHEN P_DEPENDENTE.S_SEXO_PESSOA = 'M' THEN
+
+											(CASE RELACAOPESSOA.N_GRAUPARENT_GRAUPARENT 
+											WHEN 0 THEN 'descrever'
+											WHEN 1 THEN 'cônjuge'
+											WHEN 2 THEN 'companheiro'
+											WHEN 3 THEN 'filho'
+											WHEN 4 THEN 'filho inválido'
+											WHEN 5 THEN 'pai'
+											WHEN 6 THEN 'irmão'
+											WHEN 7 THEN 'irmão inválido'
+											WHEN 8 THEN 'enteado'
+											WHEN 9 THEN 'enteado inválido'
+											WHEN 10 THEN 'menor tutelado'
+											WHEN 11 THEN 'menor tutelado inválido'
+											WHEN 99 THEN 'pensão alimenticia'
+											END) 
+
+										ELSE
+											
+											(CASE RELACAOPESSOA.N_GRAUPARENT_GRAUPARENT 
+											WHEN 0 THEN 'descrever'
+											WHEN 1 THEN 'cônjuge'
+											WHEN 2 THEN 'companheira'
+											WHEN 3 THEN 'filha'
+											WHEN 4 THEN 'filha inválida'
+											WHEN 5 THEN 'mãe'
+											WHEN 6 THEN 'irmã'
+											WHEN 7 THEN 'irmã inválida'
+											WHEN 8 THEN 'enteada'
+											WHEN 9 THEN 'enteada inválida'
+											WHEN 10 THEN 'menor tutelada'
+											WHEN 11 THEN 'menor tutelada inválida'
+											WHEN 99 THEN 'pensão alimenticia'
+											END)
+											
+										END) AS [GRAUPARENTESCO]
+
+										,CONVERT(VARCHAR, P_DEPENDENTE.DT_NASC_PESSOA, 103) AS [NASCIMENTO]
+
+										,(CASE RELACAOPESSOA.N_GRAUPARENT_GRAUPARENT 
+
+											WHEN 0 THEN 'a definir'
+											WHEN 1 THEN 'caráter vitalício'
+											WHEN 2 THEN 'caráter vitalício'
+											WHEN 3 THEN CONVERT(VARCHAR,DATEADD(year, 21, P_DEPENDENTE.DT_NASC_PESSOA),103)
+											WHEN 4 THEN 'caráter vitalício'
+											WHEN 5 THEN 'caráter vitalício'
+											WHEN 6 THEN CONVERT(VARCHAR,DATEADD(year, 21, P_DEPENDENTE.DT_NASC_PESSOA),103)
+											WHEN 7 THEN 'caráter vitalício'
+											WHEN 8 THEN CONVERT(VARCHAR,DATEADD(year, 21, P_DEPENDENTE.DT_NASC_PESSOA),103)
+											WHEN 9 THEN 'caráter vitalício'
+											WHEN 10 THEN CONVERT(VARCHAR,DATEADD(year, 21, P_DEPENDENTE.DT_NASC_PESSOA),103)
+											WHEN 11 THEN 'caráter vitalício'
+											WHEN 99 THEN 'a definir'
+
+										END) [DURAÇÃO]
+
+										,P_DEPENDENTE.S_RG_PESSOA AS [RG]
+
+										,RTRIM(SUBSTRING(P_DEPENDENTE.S_CPF_PESSOA,1,3)+'.'+SUBSTRING(P_DEPENDENTE.S_CPF_PESSOA,4,3)+'.'+SUBSTRING(P_DEPENDENTE.S_CPF_PESSOA,7,3)+'-'+SUBSTRING(P_DEPENDENTE.S_CPF_PESSOA,10,2)) AS [CPF]
+
+										,RTRIM(SUBSTRING(P_DEPENDENTE.S_PISPASEP_PESSOA,1,3)+'.'+SUBSTRING(P_DEPENDENTE.S_PISPASEP_PESSOA,4,5)+'.'+SUBSTRING(P_DEPENDENTE.S_PISPASEP_PESSOA,9,2)+'-'+SUBSTRING(P_DEPENDENTE.S_PISPASEP_PESSOA,11,1)) AS [NIT]
+
+
+										--DATA INÍCIO DA PENSÃO
+						FROM			
+
+										RELACAOPESSOA
+										INNER JOIN ESPECIFICACAOPESSOA ON RELACAOPESSOA.N_PESSOARELAC_PESSOA = ESPECIFICACAOPESSOA.N_PESSOA_PESSOA
+										INNER JOIN GRAUDEPARENTESCO ON RELACAOPESSOA.N_GRAUPARENT_GRAUPARENT = GRAUDEPARENTESCO.N_GRAUPARENT_GRAUPARENT
+										INNER JOIN PESSOA P_DEPENDENTE ON P_DEPENDENTE.N_PESSOA_PESSOA = RELACAOPESSOA.N_PESSOARELAC_PESSOA
+										INNER JOIN GRUPOFAMILIAR ON RELACAOPESSOA.N_PESSOARELAC_PESSOA = GRUPOFAMILIAR.N_PESSOARELAC_PESSOA
+				
+
+						WHERE			
+
+										RELACAOPESSOA.N_PESSOA_PESSOA = PESSOA.N_PESSOA_PESSOA
+										AND ESPECIFICACAOPESSOA.N_TIPPESSOA_TIPPESSOA = 3
+										AND RELACAOPESSOA.N_GRAUPARENT_GRAUPARENT IN (0,1,2,3,4,5,6,7,8,9,10,11)
+										AND (GRUPOFAMILIAR.DT_FIMVIG_GRPFAM IS NULL OR GRUPOFAMILIAR.DT_FIMVIG_GRPFAM >= GETDATE())
+										) SUB  
+								
+				WHERE NumLinha = 4) 
+				
+				Dependente_4 (Num_Linha,Nome,Sexo,GrauParentesco,Nascimento,Duração,RG,CPF,PISPASEP) 
+
+
+WHERE 
+
+SERVICOPESSOA.N_NUMPROT_SERVPESSOA = @numprot 
+AND SERVICOPESSOA.N_ANOREFER_SERVPESSOA = @anoprot]]>
+	</queryString>
+	<field name="NUMPROT" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="NUMPROT"/>
+	</field>
+	<field name="ANOPROT" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="ANOPROT"/>
+	</field>
+	<field name="PORTARIA" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="PORTARIA"/>
+	</field>
+	<field name="DATA PORTARIA EXTENSO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="DATA PORTARIA EXTENSO"/>
+	</field>
+	<field name="DATA ASSENTAMENTO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="DATA ASSENTAMENTO"/>
+	</field>
+	<field name="DATA ASSENTAMENTO EXTENSO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="DATA ASSENTAMENTO EXTENSO"/>
+	</field>
+	<field name="DATA_SOLICITAÇAO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="DATA_SOLICITAÇAO"/>
+	</field>
+	<field name="BENEFICIO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="BENEFICIO"/>
+	</field>
+	<field name="BENEFICIO DETALHADO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="BENEFICIO DETALHADO"/>
+	</field>
+	<field name="DESCRIÇÃO ATIVO APOSENTADO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="DESCRIÇÃO ATIVO APOSENTADO"/>
+	</field>
+	<field name="EMITIDA OU CONCEDIDA" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="EMITIDA OU CONCEDIDA"/>
+	</field>
+	<field name="PESSOA" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="PESSOA"/>
+	</field>
+	<field name="MATRICULA" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="MATRICULA"/>
+	</field>
+	<field name="NOME" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="NOME"/>
+	</field>
+	<field name="CARGO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CARGO"/>
+	</field>
+	<field name="MATRICULA_USUARIO_IPRESB" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="MATRICULA_USUARIO_IPRESB"/>
+	</field>
+	<field name="USUARIO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="USUARIO"/>
+	</field>
+	<field name="CARGO_USUARIO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CARGO_USUARIO"/>
+	</field>
+	<field name="DESTINATÁRIO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="DESTINATÁRIO"/>
+	</field>
+	<field name="REF" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="REF"/>
+	</field>
+	<field name="CONDICAO BENEF" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CONDICAO BENEF"/>
+	</field>
+	<field name="TEXTO ADIC 1" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="TEXTO ADIC 1"/>
+	</field>
+	<field name="TEXTO ADIC 2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="TEXTO ADIC 2"/>
+	</field>
+	<field name="NOME DEP 1" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="NOME DEP 1"/>
+	</field>
+	<field name="PARANTESCO DEP 1" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="PARANTESCO DEP 1"/>
+	</field>
+	<field name="DESCRICAO DEP 1" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="DESCRICAO DEP 1"/>
+	</field>
+	<field name="NASCIMENTO DEP 1" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="NASCIMENTO DEP 1"/>
+	</field>
+	<field name="DURAÇÃO DEP 1" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="DURAÇÃO DEP 1"/>
+	</field>
+	<field name="RG DEP 1" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="RG DEP 1"/>
+	</field>
+	<field name="CPF DEP 1" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CPF DEP 1"/>
+	</field>
+	<field name="PISPASEP DEP 1" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="PISPASEP DEP 1"/>
+	</field>
+	<field name="NOME DEP 2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="NOME DEP 2"/>
+	</field>
+	<field name="PARANTESCO DEP 2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="PARANTESCO DEP 2"/>
+	</field>
+	<field name="DESCRICAO DEP 2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="DESCRICAO DEP 2"/>
+	</field>
+	<field name="NASCIMENTO DEP 2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="NASCIMENTO DEP 2"/>
+	</field>
+	<field name="DURAÇÃO DEP 2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="DURAÇÃO DEP 2"/>
+	</field>
+	<field name="RG DEP 2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="RG DEP 2"/>
+	</field>
+	<field name="CPF DEP 2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CPF DEP 2"/>
+	</field>
+	<field name="PISPASEP DEP 2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="PISPASEP DEP 2"/>
+	</field>
+	<field name="NOME DEP 3" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="NOME DEP 3"/>
+	</field>
+	<field name="PARANTESCO DEP 3" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="PARANTESCO DEP 3"/>
+	</field>
+	<field name="DESCRICAO DEP 3" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="DESCRICAO DEP 3"/>
+	</field>
+	<field name="NASCIMENTO DEP 3" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="NASCIMENTO DEP 3"/>
+	</field>
+	<field name="DURAÇÃO DEP 3" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="DURAÇÃO DEP 3"/>
+	</field>
+	<field name="RG DEP 3" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="RG DEP 3"/>
+	</field>
+	<field name="CPF DEP 3" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CPF DEP 3"/>
+	</field>
+	<field name="PISPASEP DEP 3" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="PISPASEP DEP 3"/>
+	</field>
+	<field name="NOME DEP 4" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="NOME DEP 4"/>
+	</field>
+	<field name="PARANTESCO DEP 4" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="PARANTESCO DEP 4"/>
+	</field>
+	<field name="DESCRICAO DEP 4" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="DESCRICAO DEP 4"/>
+	</field>
+	<field name="NASCIMENTO DEP 4" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="NASCIMENTO DEP 4"/>
+	</field>
+	<field name="DURAÇÃO DEP 4" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="DURAÇÃO DEP 4"/>
+	</field>
+	<field name="RG DEP 4" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="RG DEP 4"/>
+	</field>
+	<field name="CPF DEP 4" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CPF DEP 4"/>
+	</field>
+	<field name="PISPASEP DEP 4" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="PISPASEP DEP 4"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="77" splitType="Stretch">
+			<componentElement>
+				<reportElement x="-20" y="0" width="530" height="70" uuid="f4174901-f3eb-4680-bbca-d2c628938d0d"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Logo" uuid="8860c172-a91f-4636-a65a-c91118869014">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="70" width="530">
+						<image>
+							<reportElement x="0" y="0" width="520" height="70" uuid="72dd9e0c-3681-48da-80a0-457c506984bf"/>
+							<imageExpression><![CDATA[$F{IMG_IMGFUNDO_IMGORG}]]></imageExpression>
+						</image>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="686" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="440" height="20" uuid="b8bcd072-e914-4d61-aece-41f7fcd0ccf8"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="styled">
+					<font fontName="Times New Roman" size="12" isBold="false"/>
+					<paragraph lineSpacing="Double"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Barueri, "+LOWER(DATEFORMAT(TODAY(),"d 'de' MMMM 'de' yyyy"))+"."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="64" width="459" height="116" uuid="bda60040-5264-44d9-a9ac-f085530c4745"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top" markup="styled">
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+					<paragraph lineSpacing="1_1_2"/>
+				</textElement>
+				<textFieldExpression><![CDATA["De: IPRESB – Instituto de Previdência Social dos Servidores Municipais de Barueri"+"<br/>Unidade de Gestão de Benefícios Previdenciários"+"<br/><br/>Para: "+$F{DESTINATÁRIO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="180" width="459" height="506" uuid="b66aaa8a-cb7f-46fd-bb6c-79b518441900"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top" markup="styled">
+					<font fontName="Times New Roman" size="12" isBold="false"/>
+					<paragraph lineSpacing="1_1_2" lineSpacingSize="1.5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<style isBold='true'>Ref.: "+$F{REF}+
+
+"</style><br/><br/>"+($F{CONDICAO BENEF}.equals("AP")? "	Comunicamos que foi "+$F{EMITIDA OU CONCEDIDA}+" a <style isBold='true'>"+UPPER($F{BENEFICIO})+ "</style> para o(a) servidor(a) <style isBold='true'>"+$F{NOME}+"</style>, matrícula <style isBold='true'>"+$F{MATRICULA}+"</style>.<br/><br/>"+"	Seguem anexos os seguintes documentos:<br/><br/>"+ "	\u2022  Portaria<br/>" +"	\u2022  Carta de Concessão<br/>"+"	\u2022  Certidão de Concessão<br/>": 
+	
+($F{CONDICAO BENEF}.equals("AB")? "	Comunicamos que foi "+$F{EMITIDA OU CONCEDIDA}+" a <style isBold='true'>"+UPPER($F{BENEFICIO})+ "</style> para o(a) servidor(a) <style isBold='true'>"+$F{NOME}+"</style>, matrícula <style isBold='true'>"+$F{MATRICULA}+"</style>.<br/><br/>"+"	Seguem anexos os seguintes documentos:<br/><br/>"+ "	\u2022  Requerimento do Processo<br/>" +"	\u2022  Certidão de Abono de Permanência<br/>":
+	
+($F{CONDICAO BENEF}.equals("PM")? "	Comunicamos que foi "+$F{EMITIDA OU CONCEDIDA}+" a <style isBold='true'>"+UPPER($F{BENEFICIO})+ "</style> "+"<style isUnderline='true'>"+$F{DESCRIÇÃO ATIVO APOSENTADO}+"</style> <style isBold='true'>"+$F{NOME}+"</style>, matrícula <style isBold='true'>"+$F{MATRICULA}+"</style>, através da <style isBold='true'><style isUnderline='true'>Portaria nº "+$F{PORTARIA}+" de "+$F{DATA PORTARIA EXTENSO}+"</style></style> aos dependente(s):<br/><br/>"
++($F{DESCRICAO DEP 1} !=null ? "	\u2022  "+ $F{DESCRICAO DEP 1} : "")
++($F{DESCRICAO DEP 2} !=null ? "<br/>" + "	\u2022  "+ $F{DESCRICAO DEP 2} : "") 
++($F{DESCRICAO DEP 3} !=null ? "<br/>" + "	\u2022  "+ $F{DESCRICAO DEP 3} : "")
++($F{DESCRICAO DEP 4} !=null ? "<br/>" + "	\u2022  "+ $F{DESCRICAO DEP 4} : "")
++"<br/><br/><br/>"+"	Seguem anexos os seguintes documentos:<br/><br/>"+ "	\u2022  Cópia da Portaria<br/>" +"	\u2022  Certidão de Concessão<br/>"+"	\u2022  RG dos dependentes/representante legal<br/>":"")))+"<br/><br/>Atenciosamente,<br/><br/><style isBold='true'>"+$F{USUARIO}+"<br/>Matrícula "+$F{MATRICULA_USUARIO_IPRESB}+"</style>"]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="65" splitType="Stretch">
+			<componentElement>
+				<reportElement x="-20" y="10" width="490" height="55" uuid="d9e30884-fbee-43cb-b497-3cfa76808906"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Rodape" uuid="c2c96a01-ec05-49c8-bf81-1bbcd92ee3c7">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="55" width="490">
+						<image>
+							<reportElement x="0" y="5" width="490" height="50" uuid="04136a1e-c82c-4a25-9a0d-3a6347f6eb5e"/>
+							<imageExpression><![CDATA[$F{IMG_IMGFUNDO_IMGORG}]]></imageExpression>
+						</image>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+		</band>
+	</pageFooter>
+</jasperReport>

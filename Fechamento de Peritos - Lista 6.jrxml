@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="teste3" pageWidth="1684" pageHeight="1191" orientation="Landscape" columnWidth="1684" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="10e901fa-5e86-47b7-b42c-c525b163fcad">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="IPRESB"/>
+	<parameter name="Mes" class="java.lang.String"/>
+	<parameter name="Ano" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT        FORMAT(ATENDIMENTOAGENDADO.DT_DATA_ATENAGD, 'dd/MM/yyyy') AS DATA_PERICIA, 
+
+						 (CASE ATENDIMENTOAGENDADO.N_MEDICO_PESSOA WHEN 2182 THEN 'ELZA MARIA PEREIRA BENTO' WHEN 2442 THEN 'MAMORU KITAMURA' 
+						 WHEN 40351 THEN 'GILMERSON DA COSTA E SILVA' WHEN 10919 THEN 'ALEX VENEZIANO OLIVEIRA JUNIOR' WHEN 17149 THEN 'GILBERTO AMBROGINI' 
+						 WHEN 40593 THEN 'JUNTA MEDICA' WHEN 46769 THEN 'SERGIO RACHMAN' END) AS NOME_MEDICO,
+
+						 (CASE WHEN ATENDIMENTOAGENDADO.N_MEDICO_PESSOA <> 40593 THEN '-' ELSE
+						 (CASE JUNTAMEDICAATENDIMENTO.N_PESSOA_PESSOA WHEN 2182 THEN 'ELZA MARIA PEREIRA BENTO' WHEN 2442 THEN 'MAMORU KITAMURA' 
+						 WHEN 40351 THEN 'GILMERSON DA COSTA E SILVA' WHEN 10919 THEN 'ALEX VENEZIANO OLIVEIRA JUNIOR' WHEN 17149 THEN 'GILBERTO AMBROGINI' 
+						 WHEN 40593 THEN 'JUNTA MEDICA' WHEN 46769 THEN 'SERGIO RACHMAN' END)END) AS NOME_MÉDICO_JUNTA,
+						 
+						 ATENDIMENTOAGENDADO.N_PACI_PESSOA AS N_PESSOA, 
+                         CARGOORGANIZACAOPESSOA.N_CODORI_ORGPESSOA AS MATRÍCULA, 
+						 (CASE N_ORG_ORG WHEN 1 THEN 'PMB' WHEN 2 THEN 'CMB' WHEN 3 THEN 'FIEB' WHEN 4 THEN 'IPRESB' END) AS ENTE, 
+                         PESSOA.S_NOM_PESSOA AS NOME_SERVIDOR, 
+						 RECURSOMEDICO.S_DESREC_RECMEDICO AS TIPO_PERICIA, 
+						 REPLACE(CAST(ITEMATENDIMENTOREALIZADO.N_VLRPREV_ITEMATENDREALZ AS varchar(12)), '.', ',') AS VALOR_PERÍCIA, 
+                         ('CREM ' + CAST(ATENDIMENTOAGENDADO.N_RESULPERIC_ATENDAGD AS VARCHAR(80))) AS RESULTADO_PERÍCIA, 
+						 ATENDIMENTOAGENDADO.N_TIP_ATENDAGD, 
+						 ATENDIMENTOAGENDADO.N_MOTINC_MOTGUIASAUDE, 
+                         MOTIVOSGUIASAUDE.S_DCR_MOTGUIASAUDE
+
+FROM            ITEMATENDIMENTOREALIZADO INNER JOIN
+                         ATENDIMENTOAGENDADO ON ITEMATENDIMENTOREALIZADO.N_SEQ_ATENDAGD = ATENDIMENTOAGENDADO.N_SEQ_ATENDAGD AND 
+                         ITEMATENDIMENTOREALIZADO.N_SEQ_AGDPLNJ = ATENDIMENTOAGENDADO.N_SEQ_AGDPLNJ INNER JOIN
+                         PESSOA ON ATENDIMENTOAGENDADO.N_PACI_PESSOA = PESSOA.N_PESSOA_PESSOA INNER JOIN
+                         CARGOORGANIZACAOPESSOA ON PESSOA.N_PESSOA_PESSOA = CARGOORGANIZACAOPESSOA.N_PESSOA_PESSOA INNER JOIN
+                         MOTIVOSGUIASAUDE ON ATENDIMENTOAGENDADO.N_MOTINC_MOTGUIASAUDE = MOTIVOSGUIASAUDE.N_COD_MOTGUIASAUDE INNER JOIN
+                         RECURSOMEDICO ON ITEMATENDIMENTOREALIZADO.N_REC_RECMEDICO = RECURSOMEDICO.N_REC_RECMEDICO INNER JOIN
+                         JUNTAMEDICAATENDIMENTO ON ATENDIMENTOAGENDADO.N_SEQ_ATENDAGD = JUNTAMEDICAATENDIMENTO.N_SEQ_ATENDAGD AND 
+                         ATENDIMENTOAGENDADO.N_SEQ_AGDPLNJ = JUNTAMEDICAATENDIMENTO.N_SEQ_AGDPLNJ
+
+WHERE       (MONTH(ITEMATENDIMENTOREALIZADO.DT_DATA_ITEMATENDREALZ) = $P{Mes}) AND 
+			(ATENDIMENTOAGENDADO.N_RESULPERIC_ATENDAGD IS NOT NULL) AND 
+            (YEAR(ITEMATENDIMENTOREALIZADO.DT_DATA_ITEMATENDREALZ) = $P{Ano}) AND 
+
+			(CARGOORGANIZACAOPESSOA.DT_INIVIG_CARGOORGPESSOA =
+               (SELECT        MAX(DT_INIVIG_CARGOORGPESSOA) AS Expr1
+                FROM            CARGOORGANIZACAOPESSOA AS CARGOORGANIZACAOPESSOA_1
+                WHERE        (N_PESSOA_PESSOA = PESSOA.N_PESSOA_PESSOA)))
+
+
+ORDER BY DATA_PERICIA, NOME_MEDICO]]>
+	</queryString>
+	<field name="DATA_PERICIA" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="DATA_PERICIA"/>
+	</field>
+	<field name="NOME_MEDICO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="NOME_MEDICO"/>
+	</field>
+	<field name="NOME_MÉDICO_JUNTA" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="NOME_MÉDICO_JUNTA"/>
+	</field>
+	<field name="N_PESSOA" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="N_PESSOA"/>
+	</field>
+	<field name="MATRÍCULA" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="MATRÍCULA"/>
+	</field>
+	<field name="ENTE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="ENTE"/>
+	</field>
+	<field name="NOME_SERVIDOR" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="NOME_SERVIDOR"/>
+	</field>
+	<field name="TIPO_PERICIA" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="TIPO_PERICIA"/>
+	</field>
+	<field name="VALOR_PERÍCIA" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="VALOR_PERÍCIA"/>
+	</field>
+	<field name="RESULTADO_PERÍCIA" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="RESULTADO_PERÍCIA"/>
+	</field>
+	<field name="N_TIP_ATENDAGD" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="N_TIP_ATENDAGD"/>
+	</field>
+	<field name="N_MOTINC_MOTGUIASAUDE" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="N_MOTINC_MOTGUIASAUDE"/>
+	</field>
+	<field name="S_DCR_MOTGUIASAUDE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="S_DCR_MOTGUIASAUDE"/>
+	</field>
+	<background>
+		<band/>
+	</background>
+	<columnHeader>
+		<band height="29">
+			<staticText>
+				<reportElement mode="Opaque" x="92" y="0" width="189" height="29" forecolor="#006699" backcolor="#E6E6E6" uuid="21854ac7-02b0-4ae8-8862-30d77aba2e77">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4058f1d-2bcc-49b6-8de2-3a1e4f62f649"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOME MÉDICO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="92" height="29" forecolor="#006699" backcolor="#E6E6E6" uuid="2de7651b-3c98-4325-9abe-90f00b02243e">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="32bb3ea0-7607-4dc0-8785-1b0138b45b72"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DATA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="281" y="0" width="191" height="29" forecolor="#006699" backcolor="#E6E6E6" uuid="af7d8c7b-1e8d-429a-84ed-4e1f78c2bfc5">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4058f1d-2bcc-49b6-8de2-3a1e4f62f649"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOME MÉDICO JUNTA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="472" y="0" width="60" height="29" forecolor="#006699" backcolor="#E6E6E6" uuid="d1a7750c-3ee8-406b-97ae-c5270974d4ab">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4058f1d-2bcc-49b6-8de2-3a1e4f62f649"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[N_PESSOA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="532" y="0" width="60" height="29" forecolor="#006699" backcolor="#E6E6E6" uuid="5d66597a-c05f-4a17-b140-1679b055a8ae">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4058f1d-2bcc-49b6-8de2-3a1e4f62f649"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MATRÍCULA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="592" y="0" width="48" height="29" forecolor="#006699" backcolor="#E6E6E6" uuid="9e0fa4e4-1e61-4277-a6fa-99a2169f0f22">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4058f1d-2bcc-49b6-8de2-3a1e4f62f649"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ENTE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="640" y="0" width="340" height="29" forecolor="#006699" backcolor="#E6E6E6" uuid="1e03e5a6-9a3c-4b66-b12f-875eda79a249">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4058f1d-2bcc-49b6-8de2-3a1e4f62f649"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOME SERVIDOR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="980" y="0" width="105" height="29" forecolor="#006699" backcolor="#E6E6E6" uuid="c9081512-a30d-48a8-8679-4b5323f25222">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4058f1d-2bcc-49b6-8de2-3a1e4f62f649"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TIPO PERÍCIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="1085" y="0" width="75" height="29" forecolor="#006699" backcolor="#E6E6E6" uuid="54590559-3402-47d8-a87e-eda2b1697cd2">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4058f1d-2bcc-49b6-8de2-3a1e4f62f649"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VALOR PERÍCIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="1160" y="0" width="101" height="29" forecolor="#006699" backcolor="#E6E6E6" uuid="be29d57a-dc84-4bdb-80db-111c81b483be">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4058f1d-2bcc-49b6-8de2-3a1e4f62f649"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RESULTADO PERÍCIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="1261" y="0" width="129" height="29" forecolor="#006699" backcolor="#E6E6E6" uuid="4f8ceecc-b2d0-47ce-b672-d3f3a6756cc2">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4058f1d-2bcc-49b6-8de2-3a1e4f62f649"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CÓDIGO MOTIVO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="1390" y="0" width="294" height="29" forecolor="#006699" backcolor="#E6E6E6" uuid="220d5033-5259-442c-82e5-9e8f899bda06">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4058f1d-2bcc-49b6-8de2-3a1e4f62f649"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MOTIVO]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="47">
+			<textField>
+				<reportElement x="92" y="0" width="189" height="47" uuid="46679993-771b-4667-860d-61562c5c46ec">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4058f1d-2bcc-49b6-8de2-3a1e4f62f649"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NOME_MEDICO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="0" width="92" height="47" uuid="7e1898f8-b6b4-4a2f-bf87-c6e2607463d6">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="32bb3ea0-7607-4dc0-8785-1b0138b45b72"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DATA_PERICIA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="281" y="0" width="191" height="47" uuid="febcafd3-3520-41e7-a0e8-3e2caa9e9fb2">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4058f1d-2bcc-49b6-8de2-3a1e4f62f649"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NOME_MÉDICO_JUNTA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="472" y="0" width="60" height="47" uuid="37b366e4-2077-43f1-bbbc-e39e5f54e9c7">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4058f1d-2bcc-49b6-8de2-3a1e4f62f649"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{N_PESSOA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="532" y="0" width="60" height="47" uuid="98deebaa-071b-4bee-a596-6a0ff3785315">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4058f1d-2bcc-49b6-8de2-3a1e4f62f649"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MATRÍCULA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="592" y="0" width="48" height="47" uuid="e54dd7b2-5ff7-496e-b87a-af9835422142">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4058f1d-2bcc-49b6-8de2-3a1e4f62f649"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ENTE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="640" y="0" width="340" height="47" uuid="6cfbac32-0e81-43ed-94af-705e39a09a9c">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4058f1d-2bcc-49b6-8de2-3a1e4f62f649"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NOME_SERVIDOR}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="980" y="0" width="105" height="47" uuid="97dd589c-ac02-45cc-b5c5-c2fe736b4882">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4058f1d-2bcc-49b6-8de2-3a1e4f62f649"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TIPO_PERICIA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1085" y="0" width="75" height="47" uuid="bc179ddf-5d18-49c9-a60f-a120a672847a">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4058f1d-2bcc-49b6-8de2-3a1e4f62f649"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{VALOR_PERÍCIA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1160" y="0" width="101" height="47" uuid="b65e47fb-8c30-42d8-b1ef-5d81340d3a59">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4058f1d-2bcc-49b6-8de2-3a1e4f62f649"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{RESULTADO_PERÍCIA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1261" y="0" width="129" height="47" uuid="8c2c2098-21f1-4f13-83dc-724225e04b5c">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4058f1d-2bcc-49b6-8de2-3a1e4f62f649"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{N_MOTINC_MOTGUIASAUDE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1390" y="0" width="294" height="47" uuid="8ec6cd68-0cc8-4293-b909-5f69a9ddecdb">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4058f1d-2bcc-49b6-8de2-3a1e4f62f649"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{S_DCR_MOTGUIASAUDE}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band/>
+	</columnFooter>
+	<summary>
+		<band/>
+	</summary>
+</jasperReport>

@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.19.0.final using JasperReports Library version 6.19.0-646c68931cebf1a58bc65c4359d1f0ca223c5e94  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4" pageWidth="595" pageHeight="842" columnWidth="470" leftMargin="85" rightMargin="40" topMargin="14" bottomMargin="0" isIgnorePagination="true" uuid="d946ebe6-2e92-44c5-aed7-8f7380925278">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ipresb"/>
+	<property name="com.jaspersoft.studio.unit." value="cm"/>
+	<subDataset name="Logo" uuid="e9f90e01-6f3f-44b6-9906-95c12f91afd0">
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="IPRESB"/>
+		<queryString language="SQL">
+			<![CDATA[Select  IMG_IMGFUNDO_IMGORG
+ from dbo."IMAGEMORGANIZACAO"  
+ where  "N_ORG_ORG" = 4]]>
+		</queryString>
+		<field name="IMG_IMGFUNDO_IMGORG" class="java.awt.Image"/>
+	</subDataset>
+	<subDataset name="Rodape" uuid="848c67d2-d15a-4bee-a03e-4616d865bbac">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="IPRESB"/>
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<queryString>
+			<![CDATA[Select dbo."IMAGEMORGANIZACAO"."IMG_IMGFUNDO_IMGORG" 
+ from dbo."IMAGEMORGANIZACAO" 
+ where  dbo."IMAGEMORGANIZACAO"."N_ORG_ORG" = 43]]>
+		</queryString>
+		<field name="IMG_IMGFUNDO_IMGORG" class="java.awt.Image"/>
+	</subDataset>
+	<parameter name="Matr" class="java.lang.String"/>
+	<parameter name="Ente" class="java.lang.String"/>
+	<parameter name="Assunto" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[DECLARE @Assunto varchar(2)
+	SET @Assunto = $P{Assunto}
+
+SELECT TOP 1 
+	PESSOA.S_NOM_PESSOA AS NOME,
+	PESSOA.S_CPF_PESSOA AS CPF,
+	PESSOA.S_SEXO_PESSOA AS SEXO,
+	PESSOA.S_RG_PESSOA AS RG,
+	PESSOA.N_PESSOA_PESSOA AS PESSOA,
+	ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA AS MATRÍCULA,
+	ORGANIZACAOPESSOA.N_ORG_ORG AS ENTE,
+	
+
+	
+		(CASE  @Assunto
+				WHEN UPPER('A') 
+				THEN 
+				'declaro, para fins de obtenção de benefício junto ao Instituto de Previdência Social dos Servidores
+				Municipais de Barueri - IPRESB, que:<br><br>
+				( ) Não recebo pensão por morte do Regime Geral de Previdência Social (RGPS-INSS), de Regime Próprio 	de Previdência Social (RPPS) ou decorrentes de atividades militares;<br><br>
+				( ) Recebo pensão por morte do Regime Geral de Previdência Social (RGPS-INSS), de Regime Próprio de Previdência Social (RPPS) ou decorrentes de atividades militares;<br>
+				Órgão:_______________________<br>
+				Valor: _______________________<br>
+				Declaro ainda, caso venha a receber pensão por morte de outro Regime de Previdência devo comunicar a este Instituto e que tomei conhecimento do trecho da Emenda Constitucional n.º 103/2019 abaixo transcrito e que estou ciente de que estarei sujeito às penalidades previstas em Lei, caso venha a incorrer em acumulação ilegal de benefícios. '
+		
+
+				WHEN  UPPER('P')  
+				THEN
+				'declaro, para fins de obtenção de benefício junto ao Instituto de Previdência Social dos Servidores
+				Municipais de Barueri - IPRESB, que:<br><br>
+				( ) Não recebo aposentadoria ou pensão por morte do Regime Geral de Previdência Social (RGPS-INSS), de Regime Próprio de Previdência Social (RPPS) ou decorrentes de atividades militares;<br><br>
+				( ) Recebo aposentadoria ou pensão por morte do Regime Geral de Previdência Social (RGPS-INSS), de 	Regime Próprio de Previdência Social (RPPS) ou decorrentes de atividades militares;<br>
+				Órgão:_______________________<br>
+				Valor: _______________________<br>
+				Declaro ainda, caso venha a receber pensão por morte de outro Regime de Previdência devo comunicar a este Instituto e que tomei conhecimento do trecho da Emenda Constitucional n.º 103/2019 abaixo transcrito e que
+				estou ciente de que estarei sujeito às penalidades previstas em Lei, caso venha a incorrer em acumulação ilegal de benefícios.'
+				
+
+				WHEN UPPER('RA')  
+				THEN
+				'declaro, para fins de Recadastramento anual (Prova de Vida) junto ao Instituto de Previdência Social dos Servidores Municipais de Barueri - IPRESB, que:<br>
+				( ) Não recebo pensão por morte do Regime Geral de Previdência Social (RGPS-INSS), de Regime Próprio de Previdência Social (RPPS) ou decorrentes de atividades militares;<br>
+				( ) Recebo pensão por morte do Regime Geral de Previdência Social (RGPS-INSS), de Regime Próprio de Previdência Social (RPPS) ou decorrentes de atividades militares;<br>
+				Órgão:_______________________<br>
+				Valor: _______________________<br>
+				Data da Concessão do Benefício: _________________________<br>
+				Declaro ainda, caso venha a receber pensão por morte ou aposentadoria de outro Regime de Previdência devo comunicar a este Instituto e que tomei conhecimento do trecho da Emenda Constitucional n.º 103/2019 abaixo transcrito e que estou ciente de que estarei sujeito às penalidades previstas em Lei, caso venha a incorrer em acumulação ilegal de benefícios.' 
+				
+				WHEN UPPER('RP')  
+				THEN
+				'declaro, para fins de Recadastramento anual (Prova de Vida) junto ao Instituto de Previdência Social dos Servidores Municipais de Barueri - IPRESB, que:<br>
+				( ) Não recebo aposentadoria ou pensão por morte do Regime Geral de Previdência Social (RGPS-INSS), de Regime Próprio de Previdência Social (RPPS) ou decorrentes de atividades militares;<br><br>
+				( ) Recebo aposentadoria ou pensão por morte do Regime Geral de Previdência Social (RGPS-INSS), de Regime Próprio de Previdência Social (RPPS) ou decorrentes de atividades militares;<br>
+				Órgão:_______________________<br>
+				Valor: _______________________<br>
+				Data da Concessão do Benefício: _________________________<br>
+				Declaro ainda, caso venha a receber pensão por morte ou aposentadoria de outro Regime de Previdência devo comunicar a este Instituto e que tomei conhecimento do trecho da Emenda Constitucional n.º 103/2019 abaixo transcrito e que estou ciente de que estarei sujeito às penalidades previstas em Lei, caso venha a incorrer em acumulação ilegal de benefícios.'END) AS TEXTO
+				
+				
+
+
+
+
+FROM PESSOA INNER JOIN ORGANIZACAOPESSOA ON PESSOA.N_PESSOA_PESSOA = ORGANIZACAOPESSOA.N_PESSOA_PESSOA 
+
+
+
+WHERE        (ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA = $P{Matr} AND ORGANIZACAOPESSOA.N_ORG_ORG =  $P{Ente})]]>
+	</queryString>
+	<field name="NOME" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NOME"/>
+		<property name="com.jaspersoft.studio.field.label" value="NOME"/>
+	</field>
+	<field name="CPF" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CPF"/>
+		<property name="com.jaspersoft.studio.field.label" value="CPF"/>
+	</field>
+	<field name="SEXO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="SEXO"/>
+		<property name="com.jaspersoft.studio.field.label" value="SEXO"/>
+	</field>
+	<field name="RG" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="RG"/>
+		<property name="com.jaspersoft.studio.field.label" value="RG"/>
+	</field>
+	<field name="PESSOA" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="PESSOA"/>
+		<property name="com.jaspersoft.studio.field.label" value="PESSOA"/>
+	</field>
+	<field name="MATRÍCULA" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="MATRÍCULA"/>
+		<property name="com.jaspersoft.studio.field.label" value="MATRÍCULA"/>
+	</field>
+	<field name="ENTE" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="ENTE"/>
+		<property name="com.jaspersoft.studio.field.label" value="ENTE"/>
+	</field>
+	<field name="TEXTO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="TEXTO"/>
+		<property name="com.jaspersoft.studio.field.label" value="TEXTO"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="80">
+			<componentElement>
+				<reportElement x="62" y="0" width="150" height="80" uuid="ba1b945c-4878-44d4-b7f5-c14ddce5fd71"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Logo" uuid="c6995255-b032-4249-8eff-3b8394cc0f2e">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="80" width="150">
+						<image>
+							<reportElement x="0" y="0" width="140" height="70" uuid="5153e42f-a156-4fae-a759-46c9e6474725"/>
+							<imageExpression><![CDATA[$F{IMG_IMGFUNDO_IMGORG}]]></imageExpression>
+						</image>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<staticText>
+				<reportElement x="180" y="20" width="205" height="40" uuid="e52d0f46-fa3b-4fa8-a779-328ddc06c589"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true"/>
+					<paragraph lineSpacing="1_1_2"/>
+				</textElement>
+				<text><![CDATA[INSTITUTO DE PREVIDÊNCIA SOCIAL DOS SERVIDORES MUNICIPAIS DE BARUERI]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="50">
+			<staticText>
+				<reportElement x="-40" y="20" width="509" height="20" uuid="a9e11b15-0826-4ae7-9520-48a566dcda34">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" markup="styled">
+					<font fontName="Arial" size="12" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[<style isBold='true'>DECLARAÇÃO DE ACUMULAÇÃO DE BENEFÍCIOS </style>]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band/>
+	</columnHeader>
+	<detail>
+		<band height="538" splitType="Stretch">
+			<textField>
+				<reportElement x="-40" y="10" width="508" height="180" uuid="9803beb0-23ef-4898-92c5-69b9e541db6f"/>
+				<textElement textAlignment="Justified" markup="html">
+					<font fontName="Arial" size="10"/>
+					<paragraph lineSpacingSize="1.5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["		Eu, " +$F{NOME}+", CPF: "+$F{CPF}+", RG: "+$F{RG} + ", " +
+
+$F{TEXTO}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="-50" y="190" width="525" height="348" uuid="2bc7beed-6f2a-4ef8-beb3-55c064e5e5f8">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+			</rectangle>
+			<staticText>
+				<reportElement key="" x="-40" y="190" width="509" height="348" isRemoveLineWhenBlank="true" uuid="68359a4c-2f17-436c-b03a-070bc50a151f">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Justified" verticalAlignment="Top" markup="html">
+					<font fontName="Arial"/>
+					<paragraph lineSpacingSize="1.5"/>
+				</textElement>
+				<text><![CDATA[Art. 24. É vedada a acumulação de mais de uma pensão por morte deixada por cônjuge ou companheiro, no âmbito do mesmo regime de previdência social, ressalvadas as pensões do mesmo instituidor decorrentes do exercício de cargos acumuláveis na forma do art. 37 da Constituição Federal.<br>
+§ 1º Será admitida, nos termos do § 2º, a acumulação de:<br>
+I - pensão por morte deixada por cônjuge ou companheiro de um regime de previdência social com pensão por morte concedida por outro regime de previdência social ou com pensões decorrentes das atividades militares de que tratam os arts. 42 e 142 da Constituição Federal;<br>
+II - pensão por morte deixada por cônjuge ou companheiro de um regime de previdência social com aposentadoria concedida no âmbito do Regime Geral de Previdência Social ou de regime próprio de previdência social ou com proventos de inatividade decorrentes das atividades militares de que tratam os arts. 42 e 142 da Constituição Federal; <br>
+III - pensões decorrentes das atividades militares de que tratam os arts. 42 e 142 da Constituição Federal com aposentadoria concedida no âmbito do Regime Geral de Previdência Social ou de regime próprio de previdência social.<br>
+§ 2º Nas hipóteses das acumulações previstas no § 1º, é assegurada a percepção do valor integral do benefício mais vantajoso e de uma parte de cada um dos demais benefícios, apurada cumulativamente de acordo com as seguintes faixas:<br>
+I - 60% (sessenta por cento) do valor que exceder 1 (um) salário-mínimo, até o limite de 2 (dois) salários-mínimos;<br>
+II - 40% (quarenta por cento) do valor que exceder 2 (dois) salários-mínimos, até o limite de 3 (três) salários-mínimos;<br>
+III - 20% (vinte por cento) do valor que exceder 3 (três) salários-mínimos, até o limite de 4 (quatro) salários-mínimos; e<br>
+IV - 10% (dez por cento) do valor que exceder 4 (quatro) salários-mínimos.<br>
+§ 3º A aplicação do disposto no § 2º poderá ser revista a qualquer tempo, a pedido do interessado, em razão de alteração de algum dos benefícios.<br>
+§ 4º As restrições previstas neste artigo não serão aplicadas se o direito aos benefícios houver sido adquirido antes da  data de entrada em vigor desta Emenda Constitucional.<br>
+§ 5º As regras sobre acumulação previstas neste artigo e na legislação vigente na data de entrada em vigor desta Emenda Constitucional poderão ser alteradas na forma do § 6º do art. 40 e do § 15 do art. 201 da Constituição Federal.]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="145">
+			<textField>
+				<reportElement x="-40" y="10" width="515" height="16" uuid="e560fe79-99c7-4af8-baa5-2a21ff1fad40"/>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Barueri, " + LOWER(DATEFORMAT(TODAY(),"d 'de' MMMM 'de' yyyy"))+"."]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-40" y="50" width="515" height="30" uuid="91fc635e-de7b-4c70-8c81-2fc167c5b72c"/>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<text><![CDATA[________________________________________
+Declarante]]></text>
+			</staticText>
+		</band>
+	</columnFooter>
+	<lastPageFooter>
+		<band height="59">
+			<componentElement>
+				<reportElement x="-21" y="1" width="490" height="55" uuid="1c9cd1ea-0b0f-4ceb-807c-ab4a2658f447"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Rodape" uuid="db43c466-0730-42b7-9c1b-9fffc9089d9e">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="55" width="490">
+						<image>
+							<reportElement x="0" y="5" width="490" height="50" uuid="14c6c040-49a6-4838-9a16-6cc1fa4084bf"/>
+							<imageExpression><![CDATA[$F{IMG_IMGFUNDO_IMGORG}]]></imageExpression>
+						</image>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+		</band>
+	</lastPageFooter>
+</jasperReport>

@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.21.2.final using JasperReports Library version 6.21.2-8434a0bd7c3bbc37cbf916f2968d35e4b165821a  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4" pageWidth="595" pageHeight="842" columnWidth="470" leftMargin="85" rightMargin="40" topMargin="14" bottomMargin="0" uuid="d946ebe6-2e92-44c5-aed7-8f7380925278">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ASPPREV"/>
+	<property name="com.jaspersoft.studio.unit." value="cm"/>
+	<subDataset name="Logo" uuid="e9f90e01-6f3f-44b6-9906-95c12f91afd0">
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="IPRESB"/>
+		<queryString language="SQL">
+			<![CDATA[Select  IMG_IMGFUNDO_IMGORG
+ from dbo."IMAGEMORGANIZACAO"  
+ where  "N_ORG_ORG" = 42]]>
+		</queryString>
+		<field name="IMG_IMGFUNDO_IMGORG" class="java.awt.Image"/>
+	</subDataset>
+	<subDataset name="Rodape" uuid="848c67d2-d15a-4bee-a03e-4616d865bbac">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="IPRESB"/>
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<queryString>
+			<![CDATA[Select dbo."IMAGEMORGANIZACAO"."IMG_IMGFUNDO_IMGORG" 
+ from dbo."IMAGEMORGANIZACAO" 
+ where  dbo."IMAGEMORGANIZACAO"."N_ORG_ORG" = 43]]>
+		</queryString>
+		<field name="IMG_IMGFUNDO_IMGORG" class="java.awt.Image"/>
+	</subDataset>
+	<queryString language="SQL">
+		<![CDATA[-- SERVIDORES ATIVOS
+
+SELECT DISTINCT
+		ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA AS [MATRÍCULA],		
+		PESSOA.S_NOM_PESSOA AS [NOME COMPLETO],
+		
+
+		--CPF
+		RTRIM(SUBSTRING(PESSOA.S_CPF_PESSOA,1,3)
+		+'.'
+		+SUBSTRING(PESSOA.S_CPF_PESSOA,4,3)
+		+'.'
+		+SUBSTRING(PESSOA.S_CPF_PESSOA,7,3)
+		+'-'
+		+SUBSTRING(PESSOA.S_CPF_PESSOA,10,2)) AS [CPF],
+
+		-- EMAIL
+		(CASE WHEN PESSOA.S_EMAIL_PESSOA IS NULL THEN ''
+		ELSE LOWER(PESSOA.S_EMAIL_PESSOA) END) AS [EMAIL],		
+	
+
+				(CASE WHEN LEN (CONCAT (TELEFONEPESSOA.N_DDD_TELPESSOA,TELEFONEPESSOA.N_NUM_TELPESSOA)) = 9 THEN CONCAT ('11',TELEFONEPESSOA.N_DDD_TELPESSOA,TELEFONEPESSOA.N_NUM_TELPESSOA)
+				ELSE CONCAT (TELEFONEPESSOA.N_DDD_TELPESSOA,TELEFONEPESSOA.N_NUM_TELPESSOA) END)  AS [CELULAR],
+
+
+				--ENTE
+		(CASE ORGANIZACAOPESSOA.N_ORG_ORG
+		WHEN 1 THEN 'PMB' 
+		WHEN 2 THEN 'CÂMARA' 
+		WHEN 3 THEN 'FIEB' 
+		WHEN 4 THEN 'IPRESB' 
+		END) AS ENTE,
+					'Ativo' AS [SITUAÇÃO]
+		
+		
+
+
+FROM
+	
+			
+			ORGANIZACAOPESSOA 
+			LEFT JOIN PESSOA ON PESSOA.N_PESSOA_PESSOA = ORGANIZACAOPESSOA.N_PESSOA_PESSOA
+			LEFT JOIN CARGOORGANIZACAOPESSOA ON CARGOORGANIZACAOPESSOA.N_ORG_ORG = ORGANIZACAOPESSOA.N_ORG_ORG AND CARGOORGANIZACAOPESSOA.N_CODORI_ORGPESSOA = ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA
+			LEFT JOIN TELEFONEPESSOA ON TELEFONEPESSOA.N_PESSOA_PESSOA = PESSOA.N_PESSOA_PESSOA   AND TELEFONEPESSOA.N_NUM_TELPESSOA IN (SELECT TOP 1 (TP2.N_NUM_TELPESSOA)
+																																								FROM TELEFONEPESSOA TP2
+																																								WHERE TP2.N_PESSOA_PESSOA = TELEFONEPESSOA.N_PESSOA_PESSOA AND TP2.S_TIP_TELPESSOA = ('E'))
+			
+
+
+			
+WHERE
+
+		
+	
+		ORGANIZACAOPESSOA.DT_DSL_ORGPESSOA IS NULL 
+		AND	CARGOORGANIZACAOPESSOA.DT_FIMVIG_CARGOORGPESSOA IS NULL 
+
+		-- RETIRAR O VÍNCULO SERVIDOR CARGO COMISSIONADO EXCLUSIVO
+		AND CARGOORGANIZACAOPESSOA.N_VINC_CARGOORGPESSOA NOT IN (4,7,9)
+		 --AND TELEFONEPESSOA.N_NUM_TELPESSOA IN (SELECT TOP 1 (TP2.N_NUM_TELPESSOA)
+			--								FROM TELEFONEPESSOA TP2
+			--								WHERE TP2.N_PESSOA_PESSOA = TELEFONEPESSOA.N_PESSOA_PESSOA)
+		AND ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA IS NOT NULL
+		AND ORGANIZACAOPESSOA.N_ORG_ORG IS NOT NULL
+		AND CARGOORGANIZACAOPESSOA.N_CODORI_ORGPESSOA IS NOT NULL
+		
+
+
+
+
+
+
+UNION
+
+-- APOSENTADOS
+
+
+SELECT DISTINCT
+
+		
+		BENEFICIOPESSOA.N_CODORI_ORGPESSOA AS [MATRÍCULA],
+		PESSOA.S_NOM_PESSOA [NOME COMPLETO],
+
+			--CPF
+		RTRIM(SUBSTRING(PESSOA.S_CPF_PESSOA,1,3)
+		+'.'
+		+SUBSTRING(PESSOA.S_CPF_PESSOA,4,3)
+		+'.'
+		+SUBSTRING(PESSOA.S_CPF_PESSOA,7,3)
+		+'-'
+		+SUBSTRING(PESSOA.S_CPF_PESSOA,10,2)) AS [CPF],
+
+			-- EMAIL
+		(CASE WHEN PESSOA.S_EMAIL_PESSOA IS NULL THEN ''
+		ELSE LOWER(PESSOA.S_EMAIL_PESSOA) END) AS [EMAIL],		
+		
+				(CASE WHEN LEN (CONCAT (TELEFONEPESSOA.N_DDD_TELPESSOA,TELEFONEPESSOA.N_NUM_TELPESSOA)) = 9 THEN CONCAT ('11',TELEFONEPESSOA.N_DDD_TELPESSOA,TELEFONEPESSOA.N_NUM_TELPESSOA)
+				ELSE CONCAT (TELEFONEPESSOA.N_DDD_TELPESSOA,TELEFONEPESSOA.N_NUM_TELPESSOA) END)  AS [CELULAR],
+
+
+					--ENTE
+		(CASE BENEFICIOPESSOA.N_ORG_ORG
+		WHEN 1 THEN 'PMB' 
+		WHEN 2 THEN 'CÂMARA' 
+		WHEN 3 THEN 'FIEB' 
+		WHEN 4 THEN 'IPRESB' 
+		END) AS ENTE,
+	
+
+		'Aposentado' AS [SITUAÇÃO]
+				
+				
+
+		
+
+
+
+
+FROM
+	
+			
+			BENEFICIOPESSOA
+			LEFT JOIN PESSOA ON PESSOA.N_PESSOA_PESSOA = BENEFICIOPESSOA.N_PESSOA_PESSOA
+			LEFT JOIN TELEFONEPESSOA ON TELEFONEPESSOA.N_PESSOA_PESSOA = PESSOA.N_PESSOA_PESSOA   AND TELEFONEPESSOA.N_NUM_TELPESSOA IN (SELECT TOP 1 (TP2.N_NUM_TELPESSOA)
+																																								FROM TELEFONEPESSOA TP2
+																																								WHERE TP2.N_PESSOA_PESSOA = TELEFONEPESSOA.N_PESSOA_PESSOA AND TP2.S_TIP_TELPESSOA = ('E'))
+			
+
+
+		
+			
+
+WHERE
+
+		BENEFICIOPESSOA.N_TIPBNF_TIPBNF IN (1,2,3,4,5,6,14,17,107) AND
+		BENEFICIOPESSOA.S_SITPGTO_BNFPESSOA = 1 
+
+
+
+
+	
+ORDER BY 
+	
+		PESSOA.S_NOM_PESSOA]]>
+	</queryString>
+	<field name="MATRÍCULA" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="MATRÍCULA"/>
+		<property name="com.jaspersoft.studio.field.label" value="MATRÍCULA"/>
+	</field>
+	<field name="NOME COMPLETO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NOME COMPLETO"/>
+		<property name="com.jaspersoft.studio.field.label" value="NOME COMPLETO"/>
+	</field>
+	<field name="CPF" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CPF"/>
+		<property name="com.jaspersoft.studio.field.label" value="CPF"/>
+	</field>
+	<field name="EMAIL" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="EMAIL"/>
+		<property name="com.jaspersoft.studio.field.label" value="EMAIL"/>
+	</field>
+	<field name="CELULAR" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CELULAR"/>
+		<property name="com.jaspersoft.studio.field.label" value="CELULAR"/>
+	</field>
+	<field name="ENTE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ENTE"/>
+		<property name="com.jaspersoft.studio.field.label" value="ENTE"/>
+	</field>
+	<field name="SITUAÇÃO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="SITUAÇÃO"/>
+		<property name="com.jaspersoft.studio.field.label" value="SITUAÇÃO"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="73" splitType="Stretch">
+			<componentElement>
+				<reportElement x="-20" y="0" width="530" height="70" uuid="f4174901-f3eb-4680-bbca-d2c628938d0d"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Logo" uuid="8860c172-a91f-4636-a65a-c91118869014">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="70" width="530">
+						<image>
+							<reportElement x="0" y="0" width="520" height="70" uuid="72dd9e0c-3681-48da-80a0-457c506984bf"/>
+							<imageExpression><![CDATA[$F{IMG_IMGFUNDO_IMGORG}]]></imageExpression>
+						</image>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="50">
+			<textField>
+				<reportElement x="-30" y="0" width="495" height="21" uuid="8114439e-25b6-4a1e-bdc2-bb3f539e36ce"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["SERVIDORES CADASTRADOS NO ASPPREV"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-25" y="30" width="125" height="20" uuid="bb4e65ce-39d7-4f00-8290-55669a20c3c7"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOME]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="100" y="30" width="40" height="20" uuid="ce7d1946-fc56-416c-a7d6-318eb4b9868a"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font size="6.5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MATRÍCULA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="140" y="30" width="60" height="20" uuid="9211ba06-cddb-492b-9daf-2d7714020add"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CPF]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="200" y="30" width="110" height="20" uuid="cceffd72-f515-4393-82c0-e6653f61c089"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[EMAIL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="310" y="30" width="50" height="20" uuid="aafb198b-dd2a-49b5-8009-efb3ccf93423"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CELULAR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="360" y="30" width="50" height="20" uuid="8a9ea080-2ca3-4409-bcce-2071d8fd3b50"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[ENTE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="410" y="30" width="60" height="20" uuid="a0053bd4-9939-4a1b-909a-16ed5aa6c026"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[SITUAÇÃO]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="9">
+			<rectangle radius="0">
+				<reportElement x="-25" y="0" width="125" height="9" uuid="5435776e-7c6e-4535-9517-a2cb95c1c8a4"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<textField>
+				<reportElement x="-25" y="0" width="125" height="9" uuid="77998f2e-a583-41f0-af7a-6207393d9dd6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="6"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NOME COMPLETO}]]></textFieldExpression>
+			</textField>
+			<rectangle radius="0">
+				<reportElement x="100" y="0" width="40" height="9" uuid="20a8a71f-e6fe-40cd-9c61-8009e8a5d18e"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<textField>
+				<reportElement x="100" y="0" width="40" height="9" uuid="ef6e5459-9ab7-47c5-8e2c-eb0e068f9aa1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="6"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MATRÍCULA}]]></textFieldExpression>
+			</textField>
+			<rectangle radius="0">
+				<reportElement x="140" y="0" width="60" height="9" uuid="a9432633-2db0-4178-b0a2-b10c9ea2eda7"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<textField>
+				<reportElement x="140" y="0" width="60" height="9" uuid="68b2c362-e1ca-4c58-b104-2fbc6d2fae16"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="6"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CPF}]]></textFieldExpression>
+			</textField>
+			<rectangle radius="0">
+				<reportElement x="200" y="0" width="110" height="9" uuid="ae04fdb1-b0bc-489c-94d0-3cc9fa1d54f0"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<textField>
+				<reportElement x="200" y="0" width="110" height="9" uuid="83e37125-f6a1-4216-9dbf-3950d5f68242"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="5"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{EMAIL}]]></textFieldExpression>
+			</textField>
+			<rectangle radius="0">
+				<reportElement x="310" y="0" width="60" height="9" uuid="149d41e1-7280-4d13-9570-5a88ff3df2bd"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<textField>
+				<reportElement x="310" y="0" width="50" height="9" uuid="b373049e-56b9-4b43-b29e-d6527deab103"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="6"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CELULAR}]]></textFieldExpression>
+			</textField>
+			<rectangle radius="0">
+				<reportElement x="360" y="0" width="50" height="9" uuid="ac64442d-de2f-4fcb-a8b6-e6926800fb09"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<textField>
+				<reportElement x="360" y="0" width="50" height="9" uuid="d7a934c7-899c-4b88-a309-7067dd64ebe8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="6"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ENTE}]]></textFieldExpression>
+			</textField>
+			<rectangle radius="0">
+				<reportElement x="410" y="0" width="60" height="9" uuid="d4c1d656-7124-45f0-b09e-b3ae8f4b449d"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<textField>
+				<reportElement x="410" y="0" width="60" height="9" uuid="a1cc5faf-7d80-43af-b598-8ae4800c31c9"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="6"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SITUAÇÃO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="10"/>
+	</pageFooter>
+</jasperReport>

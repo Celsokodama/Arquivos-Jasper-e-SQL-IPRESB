@@ -1,0 +1,1523 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.21.2.final using JasperReports Library version 6.21.2-8434a0bd7c3bbc37cbf916f2968d35e4b165821a  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4" pageWidth="595" pageHeight="842" columnWidth="454" leftMargin="85" rightMargin="56" topMargin="14" bottomMargin="0" isFloatColumnFooter="true" uuid="d946ebe6-2e92-44c5-aed7-8f7380925278">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ASPPREV"/>
+	<property name="com.jaspersoft.studio.unit." value="cm"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="725"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="265"/>
+	<subDataset name="Logo" uuid="e9f90e01-6f3f-44b6-9906-95c12f91afd0">
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="IPRESB"/>
+		<queryString language="SQL">
+			<![CDATA[Select  IMG_IMGFUNDO_IMGORG
+ from dbo."IMAGEMORGANIZACAO"  
+ where  "N_ORG_ORG" = 42]]>
+		</queryString>
+		<field name="IMG_IMGFUNDO_IMGORG" class="java.awt.Image"/>
+	</subDataset>
+	<subDataset name="Rodape" uuid="6faeb3da-4b82-4ebb-bf15-6b631cf2c980">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="IPRESB"/>
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<queryString>
+			<![CDATA[Select dbo."IMAGEMORGANIZACAO"."IMG_IMGFUNDO_IMGORG" 
+ from dbo."IMAGEMORGANIZACAO" 
+ where  dbo."IMAGEMORGANIZACAO"."N_ORG_ORG" = 43]]>
+		</queryString>
+		<field name="IMG_IMGFUNDO_IMGORG" class="java.awt.Image"/>
+	</subDataset>
+	<subDataset name="Dataset1" uuid="bba6931d-06f4-496b-9544-6e85a7cee52a">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ASPPREV"/>
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<parameter name="CELULAR" class="java.lang.String"/>
+		<queryString>
+			<![CDATA[DECLARE @CELULAR AS INT
+SET @CELULAR = $P{CELULAR}
+
+SELECT DISTINCT
+		PESSOA.S_NOM_PESSOA AS [NOME DO SERVIDOR],
+		P.S_NOM_PESSOA AS [Name],
+		GRAUDEPARENTESCO.S_DCR_GRAUPARENT AS [Parentesco],
+		CONVERT(VARCHAR,P.DT_NASC_PESSOA,103) AS [DataNascimento],
+
+			RTRIM(SUBSTRING(P.S_CPF_PESSOA,1,3)
+				+'.'
+				+SUBSTRING(P.S_CPF_PESSOA,4,3)
+				+'.'
+				+SUBSTRING(P.S_CPF_PESSOA,7,3)
+				+'-'
+				+SUBSTRING(P.S_CPF_PESSOA,10,2)) AS CPF
+
+		
+		
+
+			
+		
+FROM RELACAOPESSOA INNER JOIN PESSOA ON PESSOA.N_PESSOA_PESSOA = RELACAOPESSOA.N_PESSOA_PESSOA 
+INNER JOIN GRAUDEPARENTESCO ON GRAUDEPARENTESCO.N_GRAUPARENT_GRAUPARENT = RELACAOPESSOA.N_GRAUPARENT_GRAUPARENT 
+INNER JOIN TELEFONEPESSOA ON PESSOA.N_PESSOA_PESSOA = TELEFONEPESSOA.N_PESSOA_PESSOA , PESSOA P
+
+
+WHERE P.N_PESSOA_PESSOA = RELACAOPESSOA.N_PESSOARELAC_PESSOA AND
+GRAUDEPARENTESCO.N_GRAUPARENT_GRAUPARENT <> 99
+AND TELEFONEPESSOA.S_TIP_TELPESSOA = 'E'
+AND TELEFONEPESSOA.N_NUM_TELPESSOA = @CELULAR
+
+ORDER BY Pessoa.S_NOM_PESSOA]]>
+		</queryString>
+		<field name="NOME DO SERVIDOR" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="NOME DO SERVIDOR"/>
+			<property name="com.jaspersoft.studio.field.label" value="NOME DO SERVIDOR"/>
+		</field>
+		<field name="Name" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="Name"/>
+			<property name="com.jaspersoft.studio.field.label" value="Name"/>
+		</field>
+		<field name="Parentesco" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="Parentesco"/>
+			<property name="com.jaspersoft.studio.field.label" value="Parentesco"/>
+		</field>
+		<field name="DataNascimento" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="DataNascimento"/>
+			<property name="com.jaspersoft.studio.field.label" value="DataNascimento"/>
+		</field>
+		<field name="CPF" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="CPF"/>
+			<property name="com.jaspersoft.studio.field.label" value="CPF"/>
+		</field>
+	</subDataset>
+	<parameter name="CELULAR" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[DECLARE @CELULAR AS INT
+SET @CELULAR = $P{CELULAR}
+
+--DECLARE @CELULAR AS INTEGER
+--SET @CELULAR = 988196563
+
+
+
+
+SELECT
+
+		
+			dbo.[FN_PRIMEIRALETRAMAIUSCULA](LOWER(PESSOA.S_NOM_PESSOA)) AS [Name],
+		ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA AS [Matricula1],
+		
+		(CASE OP.N_CODORI_ORGPESSOA
+		WHEN ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA
+		THEN ''
+		ELSE CONVERT(VARCHAR,OP.N_CODORI_ORGPESSOA)
+		END) 
+		AS [Matricula2],
+
+		PESSOA.S_RG_PESSOA AS [RG],
+		RTRIM(SUBSTRING(PESSOA.S_CPF_PESSOA,1,3)
+				+'.'
+				+SUBSTRING(PESSOA.S_CPF_PESSOA,4,3)
+				+'.'
+				+SUBSTRING(PESSOA.S_CPF_PESSOA,7,3)
+				+'-'
+				+SUBSTRING(PESSOA.S_CPF_PESSOA,10,2)) AS CPF,
+		PESSOA.S_SEXO_PESSOA AS [Sexo],
+		'SERVIDOR ATIVO' AS [TipoUsuario],
+		CONVERT(VARCHAR(10),PESSOA.DT_NASC_PESSOA,103) AS [DataNascimento],
+		(CASE PESSOA.S_ESTCIVIL_PESSOA 
+		WHEN 'U' THEN 'UNIÃO ESTÁVEL'
+		WHEN 'C' THEN 'CASADO(A)'
+		WHEN 'S' THEN 'SOLTEIRO(A)'
+		WHEN 'D' THEN 'DIVORCIADO(A)'
+		WHEN 'V' THEN 'VIÚVO(A)'
+		WHEN 'P' THEN 'SEPARADO(A)'
+				END)
+		AS [EstadoCivil],
+		(CASE WHEN PESSOA.S_EMAIL_PESSOA IS NULL THEN 'NÃO CADASTRADO'
+		ELSE LOWER(PESSOA.S_EMAIL_PESSOA) END) AS [Email],
+
+
+		-- ENDEREÇO
+		UPPER(CASE HISTORICOENDERECOPESSOA.N_TIPLOGRAD_HISTENDPESSOA	
+												WHEN 4 THEN 'Alameda'  
+												WHEN 8 THEN 'Av.' 
+												WHEN 31 THEN 'Estrada' 
+												WHEN 65 THEN 'Praça' 
+												WHEN 77 THEN 'Quadra' 
+												WHEN 81 THEN 'Rua' 
+												WHEN 90 THEN 'Rodovia' 
+												WHEN 100 THEN 'Travessa' 
+												WHEN 104 THEN 'Vila' 
+												ELSE 'R.'
+												END ) + ' ' + +(RTRIM(ISNULL(HISTORICOENDERECOPESSOA.S_DCRRUA_HISTENDPESSOA, ''))) + 
+
+												CASE 
+												WHEN HISTORICOENDERECOPESSOA.S_NUMLOGRAD_HISTENDPESSOA IS NULL 
+												THEN '' 
+												ELSE ', ' +RTRIM(HISTORICOENDERECOPESSOA.S_NUMLOGRAD_HISTENDPESSOA) END +
+												' - ' +
+												CASE	
+												WHEN HISTORICOENDERECOPESSOA.S_DCRBAIRRO_HISTENDPESSOA IS NULL 
+												THEN '' 
+												ELSE +' '+UPPER(RTRIM(HISTORICOENDERECOPESSOA.S_DCRBAIRRO_HISTENDPESSOA)) END +
+
+												CASE	
+												WHEN HISTORICOENDERECOPESSOA.S_DCRCOMPL_HISTENDPESSOA IS NULL
+												THEN ''
+												ELSE ', '+UPPER(RTRIM(HISTORICOENDERECOPESSOA.S_DCRCOMPL_HISTENDPESSOA)) END + 
+												CASE	
+												WHEN HISTORICOENDERECOPESSOA.S_DCRMUN_HISTENDPESSOA IS NULL 
+												THEN ''
+												ELSE ', '+UPPER(RTRIM(HISTORICOENDERECOPESSOA.S_DCRMUN_HISTENDPESSOA)) END +
+												' - ' +
+												RTRIM(ISNULL(HISTORICOENDERECOPESSOA.S_DCRUF_HISTENDPESSOA, '')) AS ENDEREÇO,
+			   		 
+		-- TELEFONE
+				
+				(CASE WHEN LEN (CONCAT (TELEFONEPESSOA.N_DDD_TELPESSOA,TELEFONEPESSOA.N_NUM_TELPESSOA)) = 9 THEN CONCAT ('5511',TELEFONEPESSOA.N_DDD_TELPESSOA,TELEFONEPESSOA.N_NUM_TELPESSOA)
+				ELSE CONCAT ('55',TELEFONEPESSOA.N_DDD_TELPESSOA,TELEFONEPESSOA.N_NUM_TELPESSOA) END) AS [tel],
+
+	
+
+		--(SELECT P.S_NOM_PESSOA AS [DEPENDENTE1],
+		--RTRIM(SUBSTRING(P.S_CPF_PESSOA,1,3)+'.'+SUBSTRING(P.S_CPF_PESSOA,4,3)+'.'+SUBSTRING(P.S_CPF_PESSOA,7,3)+'-'+SUBSTRING(P.S_CPF_PESSOA,10,2)) AS [CPFDEP1],
+		--GRAUDEPARENTESCO.S_DCR_GRAUPARENT AS [PARENTESCO1]
+		--FROM PESSOA P INNER JOIN RELACAOPESSOA ON 
+		--WHERE 
+
+				-- DEPENDENTES
+		--(SELECT P.S_NOM_PESSOA
+		--FROM PESSOA P
+		--WHERE PESSOA.N_PESSOA_PESSOA = RELACAOPESSOA.N_PESSOARELAC_PESSOA AND RELACAOPESSOA.N_SEQ_RELACPESSOA = 1) AS DEP1,
+
+		--(SELECT GRAUDEPARENTESCO.S_DCR_GRAUPARENT
+		--FROM GRAUPARENTESCO
+		--WHERE GRAUPARENTESCO.N_GRAUPARENT_GRAUPARENT = RELACAOPESSOA.N_GRAUPARENTE_GRAUPARENT) AS GRAUPARENTESCO1,
+
+		--(SELECT P.S_NOM_PESSOA
+		--FROM PESSOA P
+		--WHERE PESSOA.N_PESSOA_PESSOA = RELACAOPESSOA.N_PESSOARELAC_PESSOA AND RELACAOPESSOA.N_SEQ_RELACPESSOA = 2) AS DEP2,
+
+		
+				-- EMPREGOS
+		CARGOORGANIZACAOPESSOA.S_DCRORG_CARGOORGPESSOA  AS EMPRESA,
+		
+		CONVERT(VARCHAR,CARGOORGANIZACAOPESSOA.DT_INIVIG_CARGOORGPESSOA,103) AS DT_INI,
+		CONVERT(VARCHAR,CARGOORGANIZACAOPESSOA.DT_FIMVIG_CARGOORGPESSOA,103) AS DT_FIM,
+
+
+		dep1.nome1,
+		dep1.datanascimento1,
+		dep1.parentesco1,
+		dep1.cpf1,
+
+		dep2.nome2,
+		dep2.datanascimento2,
+		dep2.parentesco2,
+		dep2.cpf2,
+
+		dep3.nome3,
+		dep3.datanascimento3,
+		dep3.parentesco3,
+		dep3.cpf3,
+
+		dep4.nome4,
+		dep4.datanascimento4,
+		dep4.parentesco4,
+		dep4.cpf4,
+
+		dep5.nome5,
+		dep5.datanascimento5,
+		dep5.parentesco5,
+		dep5.cpf5,
+
+		dep6.nome6,
+		dep6.datanascimento6,
+		dep6.parentesco6,
+		dep6.cpf6,
+
+		dep7.nome7,
+		dep7.datanascimento7,
+		dep7.parentesco7,
+		dep7.cpf7
+
+
+
+		
+
+FROM
+	
+			
+			PESSOA 
+			FULL OUTER JOIN ORGANIZACAOPESSOA ON PESSOA.N_PESSOA_PESSOA = ORGANIZACAOPESSOA.N_PESSOA_PESSOA
+			INNER JOIN CARGOORGANIZACAOPESSOA ON CARGOORGANIZACAOPESSOA.N_PESSOA_PESSOA = PESSOA.N_PESSOA_PESSOA
+			INNER JOIN ORGANIZACAOPESSOA AS OP ON PESSOA.N_PESSOA_PESSOA = OP.N_PESSOA_PESSOA
+			INNER JOIN TELEFONEPESSOA ON TELEFONEPESSOA.N_PESSOA_PESSOA = PESSOA.N_PESSOA_PESSOA
+			INNER JOIN HISTORICOENDERECOPESSOA ON HISTORICOENDERECOPESSOA.N_PESSOA_PESSOA = PESSOA.N_PESSOA_PESSOA
+			--FULL OUTER JOIN RELACAOPESSOA ON PESSOA.N_PESSOA_PESSOA = RELACAOPESSOA.N_PESSOA_PESSOA
+			--FULL OUTER JOIN GRAUDEPARENTESCO ON GRAUDEPARENTESCO.N_GRAUPARENT_GRAUPARENT = RELACAOPESSOA.N_GRAUPARENT_GRAUPARENT, PESSOA P
+
+		
+	OUTER APPLY 
+	
+	--DEP SEQ 1
+(SELECT 
+			dbo.[FN_PRIMEIRALETRAMAIUSCULA](LOWER(P.S_NOM_PESSOA)) AS [nome1],
+			dbo.[FN_PRIMEIRALETRAMAIUSCULA](LOWER(GRAUDEPARENTESCO.S_DCR_GRAUPARENT)) AS [Parentesco1],
+		CONVERT(VARCHAR,P.DT_NASC_PESSOA,103) AS [DataNascimento1],
+
+			RTRIM(SUBSTRING(P.S_CPF_PESSOA,1,3)
+				+'.'
+				+SUBSTRING(P.S_CPF_PESSOA,4,3)
+				+'.'
+				+SUBSTRING(P.S_CPF_PESSOA,7,3)
+				+'-'
+				+SUBSTRING(P.S_CPF_PESSOA,10,2)) AS CPF1		
+		
+FROM RELACAOPESSOA INNER JOIN PESSOA ON PESSOA.N_PESSOA_PESSOA = RELACAOPESSOA.N_PESSOA_PESSOA 
+INNER JOIN GRAUDEPARENTESCO ON GRAUDEPARENTESCO.N_GRAUPARENT_GRAUPARENT = RELACAOPESSOA.N_GRAUPARENT_GRAUPARENT 
+INNER JOIN TELEFONEPESSOA ON PESSOA.N_PESSOA_PESSOA = TELEFONEPESSOA.N_PESSOA_PESSOA , PESSOA P
+
+
+WHERE 
+
+P.N_PESSOA_PESSOA = RELACAOPESSOA.N_PESSOARELAC_PESSOA AND
+GRAUDEPARENTESCO.N_GRAUPARENT_GRAUPARENT <> 99
+AND TELEFONEPESSOA.S_TIP_TELPESSOA = 'E'
+AND TELEFONEPESSOA.N_NUM_TELPESSOA = @CELULAR
+AND (RELACAOPESSOA.DT_FIMVIG_RELACPESSOA > GETDATE() OR RELACAOPESSOA.DT_FIMVIG_RELACPESSOA IS NULL)
+order by RELACAOPESSOA.DT_INCDEP_RELACPESSOA
+
+OFFSET 0 ROWS
+FETCH NEXT 1 ROWS ONLY)
+
+DEP1(nome1,parentesco1,datanascimento1,cpf1)
+
+OUTER APPLY 
+	
+	--DEP SEQ 2
+(SELECT 
+			dbo.[FN_PRIMEIRALETRAMAIUSCULA](LOWER(P.S_NOM_PESSOA)) AS [nome2],
+			dbo.[FN_PRIMEIRALETRAMAIUSCULA](LOWER(GRAUDEPARENTESCO.S_DCR_GRAUPARENT)) AS [Parentesco2],
+		CONVERT(VARCHAR,P.DT_NASC_PESSOA,103) AS [DataNascimento2],
+
+			RTRIM(SUBSTRING(P.S_CPF_PESSOA,1,3)
+				+'.'
+				+SUBSTRING(P.S_CPF_PESSOA,4,3)
+				+'.'
+				+SUBSTRING(P.S_CPF_PESSOA,7,3)
+				+'-'
+				+SUBSTRING(P.S_CPF_PESSOA,10,2)) AS CPF2		
+		
+FROM RELACAOPESSOA INNER JOIN PESSOA ON PESSOA.N_PESSOA_PESSOA = RELACAOPESSOA.N_PESSOA_PESSOA 
+INNER JOIN GRAUDEPARENTESCO ON GRAUDEPARENTESCO.N_GRAUPARENT_GRAUPARENT = RELACAOPESSOA.N_GRAUPARENT_GRAUPARENT 
+INNER JOIN TELEFONEPESSOA ON PESSOA.N_PESSOA_PESSOA = TELEFONEPESSOA.N_PESSOA_PESSOA , PESSOA P
+
+
+WHERE P.N_PESSOA_PESSOA = RELACAOPESSOA.N_PESSOARELAC_PESSOA AND
+GRAUDEPARENTESCO.N_GRAUPARENT_GRAUPARENT <> 99
+AND TELEFONEPESSOA.S_TIP_TELPESSOA = 'E'
+AND TELEFONEPESSOA.N_NUM_TELPESSOA = @CELULAR
+AND (RELACAOPESSOA.DT_FIMVIG_RELACPESSOA > GETDATE() OR RELACAOPESSOA.DT_FIMVIG_RELACPESSOA IS NULL)
+
+order by RELACAOPESSOA.DT_INCDEP_RELACPESSOA
+
+OFFSET 1 ROWS
+FETCH NEXT 1 ROWS ONLY)
+
+DEP2(nome2,parentesco2,datanascimento2,cpf2)
+
+OUTER APPLY 
+	
+	--DEP SEQ 3
+(SELECT 
+			dbo.[FN_PRIMEIRALETRAMAIUSCULA](LOWER(P.S_NOM_PESSOA)) AS [nome3],
+			dbo.[FN_PRIMEIRALETRAMAIUSCULA](LOWER(GRAUDEPARENTESCO.S_DCR_GRAUPARENT)) AS [Parentesco3],
+		CONVERT(VARCHAR,P.DT_NASC_PESSOA,103) AS [DataNascimento3],
+
+			RTRIM(SUBSTRING(P.S_CPF_PESSOA,1,3)
+				+'.'
+				+SUBSTRING(P.S_CPF_PESSOA,4,3)
+				+'.'
+				+SUBSTRING(P.S_CPF_PESSOA,7,3)
+				+'-'
+				+SUBSTRING(P.S_CPF_PESSOA,10,2)) AS CPF3	
+		
+FROM RELACAOPESSOA INNER JOIN PESSOA ON PESSOA.N_PESSOA_PESSOA = RELACAOPESSOA.N_PESSOA_PESSOA 
+INNER JOIN GRAUDEPARENTESCO ON GRAUDEPARENTESCO.N_GRAUPARENT_GRAUPARENT = RELACAOPESSOA.N_GRAUPARENT_GRAUPARENT 
+INNER JOIN TELEFONEPESSOA ON PESSOA.N_PESSOA_PESSOA = TELEFONEPESSOA.N_PESSOA_PESSOA , PESSOA P
+
+
+WHERE P.N_PESSOA_PESSOA = RELACAOPESSOA.N_PESSOARELAC_PESSOA AND
+GRAUDEPARENTESCO.N_GRAUPARENT_GRAUPARENT <> 99
+AND TELEFONEPESSOA.S_TIP_TELPESSOA = 'E'
+AND TELEFONEPESSOA.N_NUM_TELPESSOA = @CELULAR
+AND (RELACAOPESSOA.DT_FIMVIG_RELACPESSOA > GETDATE() OR RELACAOPESSOA.DT_FIMVIG_RELACPESSOA IS NULL)
+order by RELACAOPESSOA.DT_INCDEP_RELACPESSOA
+
+OFFSET 2 ROWS
+FETCH NEXT 1 ROWS ONLY)
+
+DEP3(nome3,parentesco3,datanascimento3,cpf3)
+
+
+OUTER APPLY 
+	
+	--DEP SEQ 4
+(SELECT 
+			dbo.[FN_PRIMEIRALETRAMAIUSCULA](LOWER(P.S_NOM_PESSOA)) AS [nome4],
+			dbo.[FN_PRIMEIRALETRAMAIUSCULA](LOWER(GRAUDEPARENTESCO.S_DCR_GRAUPARENT)) AS [Parentesco4],
+		CONVERT(VARCHAR,P.DT_NASC_PESSOA,103) AS [DataNascimento4],
+
+			RTRIM(SUBSTRING(P.S_CPF_PESSOA,1,3)
+				+'.'
+				+SUBSTRING(P.S_CPF_PESSOA,4,3)
+				+'.'
+				+SUBSTRING(P.S_CPF_PESSOA,7,3)
+				+'-'
+				+SUBSTRING(P.S_CPF_PESSOA,10,2)) AS CPF4	
+		
+FROM RELACAOPESSOA INNER JOIN PESSOA ON PESSOA.N_PESSOA_PESSOA = RELACAOPESSOA.N_PESSOA_PESSOA 
+INNER JOIN GRAUDEPARENTESCO ON GRAUDEPARENTESCO.N_GRAUPARENT_GRAUPARENT = RELACAOPESSOA.N_GRAUPARENT_GRAUPARENT 
+INNER JOIN TELEFONEPESSOA ON PESSOA.N_PESSOA_PESSOA = TELEFONEPESSOA.N_PESSOA_PESSOA , PESSOA P
+
+
+WHERE P.N_PESSOA_PESSOA = RELACAOPESSOA.N_PESSOARELAC_PESSOA AND
+GRAUDEPARENTESCO.N_GRAUPARENT_GRAUPARENT <> 99
+AND TELEFONEPESSOA.S_TIP_TELPESSOA = 'E'
+AND TELEFONEPESSOA.N_NUM_TELPESSOA = @CELULAR
+AND (RELACAOPESSOA.DT_FIMVIG_RELACPESSOA > GETDATE() OR RELACAOPESSOA.DT_FIMVIG_RELACPESSOA IS NULL)
+order by RELACAOPESSOA.DT_INCDEP_RELACPESSOA
+
+OFFSET 3 ROWS
+FETCH NEXT 1 ROWS ONLY)
+
+DEP4(nome4,parentesco4,datanascimento4,cpf4)
+
+
+
+OUTER APPLY 
+	
+	--DEP SEQ 5
+(SELECT 
+			dbo.[FN_PRIMEIRALETRAMAIUSCULA](LOWER(P.S_NOM_PESSOA)) AS [nome5],
+			dbo.[FN_PRIMEIRALETRAMAIUSCULA](LOWER(GRAUDEPARENTESCO.S_DCR_GRAUPARENT)) AS [Parentesco5],
+		CONVERT(VARCHAR,P.DT_NASC_PESSOA,103) AS [DataNascimento5],
+
+			RTRIM(SUBSTRING(P.S_CPF_PESSOA,1,3)
+				+'.'
+				+SUBSTRING(P.S_CPF_PESSOA,4,3)
+				+'.'
+				+SUBSTRING(P.S_CPF_PESSOA,7,3)
+				+'-'
+				+SUBSTRING(P.S_CPF_PESSOA,10,2)) AS CPF5	
+		
+FROM RELACAOPESSOA INNER JOIN PESSOA ON PESSOA.N_PESSOA_PESSOA = RELACAOPESSOA.N_PESSOA_PESSOA 
+INNER JOIN GRAUDEPARENTESCO ON GRAUDEPARENTESCO.N_GRAUPARENT_GRAUPARENT = RELACAOPESSOA.N_GRAUPARENT_GRAUPARENT 
+INNER JOIN TELEFONEPESSOA ON PESSOA.N_PESSOA_PESSOA = TELEFONEPESSOA.N_PESSOA_PESSOA , PESSOA P
+
+
+WHERE P.N_PESSOA_PESSOA = RELACAOPESSOA.N_PESSOARELAC_PESSOA AND
+GRAUDEPARENTESCO.N_GRAUPARENT_GRAUPARENT <> 99
+AND TELEFONEPESSOA.S_TIP_TELPESSOA = 'E'
+AND TELEFONEPESSOA.N_NUM_TELPESSOA = @CELULAR
+AND (RELACAOPESSOA.DT_FIMVIG_RELACPESSOA > GETDATE() OR RELACAOPESSOA.DT_FIMVIG_RELACPESSOA IS NULL)
+order by RELACAOPESSOA.DT_INCDEP_RELACPESSOA
+
+OFFSET 4 ROWS
+FETCH NEXT 1 ROWS ONLY)
+DEP5(nome5,parentesco5,datanascimento5,cpf5)
+
+OUTER APPLY 
+	
+	--DEP SEQ 6
+(SELECT
+			dbo.[FN_PRIMEIRALETRAMAIUSCULA](LOWER(P.S_NOM_PESSOA)) AS [nome6],
+			dbo.[FN_PRIMEIRALETRAMAIUSCULA](LOWER(GRAUDEPARENTESCO.S_DCR_GRAUPARENT)) AS [Parentesco6],
+		CONVERT(VARCHAR,P.DT_NASC_PESSOA,103) AS [DataNascimento6],
+
+			RTRIM(SUBSTRING(P.S_CPF_PESSOA,1,3)
+				+'.'
+				+SUBSTRING(P.S_CPF_PESSOA,4,3)
+				+'.'
+				+SUBSTRING(P.S_CPF_PESSOA,7,3)
+				+'-'
+				+SUBSTRING(P.S_CPF_PESSOA,10,2)) AS CPF6
+		
+FROM RELACAOPESSOA INNER JOIN PESSOA ON PESSOA.N_PESSOA_PESSOA = RELACAOPESSOA.N_PESSOA_PESSOA 
+INNER JOIN GRAUDEPARENTESCO ON GRAUDEPARENTESCO.N_GRAUPARENT_GRAUPARENT = RELACAOPESSOA.N_GRAUPARENT_GRAUPARENT 
+INNER JOIN TELEFONEPESSOA ON PESSOA.N_PESSOA_PESSOA = TELEFONEPESSOA.N_PESSOA_PESSOA , PESSOA P
+
+
+WHERE P.N_PESSOA_PESSOA = RELACAOPESSOA.N_PESSOARELAC_PESSOA AND
+GRAUDEPARENTESCO.N_GRAUPARENT_GRAUPARENT <> 99
+AND TELEFONEPESSOA.S_TIP_TELPESSOA = 'E'
+AND TELEFONEPESSOA.N_NUM_TELPESSOA = @CELULAR
+AND (RELACAOPESSOA.DT_FIMVIG_RELACPESSOA > GETDATE() OR RELACAOPESSOA.DT_FIMVIG_RELACPESSOA IS NULL)
+order by RELACAOPESSOA.DT_INCDEP_RELACPESSOA
+
+OFFSET 5 ROWS
+FETCH NEXT 1 ROWS ONLY)
+
+DEP6(nome6,parentesco6,datanascimento6,cpf6)
+
+OUTER APPLY 
+	
+	--DEP SEQ 7
+(SELECT 
+			dbo.[FN_PRIMEIRALETRAMAIUSCULA](LOWER(P.S_NOM_PESSOA)) AS [nome7],
+			dbo.[FN_PRIMEIRALETRAMAIUSCULA](LOWER(GRAUDEPARENTESCO.S_DCR_GRAUPARENT)) AS [Parentesco7],
+		CONVERT(VARCHAR,P.DT_NASC_PESSOA,103) AS [DataNascimento7],
+
+			RTRIM(SUBSTRING(P.S_CPF_PESSOA,1,3)
+				+'.'
+				+SUBSTRING(P.S_CPF_PESSOA,4,3)
+				+'.'
+				+SUBSTRING(P.S_CPF_PESSOA,7,3)
+				+'-'
+				+SUBSTRING(P.S_CPF_PESSOA,10,2)) AS CPF7	
+		
+FROM RELACAOPESSOA INNER JOIN PESSOA ON PESSOA.N_PESSOA_PESSOA = RELACAOPESSOA.N_PESSOA_PESSOA 
+INNER JOIN GRAUDEPARENTESCO ON GRAUDEPARENTESCO.N_GRAUPARENT_GRAUPARENT = RELACAOPESSOA.N_GRAUPARENT_GRAUPARENT 
+INNER JOIN TELEFONEPESSOA ON PESSOA.N_PESSOA_PESSOA = TELEFONEPESSOA.N_PESSOA_PESSOA , PESSOA P
+
+
+WHERE P.N_PESSOA_PESSOA = RELACAOPESSOA.N_PESSOARELAC_PESSOA AND
+GRAUDEPARENTESCO.N_GRAUPARENT_GRAUPARENT <> 99
+AND TELEFONEPESSOA.S_TIP_TELPESSOA = 'E'
+AND TELEFONEPESSOA.N_NUM_TELPESSOA = @CELULAR
+AND (RELACAOPESSOA.DT_FIMVIG_RELACPESSOA > GETDATE() OR RELACAOPESSOA.DT_FIMVIG_RELACPESSOA IS NULL)
+
+order by RELACAOPESSOA.DT_INCDEP_RELACPESSOA
+
+OFFSET 6 ROWS
+FETCH NEXT 1 ROWS ONLY)
+
+DEP7(nome7,parentesco7,datanascimento7,cpf7)
+
+
+		WHERE
+
+		
+		TELEFONEPESSOA.S_TIP_TELPESSOA = 'E' AND
+		LEN (CONCAT (TELEFONEPESSOA.N_DDD_TELPESSOA,TELEFONEPESSOA.N_NUM_TELPESSOA)) IN (9,11) and
+		ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA <= OP.N_CODORI_ORGPESSOA AND
+		TELEFONEPESSOA.N_NUM_TELPESSOA IS NOT NULL AND
+		HISTORICOENDERECOPESSOA.DT_FIMVIG_HISTENDPESSOA IS NULL AND
+
+
+		ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA = (SELECT
+													MIN(OP2.N_CODORI_ORGPESSOA) 
+													FROM	
+															ORGANIZACAOPESSOA OP2
+													WHERE
+															OP2.N_PESSOA_PESSOA = PESSOA.N_PESSOA_PESSOA AND OP2.DT_DSL_ORGPESSOA IS NULL
+															) AND
+
+		OP.N_CODORI_ORGPESSOA = (SELECT
+													MAX(OP4.N_CODORI_ORGPESSOA) 
+													FROM	
+															ORGANIZACAOPESSOA OP4
+													WHERE
+															OP4.N_PESSOA_PESSOA = PESSOA.N_PESSOA_PESSOA AND OP4.DT_DSL_ORGPESSOA IS NULL
+															)
+
+		AND HISTORICOENDERECOPESSOA.DT_INIVIG_HISTENDPESSOA = (SELECT MAX(HEND2.DT_INIVIG_HISTENDPESSOA)
+											FROM HISTORICOENDERECOPESSOA HEND2
+											WHERE HISTORICOENDERECOPESSOA.N_PESSOA_PESSOA = HEND2.N_PESSOA_PESSOA)
+
+		AND TELEFONEPESSOA.N_NUM_TELPESSOA = @CELULAR
+
+
+		ORDER BY CARGOORGANIZACAOPESSOA.DT_INIVIG_CARGOORGPESSOA]]>
+	</queryString>
+	<field name="Name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="Name"/>
+		<property name="com.jaspersoft.studio.field.label" value="Name"/>
+	</field>
+	<field name="Matricula1" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="Matricula1"/>
+		<property name="com.jaspersoft.studio.field.label" value="Matricula1"/>
+	</field>
+	<field name="Matricula2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="Matricula2"/>
+		<property name="com.jaspersoft.studio.field.label" value="Matricula2"/>
+	</field>
+	<field name="RG" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="RG"/>
+		<property name="com.jaspersoft.studio.field.label" value="RG"/>
+	</field>
+	<field name="CPF" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CPF"/>
+		<property name="com.jaspersoft.studio.field.label" value="CPF"/>
+	</field>
+	<field name="Sexo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="Sexo"/>
+		<property name="com.jaspersoft.studio.field.label" value="Sexo"/>
+	</field>
+	<field name="TipoUsuario" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="TipoUsuario"/>
+		<property name="com.jaspersoft.studio.field.label" value="TipoUsuario"/>
+	</field>
+	<field name="DataNascimento" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="DataNascimento"/>
+		<property name="com.jaspersoft.studio.field.label" value="DataNascimento"/>
+	</field>
+	<field name="EstadoCivil" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="EstadoCivil"/>
+		<property name="com.jaspersoft.studio.field.label" value="EstadoCivil"/>
+	</field>
+	<field name="Email" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="Email"/>
+		<property name="com.jaspersoft.studio.field.label" value="Email"/>
+	</field>
+	<field name="ENDEREÇO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ENDEREÇO"/>
+		<property name="com.jaspersoft.studio.field.label" value="ENDEREÇO"/>
+	</field>
+	<field name="tel" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="tel"/>
+		<property name="com.jaspersoft.studio.field.label" value="tel"/>
+	</field>
+	<field name="EMPRESA" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="EMPRESA"/>
+		<property name="com.jaspersoft.studio.field.label" value="EMPRESA"/>
+	</field>
+	<field name="DT_INI" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="DT_INI"/>
+		<property name="com.jaspersoft.studio.field.label" value="DT_INI"/>
+	</field>
+	<field name="DT_FIM" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="DT_FIM"/>
+		<property name="com.jaspersoft.studio.field.label" value="DT_FIM"/>
+	</field>
+	<field name="nome1" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="nome1"/>
+		<property name="com.jaspersoft.studio.field.label" value="nome1"/>
+	</field>
+	<field name="datanascimento1" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="datanascimento1"/>
+		<property name="com.jaspersoft.studio.field.label" value="datanascimento1"/>
+	</field>
+	<field name="parentesco1" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="parentesco1"/>
+		<property name="com.jaspersoft.studio.field.label" value="parentesco1"/>
+	</field>
+	<field name="cpf1" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="cpf1"/>
+		<property name="com.jaspersoft.studio.field.label" value="cpf1"/>
+	</field>
+	<field name="nome2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="nome2"/>
+		<property name="com.jaspersoft.studio.field.label" value="nome2"/>
+	</field>
+	<field name="datanascimento2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="datanascimento2"/>
+		<property name="com.jaspersoft.studio.field.label" value="datanascimento2"/>
+	</field>
+	<field name="parentesco2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="parentesco2"/>
+		<property name="com.jaspersoft.studio.field.label" value="parentesco2"/>
+	</field>
+	<field name="cpf2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="cpf2"/>
+		<property name="com.jaspersoft.studio.field.label" value="cpf2"/>
+	</field>
+	<field name="nome3" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="nome3"/>
+		<property name="com.jaspersoft.studio.field.label" value="nome3"/>
+	</field>
+	<field name="datanascimento3" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="datanascimento3"/>
+		<property name="com.jaspersoft.studio.field.label" value="datanascimento3"/>
+	</field>
+	<field name="parentesco3" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="parentesco3"/>
+		<property name="com.jaspersoft.studio.field.label" value="parentesco3"/>
+	</field>
+	<field name="cpf3" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="cpf3"/>
+		<property name="com.jaspersoft.studio.field.label" value="cpf3"/>
+	</field>
+	<field name="nome4" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="nome4"/>
+		<property name="com.jaspersoft.studio.field.label" value="nome4"/>
+	</field>
+	<field name="datanascimento4" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="datanascimento4"/>
+		<property name="com.jaspersoft.studio.field.label" value="datanascimento4"/>
+	</field>
+	<field name="parentesco4" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="parentesco4"/>
+		<property name="com.jaspersoft.studio.field.label" value="parentesco4"/>
+	</field>
+	<field name="cpf4" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="cpf4"/>
+		<property name="com.jaspersoft.studio.field.label" value="cpf4"/>
+	</field>
+	<field name="nome5" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="nome5"/>
+		<property name="com.jaspersoft.studio.field.label" value="nome5"/>
+	</field>
+	<field name="datanascimento5" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="datanascimento5"/>
+		<property name="com.jaspersoft.studio.field.label" value="datanascimento5"/>
+	</field>
+	<field name="parentesco5" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="parentesco5"/>
+		<property name="com.jaspersoft.studio.field.label" value="parentesco5"/>
+	</field>
+	<field name="cpf5" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="cpf5"/>
+		<property name="com.jaspersoft.studio.field.label" value="cpf5"/>
+	</field>
+	<field name="nome6" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="nome6"/>
+		<property name="com.jaspersoft.studio.field.label" value="nome6"/>
+	</field>
+	<field name="datanascimento6" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="datanascimento6"/>
+		<property name="com.jaspersoft.studio.field.label" value="datanascimento6"/>
+	</field>
+	<field name="parentesco6" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="parentesco6"/>
+		<property name="com.jaspersoft.studio.field.label" value="parentesco6"/>
+	</field>
+	<field name="cpf6" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="cpf6"/>
+		<property name="com.jaspersoft.studio.field.label" value="cpf6"/>
+	</field>
+	<field name="nome7" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="nome7"/>
+		<property name="com.jaspersoft.studio.field.label" value="nome7"/>
+	</field>
+	<field name="datanascimento7" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="datanascimento7"/>
+		<property name="com.jaspersoft.studio.field.label" value="datanascimento7"/>
+	</field>
+	<field name="parentesco7" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="parentesco7"/>
+		<property name="com.jaspersoft.studio.field.label" value="parentesco7"/>
+	</field>
+	<field name="cpf7" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="cpf7"/>
+		<property name="com.jaspersoft.studio.field.label" value="cpf7"/>
+	</field>
+	<title>
+		<band height="557">
+			<componentElement>
+				<reportElement x="-41" y="0" width="530" height="70" uuid="cc52b66d-a63d-4318-b3ea-71f74a236b9e"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Logo" uuid="c67ef43c-b5ee-46d6-81e7-14fc2ce97490">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="70" width="530">
+						<image>
+							<reportElement x="0" y="0" width="520" height="70" uuid="a89bc311-ed75-48e0-8462-39e98da43de4"/>
+							<imageExpression><![CDATA[$F{IMG_IMGFUNDO_IMGORG}]]></imageExpression>
+						</image>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<rectangle radius="4">
+				<reportElement x="-20" y="160" width="481" height="134" uuid="1f76a383-34a2-4817-8373-4b37bfc4399f"/>
+			</rectangle>
+			<textField>
+				<reportElement x="-20" y="160" width="480" height="24" uuid="d14b0a33-62b4-4bda-882d-9782b9c1ff2b">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="11"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<style isBold='true'>Segurado(a): </style>"+$F{Name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-20" y="184" width="240" height="24" uuid="19232db8-5002-4aa1-a584-c485231da3b4">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="11"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<style isBold='true'>Matrícula: </style>"+$F{Matricula1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="290" y="184" width="171" height="24" uuid="c04a4cc8-bc2a-4dcd-be32-2b2f4a07586f"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="11"/>
+					<paragraph leftIndent="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{Matricula2}!=null,($F{Matricula2}),"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-20" y="208" width="240" height="24" uuid="1e3b3b68-08ec-4e33-97e6-58a3c02ae8d6">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="11"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<style isBold='true'>RG: </style>"+ $F{RG}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-20" y="85" width="480" height="24" uuid="8c3b0338-8b39-4cf8-bb88-a489d85de498">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="16"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<style isBold='true'>RECADASTRAMENTO SERVIDOR ATIVO</style>"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="220" y="232" width="241" height="22" uuid="00b9368a-ed8d-4f0f-9594-31628ec55026">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="cm"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="11"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<style isBold='true'>Email: </style>"+ $F{Email}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="220" y="208" width="240" height="24" uuid="26111263-4967-4f85-9358-eafa413661df">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="11"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<style isBold='true'>CPF: </style>"+ $F{CPF}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-20" y="254" width="480" height="40" uuid="f302561a-d761-4b19-b647-21bfdbf1225c">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="11"/>
+					<paragraph firstLineIndent="0" leftIndent="4" spacingBefore="4" tabStopWidth="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<style isBold='true'>Endereço: </style>"+$F{ENDEREÇO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-20" y="232" width="241" height="22" uuid="b77b029c-341f-4fb4-a3b6-5965966db5e9">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="cm"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="11"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<style isBold='true'>Data de nascimento: </style>"+ $F{DataNascimento}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-20" y="136" width="480" height="24" uuid="912976a0-c0bb-45a5-a8ee-2f1f60368268">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="13"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<style isBold='true'>DADOS PESSOAIS</style>"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement isPrintRepeatedValues="false" x="-20" y="319" width="480" height="24" uuid="748aecbe-b08f-495a-824f-4a85413ef17d">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="13"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<style isBold='true'>DEPENDENTES</style>"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="-20" y="343" width="160" height="24" isRemoveLineWhenBlank="true" uuid="4ce9f1ad-f78e-46a3-96fe-8619f51c3440">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[!($F{nome1} == null && $F{nome2} == null && $F{nome3} == null && $F{nome4} == null && $F{nome5} == null && $F{nome6} == null && $F{nome7} == null)]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="13"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<style isBold='true'>Nome</style>"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="140" y="343" width="130" height="24" isRemoveLineWhenBlank="true" uuid="77d13f32-314e-49b4-a155-067b83b7511d">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[!($F{nome1} == null && $F{nome2} == null && $F{nome3} == null && $F{nome4} == null && $F{nome5} == null && $F{nome6} == null && $F{nome7} == null)]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="13"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<style isBold='true'>Parentesco</style>"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="270" y="343" width="90" height="24" isRemoveLineWhenBlank="true" uuid="5b6e9cf3-4b0b-49a3-8190-44e54532294d">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[!($F{nome1} == null && $F{nome2} == null && $F{nome3} == null && $F{nome4} == null && $F{nome5} == null && $F{nome6} == null && $F{nome7} == null)]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="10"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<style isBold='true'>Data de nascimento</style>"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="360" y="343" width="100" height="24" isRemoveLineWhenBlank="true" uuid="5c4f5fcf-22f1-4171-afbd-900aa374bd40">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[!($F{nome1} == null && $F{nome2} == null && $F{nome3} == null && $F{nome4} == null && $F{nome5} == null && $F{nome6} == null && $F{nome7} == null)]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="13"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<style isBold='true'>CPF</style>"]]></textFieldExpression>
+			</textField>
+			<rectangle radius="4">
+				<reportElement x="-20" y="367" width="480" height="23" isPrintInFirstWholeBand="true" uuid="278d001f-abd2-49b8-b930-8648faf726f5">
+					<printWhenExpression><![CDATA[$F{nome1} != null]]></printWhenExpression>
+				</reportElement>
+			</rectangle>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="-20" y="367" width="160" height="22" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true" uuid="8817a76e-61d2-4887-9304-ba79ac67564c">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[$F{nome1} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="9"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{nome1}!=null,$F{nome1},"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="140" y="367" width="130" height="22" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true" uuid="97b7bc7b-185e-4750-a519-e254b6e6a34c">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[$F{nome1} != null]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="9"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{parentesco1}!=null,$F{parentesco1},"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="270" y="367" width="90" height="22" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true" uuid="3107695d-51a4-471b-9b27-1e41562d61e7">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[$F{nome1} != null]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="10"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{datanascimento1}!=null,$F{datanascimento1},"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="360" y="367" width="100" height="22" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true" uuid="e9361457-5c53-4557-94cf-975f0720848e">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[$F{nome1} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="10"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{cpf1}!=null,$F{cpf1},"CPF não cadastrado")]]></textFieldExpression>
+			</textField>
+			<rectangle radius="4">
+				<reportElement x="-20" y="389" width="480" height="25" uuid="11f8cfa4-dc4f-440f-b040-5dd46eb3bf1c">
+					<printWhenExpression><![CDATA[$F{nome2} != null]]></printWhenExpression>
+				</reportElement>
+			</rectangle>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="-20" y="390" width="160" height="24" isRemoveLineWhenBlank="true" uuid="9af5d32d-dd5a-4042-8e53-d387ae7e6773">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[$F{nome2} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="9"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{nome2}!=null,$F{nome2},"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="360" y="390" width="100" height="24" isRemoveLineWhenBlank="true" uuid="fd3eb301-2b0b-45f0-925c-bfcc1a1bcaa0">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[$F{nome2} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="10"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{cpf2}!=null,$F{cpf2},"CPF não cadastrado")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="140" y="390" width="130" height="24" isRemoveLineWhenBlank="true" uuid="2bac22ff-1ebf-452f-a9f0-d2f4436bdbe0">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[$F{nome2} != null]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="9"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{parentesco2}!=null,$F{parentesco2},"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="270" y="390" width="90" height="24" isRemoveLineWhenBlank="true" uuid="51855ef1-9933-42ae-953a-c2753ecbde4e">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[$F{nome2} != null]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="10"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{datanascimento2}!=null,$F{datanascimento2},"")]]></textFieldExpression>
+			</textField>
+			<rectangle radius="4">
+				<reportElement x="-20" y="414" width="480" height="23" uuid="66f6d6d4-8347-4ea7-8950-5ae7ea64b027">
+					<printWhenExpression><![CDATA[$F{nome3} != null]]></printWhenExpression>
+				</reportElement>
+			</rectangle>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="140" y="414" width="130" height="24" isRemoveLineWhenBlank="true" uuid="78fc2dc3-c141-4b80-9fdd-659fafca9506">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[$F{nome3} != null]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="9"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{parentesco3}!=null,$F{parentesco3},"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="270" y="414" width="90" height="24" isRemoveLineWhenBlank="true" uuid="0bc053a6-3336-4c47-bef9-e8481c99edd8">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[$F{nome3} != null]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="10"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{datanascimento3}!=null,$F{datanascimento3},"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="360" y="414" width="100" height="24" isRemoveLineWhenBlank="true" uuid="d791f3e2-21d8-4eb6-86a8-62146f162e53">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[$F{nome3} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="10"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{cpf3}!=null,$F{cpf3},"CPF não cadastrado")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="-20" y="414" width="160" height="24" isRemoveLineWhenBlank="true" uuid="8f5f4ce2-d88e-4a5c-96a0-9664fcf24d27">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[$F{nome3} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="9"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{nome3}!=null,$F{nome3},"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="-16" y="533" width="480" height="24" isRemoveLineWhenBlank="true" uuid="dd3c378e-8967-4add-801d-2b3878b39112">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[($F{nome1} == null && $F{nome2} == null && $F{nome3} == null && $F{nome4} == null && $F{nome5} == null && $F{nome6} == null && $F{nome7} == null)]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="13"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Sem dependentes cadastrados"]]></textFieldExpression>
+			</textField>
+			<rectangle radius="4">
+				<reportElement x="-20" y="438" width="480" height="23" uuid="1f7a0350-35c7-45a4-bbc3-f87a772e6d40">
+					<printWhenExpression><![CDATA[$F{nome4} != null]]></printWhenExpression>
+				</reportElement>
+			</rectangle>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="140" y="438" width="130" height="24" isRemoveLineWhenBlank="true" uuid="a149b1b5-bcac-41b9-851f-6245e91d04a2">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[$F{nome4} != null]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="9"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{parentesco4}!=null,$F{parentesco4},"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="270" y="438" width="90" height="24" isRemoveLineWhenBlank="true" uuid="8805da16-e222-450b-828b-4f54a58b95d5">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[$F{nome4} != null]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="10"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{datanascimento3}!=null,$F{datanascimento3},"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="360" y="438" width="100" height="24" isRemoveLineWhenBlank="true" uuid="417f218a-98e3-4f19-904c-0acb46902d67">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[$F{nome4} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="10"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{cpf3}!=null,$F{cpf3},"CPF não cadastrado")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="-20" y="438" width="160" height="24" isRemoveLineWhenBlank="true" uuid="ce584609-67ac-4e76-ace6-a4d501a1048f">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[$F{nome4} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="9"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{nome4}!=null,$F{nome4},"")]]></textFieldExpression>
+			</textField>
+			<rectangle radius="4">
+				<reportElement x="-20" y="462" width="480" height="23" uuid="88a70366-fca8-452a-90e4-652b701c4f11">
+					<printWhenExpression><![CDATA[$F{nome5} != null]]></printWhenExpression>
+				</reportElement>
+			</rectangle>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="140" y="462" width="130" height="24" isRemoveLineWhenBlank="true" uuid="13a9326d-f91f-445c-a597-6fbea9f08657">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[$F{nome5} != null]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="9"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{parentesco5}!=null,$F{parentesco5},"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="270" y="462" width="90" height="24" isRemoveLineWhenBlank="true" uuid="2bd37b54-f9e7-4f01-bd63-d1a842012917">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[$F{nome5} != null]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="10"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{datanascimento3}!=null,$F{datanascimento3},"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="360" y="462" width="100" height="24" isRemoveLineWhenBlank="true" uuid="21b7f3a5-0654-4615-8f07-1b4c120d1a04">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[$F{nome5} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="10"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{cpf3}!=null,$F{cpf3},"CPF não cadastrado")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="-20" y="462" width="160" height="24" isRemoveLineWhenBlank="true" uuid="164fc998-91ba-4407-8234-896f65d4eefe">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[$F{nome5} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="9"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{nome5}!=null,$F{nome5},"")]]></textFieldExpression>
+			</textField>
+			<rectangle radius="4">
+				<reportElement x="-20" y="486" width="480" height="23" uuid="f7f8c90e-13bb-4bf0-bcb6-d23e36137a37">
+					<printWhenExpression><![CDATA[$F{nome6} != null]]></printWhenExpression>
+				</reportElement>
+			</rectangle>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="140" y="486" width="130" height="24" isRemoveLineWhenBlank="true" uuid="3eee3eac-992a-4884-a453-0c42e0e589c7">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[$F{nome6} != null]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="9"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{parentesco6}!=null,$F{parentesco6},"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="270" y="486" width="90" height="24" isRemoveLineWhenBlank="true" uuid="3f436400-67cf-4f08-b8da-ee09adf08393">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[$F{nome6} != null]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="10"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{datanascimento3}!=null,$F{datanascimento3},"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="360" y="486" width="100" height="24" isRemoveLineWhenBlank="true" uuid="e34191c9-9eb2-4cd6-929f-f4279b1a4038">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[$F{nome6} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="10"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{cpf3}!=null,$F{cpf3},"CPF não cadastrado")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="-20" y="486" width="160" height="24" isRemoveLineWhenBlank="true" uuid="c8fe95e2-377a-4660-990e-e823d8482bc1">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[$F{nome6} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="9"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{nome6}!=null,$F{nome6},"")]]></textFieldExpression>
+			</textField>
+			<rectangle radius="4">
+				<reportElement x="-20" y="509" width="480" height="23" uuid="dbfe5943-fe2a-47c0-a7db-61c405e505a1">
+					<printWhenExpression><![CDATA[$F{nome7} != null]]></printWhenExpression>
+				</reportElement>
+			</rectangle>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="140" y="509" width="130" height="24" isRemoveLineWhenBlank="true" uuid="041e55d6-43af-4850-a27d-714cca006d19">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[$F{nome7} != null]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="9"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{parentesco7}!=null,$F{parentesco7},"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="270" y="509" width="90" height="24" isRemoveLineWhenBlank="true" uuid="90500cc6-1b1c-4e16-8b8b-f3e65b575866">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[$F{nome7} != null]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="10"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{datanascimento3}!=null,$F{datanascimento3},"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="360" y="509" width="100" height="24" isRemoveLineWhenBlank="true" uuid="9730b975-e5d2-4cce-b559-81437afef0bc">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[$F{nome7} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="10"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{cpf3}!=null,$F{cpf3},"CPF não cadastrado")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="-20" y="509" width="160" height="24" isRemoveLineWhenBlank="true" uuid="5897758e-3f7f-45d9-9442-d0048e683ae4">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[$F{nome7} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="9"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{nome7}!=null,$F{nome7},"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="220" y="184" width="70" height="24" uuid="066e4fe0-b144-4e3c-9b91-03a9c5f7c5e2">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[$F{Matricula2} != null]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="11" isBold="true"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{Matricula2} == null || $F{Matricula2}.equals("")) ? " " : "Matrícula 2: "]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="62" splitType="Stretch">
+			<staticText>
+				<reportElement x="-20" y="38" width="270" height="24" uuid="3725e4b5-e55b-455d-a873-08072f1b6a79">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="11" isBold="true"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<text><![CDATA[VÍNCULO]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="56" y="14" width="328" height="24" uuid="0ea62ee4-4d6a-4c5a-82ef-352fa9208cb1">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="13"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<style isBold='true'>DADOS FUNCIONAIS</style>"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="250" y="38" width="110" height="24" uuid="14a914db-df62-4902-a330-0c32759300be">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DATA INICIAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="360" y="38" width="100" height="24" uuid="6434528d-742a-48ca-b7bf-66eeca4bcb39">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DATA FINAL]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band/>
+	</columnHeader>
+	<detail>
+		<band height="19" splitType="Stretch">
+			<property name="com.jaspersoft.studio.layout"/>
+			<textField>
+				<reportElement x="250" y="0" width="110" height="19" uuid="22ebc058-0262-418d-8b0e-9cc2e339ee34">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DT_INI}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="360" y="0" width="100" height="19" uuid="cfbfa2ee-693c-4f8a-b39e-890afa11b93f">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[IF($F{DT_FIM}!=null,$F{DT_FIM},"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-20" y="0" width="270" height="19" uuid="5ef2fc72-6ef8-4934-857f-bcd620c1de29">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="8"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{EMPRESA}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band/>
+	</columnFooter>
+	<pageFooter>
+		<band height="68" splitType="Stretch">
+			<componentElement>
+				<reportElement x="-25" y="13" width="490" height="55" uuid="c43c2739-7688-4e79-9ce6-e24cf5343f7f"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Rodape" uuid="a9951ccb-0f72-4209-ae27-ddac87839b56">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="55" width="490">
+						<image>
+							<reportElement x="0" y="5" width="490" height="50" uuid="7869b72f-3ee9-4e57-8e1a-cd7d425c0643"/>
+							<imageExpression><![CDATA[$F{IMG_IMGFUNDO_IMGORG}]]></imageExpression>
+						</image>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<textField>
+				<reportElement x="451" y="27" width="20" height="14" uuid="b5483667-e32a-4fe4-92bc-6d5cd3c37cfe"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="476" y="27" width="20" height="14" uuid="659a562b-da82-40b0-91fe-3756caab75ac"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="461" y="27" width="20" height="20" uuid="90c52767-856a-48bb-8e30-fec252739407"/>
+				<text><![CDATA[de]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+</jasperReport>

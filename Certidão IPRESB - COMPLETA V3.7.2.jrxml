@@ -1,0 +1,660 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.21.2.final using JasperReports Library version 6.21.2-8434a0bd7c3bbc37cbf916f2968d35e4b165821a  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4" pageWidth="595" pageHeight="842" columnWidth="454" leftMargin="85" rightMargin="56" topMargin="14" bottomMargin="0" isFloatColumnFooter="true" uuid="d946ebe6-2e92-44c5-aed7-8f7380925278">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ASPPREV"/>
+	<property name="com.jaspersoft.studio.unit." value="cm"/>
+	<subDataset name="Logo" uuid="e9f90e01-6f3f-44b6-9906-95c12f91afd0">
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="IPRESB"/>
+		<queryString language="SQL">
+			<![CDATA[Select  IMG_IMGFUNDO_IMGORG
+ from dbo."IMAGEMORGANIZACAO"  
+ where  "N_ORG_ORG" = 42]]>
+		</queryString>
+		<field name="IMG_IMGFUNDO_IMGORG" class="java.awt.Image"/>
+	</subDataset>
+	<subDataset name="Rodape" uuid="6faeb3da-4b82-4ebb-bf15-6b631cf2c980">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="IPRESB"/>
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<queryString>
+			<![CDATA[Select dbo."IMAGEMORGANIZACAO"."IMG_IMGFUNDO_IMGORG" 
+ from dbo."IMAGEMORGANIZACAO" 
+ where  dbo."IMAGEMORGANIZACAO"."N_ORG_ORG" = 43]]>
+		</queryString>
+		<field name="IMG_IMGFUNDO_IMGORG" class="java.awt.Image"/>
+	</subDataset>
+	<parameter name="Matricula" class="java.lang.String"/>
+	<parameter name="Organiz" class="java.lang.String"/>
+	<parameter name="MUsuario" class="java.lang.String"/>
+	<parameter name="DInt" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[SET LANGUAGE Português
+
+USE aspprev2_baruerisp_prd
+
+--Variável para declarar a matrícula
+DECLARE @matricula INT
+SET @matricula = $P{Matricula}
+
+--Variável para declarar o ente
+DECLARE @ente INT
+SET @ente = $P{Organiz}
+
+DECLARE @MUsuario INT
+SET @MUsuario = $P{MUsuario}
+
+DECLARE @DInt varchar
+SET @DInt = $P{DInt}
+
+
+
+----Variável para declarar a matrícula
+--DECLARE @matricula INT
+--SET @matricula = 1301
+
+----Variável para declarar o ente
+--DECLARE @ente INT
+--SET @ente = 3
+
+--DECLARE @MUsuario INT
+--SET @MUsuario = 96
+
+--DECLARE @DInt varchar
+--SET @DInt = ''
+
+--Variável para declarar as faltas
+DECLARE @faltas_simplificado365	INT
+SET @faltas_simplificado365 = 			ISNULL((select SUM((CONVERT (INT,SITUACAOFUNCIONAL.DT_FIMVIG_SITFUNC-SITUACAOFUNCIONAL.DT_INIVIG_SITFUNC+1))) 
+										FROM SITUACAOFUNCIONAL INNER JOIN
+										CARGOORGANIZACAOPESSOA ON SITUACAOFUNCIONAL.N_PESSOA_PESSOA = CARGOORGANIZACAOPESSOA.N_PESSOA_PESSOA AND 
+										SITUACAOFUNCIONAL.N_SEQ_CARGOORGPESSOA = CARGOORGANIZACAOPESSOA.N_SEQ_CARGOORGPESSOA 
+										WHERE CARGOORGANIZACAOPESSOA.N_CODORI_ORGPESSOA = @matricula AND CARGOORGANIZACAOPESSOA.S_REGIME_REGIMETRAB = 'P' AND SITUACAOFUNCIONAL.N_SEQ_CARGOORGPESSOA = CARGOORGANIZACAOPESSOA.N_SEQ_CARGOORGPESSOA AND (SITUACAOFUNCIONAL.N_TIPSITFUNC_TIPSITFUNC = 12 OR SITUACAOFUNCIONAL.N_TIPSITFUNC_TIPSITFUNC = 13 OR SITUACAOFUNCIONAL.N_TIPSITFUNC_TIPSITFUNC = 261 OR SITUACAOFUNCIONAL.N_TIPSITFUNC_TIPSITFUNC = 6 OR SITUACAOFUNCIONAL.N_TIPSITFUNC_TIPSITFUNC = 904 OR SITUACAOFUNCIONAL.N_TIPSITFUNC_TIPSITFUNC = 908)),0)
+
+
+DECLARE @faltas_ANO INT
+SET @faltas_ANO =		ISNULL((SELECT SUM((CONVERT (INT,(dbo.FN_CALCULARDIFDIASINSSANO(SITUACAOFUNCIONAL.DT_INIVIG_SITFUNC,SITUACAOFUNCIONAL.DT_FIMVIG_SITFUNC,360))))) 
+						 FROM SITUACAOFUNCIONAL INNER JOIN
+                         CARGOORGANIZACAOPESSOA ON SITUACAOFUNCIONAL.N_PESSOA_PESSOA = CARGOORGANIZACAOPESSOA.N_PESSOA_PESSOA AND 
+                         SITUACAOFUNCIONAL.N_SEQ_CARGOORGPESSOA = CARGOORGANIZACAOPESSOA.N_SEQ_CARGOORGPESSOA 
+						 WHERE CARGOORGANIZACAOPESSOA.N_CODORI_ORGPESSOA = @matricula AND CARGOORGANIZACAOPESSOA.S_REGIME_REGIMETRAB = 'P'AND SITUACAOFUNCIONAL.N_SEQ_CARGOORGPESSOA = CARGOORGANIZACAOPESSOA.N_SEQ_CARGOORGPESSOA AND (SITUACAOFUNCIONAL.N_TIPSITFUNC_TIPSITFUNC = 12 OR SITUACAOFUNCIONAL.N_TIPSITFUNC_TIPSITFUNC = 13 OR SITUACAOFUNCIONAL.N_TIPSITFUNC_TIPSITFUNC = 261 OR SITUACAOFUNCIONAL.N_TIPSITFUNC_TIPSITFUNC = 6 OR SITUACAOFUNCIONAL.N_TIPSITFUNC_TIPSITFUNC = 904 OR SITUACAOFUNCIONAL.N_TIPSITFUNC_TIPSITFUNC = 908)),0)
+
+
+DECLARE @faltas_MES INT
+SET @faltas_MES =		ISNULL((SELECT SUM((CONVERT (INT,(dbo.FN_CALCULARDIFDIASINSSMES(SITUACAOFUNCIONAL.DT_INIVIG_SITFUNC,SITUACAOFUNCIONAL.DT_FIMVIG_SITFUNC,360))))) 
+						 FROM SITUACAOFUNCIONAL INNER JOIN
+                         CARGOORGANIZACAOPESSOA ON SITUACAOFUNCIONAL.N_PESSOA_PESSOA = CARGOORGANIZACAOPESSOA.N_PESSOA_PESSOA AND 
+                         SITUACAOFUNCIONAL.N_SEQ_CARGOORGPESSOA = CARGOORGANIZACAOPESSOA.N_SEQ_CARGOORGPESSOA 
+						 WHERE CARGOORGANIZACAOPESSOA.N_CODORI_ORGPESSOA = @matricula AND CARGOORGANIZACAOPESSOA.S_REGIME_REGIMETRAB = 'P' AND SITUACAOFUNCIONAL.N_SEQ_CARGOORGPESSOA = CARGOORGANIZACAOPESSOA.N_SEQ_CARGOORGPESSOA AND (SITUACAOFUNCIONAL.N_TIPSITFUNC_TIPSITFUNC = 12 OR SITUACAOFUNCIONAL.N_TIPSITFUNC_TIPSITFUNC = 13 OR SITUACAOFUNCIONAL.N_TIPSITFUNC_TIPSITFUNC = 261 OR SITUACAOFUNCIONAL.N_TIPSITFUNC_TIPSITFUNC = 6 OR SITUACAOFUNCIONAL.N_TIPSITFUNC_TIPSITFUNC = 904 OR SITUACAOFUNCIONAL.N_TIPSITFUNC_TIPSITFUNC = 908)),0)
+
+
+DECLARE @faltas_DIA INT
+SET @faltas_DIA =		ISNULL((SELECT SUM((CONVERT (INT,(dbo.FN_CALCULARDIFDIASINSSDIA(SITUACAOFUNCIONAL.DT_INIVIG_SITFUNC,SITUACAOFUNCIONAL.DT_FIMVIG_SITFUNC,360))))) 
+						 FROM SITUACAOFUNCIONAL INNER JOIN
+                         CARGOORGANIZACAOPESSOA ON SITUACAOFUNCIONAL.N_PESSOA_PESSOA = CARGOORGANIZACAOPESSOA.N_PESSOA_PESSOA AND 
+                         SITUACAOFUNCIONAL.N_SEQ_CARGOORGPESSOA = CARGOORGANIZACAOPESSOA.N_SEQ_CARGOORGPESSOA 
+						 WHERE CARGOORGANIZACAOPESSOA.N_CODORI_ORGPESSOA = @matricula AND CARGOORGANIZACAOPESSOA.S_REGIME_REGIMETRAB = 'P' AND SITUACAOFUNCIONAL.N_SEQ_CARGOORGPESSOA = CARGOORGANIZACAOPESSOA.N_SEQ_CARGOORGPESSOA AND (SITUACAOFUNCIONAL.N_TIPSITFUNC_TIPSITFUNC = 12 OR SITUACAOFUNCIONAL.N_TIPSITFUNC_TIPSITFUNC = 13 OR SITUACAOFUNCIONAL.N_TIPSITFUNC_TIPSITFUNC = 261 OR SITUACAOFUNCIONAL.N_TIPSITFUNC_TIPSITFUNC = 6 OR SITUACAOFUNCIONAL.N_TIPSITFUNC_TIPSITFUNC = 904 OR SITUACAOFUNCIONAL.N_TIPSITFUNC_TIPSITFUNC = 908)),0)
+
+
+DECLARE @faltas INT
+SET @faltas = (@faltas_ANO*365)+(@faltas_MES*30)+(@faltas_DIA)
+
+--PARA FINS DE CÁLCULO
+DECLARE @faltas360 INT
+SET @faltas360 = (@faltas_ANO*360)+(@faltas_MES*30)+(@faltas_DIA)
+
+
+--Variável para declarar as faltas
+DECLARE @diastotais INT
+SET @diastotais =		(SELECT TOP 1 TEMPOSERVICOCALCULADO.N_TOTDIAS_TEMPOSERVCALC
+						 
+						 FROM  
+						 
+						 TEMPOSERVICOCALCULADO INNER JOIN
+                         PESSOA ON TEMPOSERVICOCALCULADO.N_PESSOA_PESSOA = PESSOA.N_PESSOA_PESSOA INNER JOIN
+                         CARGOORGANIZACAOPESSOA ON TEMPOSERVICOCALCULADO.N_PESSOACARGO_PESSOA = CARGOORGANIZACAOPESSOA.N_PESSOA_PESSOA AND 
+                         TEMPOSERVICOCALCULADO.N_SEQ_CARGOORGPESSOA = CARGOORGANIZACAOPESSOA.N_SEQ_CARGOORGPESSOA AND 
+                         PESSOA.N_PESSOA_PESSOA = CARGOORGANIZACAOPESSOA.N_PESSOA_PESSOA
+
+						 WHERE CARGOORGANIZACAOPESSOA.N_CODORI_ORGPESSOA = @matricula AND CARGOORGANIZACAOPESSOA.S_REGIME_REGIMETRAB = 'P' AND S_RESPTEMPO_TEMPOSERVCALC = 'I' AND N_ORG_ORG = @ente
+						 
+						 ORDER BY N_SEQ_SIMULBNFEPFPESSOA DESC)
+
+--Variável para declarar as faltas
+DECLARE @ANOdiastotais INT
+SET @ANOdiastotais =		(SELECT TOP 1 TEMPOSERVICOCALCULADO.N_ANO_TEMPOSERVCALC
+						 
+						 FROM  
+						 
+						 TEMPOSERVICOCALCULADO INNER JOIN
+                         PESSOA ON TEMPOSERVICOCALCULADO.N_PESSOA_PESSOA = PESSOA.N_PESSOA_PESSOA INNER JOIN
+                         CARGOORGANIZACAOPESSOA ON TEMPOSERVICOCALCULADO.N_PESSOACARGO_PESSOA = CARGOORGANIZACAOPESSOA.N_PESSOA_PESSOA AND 
+                         TEMPOSERVICOCALCULADO.N_SEQ_CARGOORGPESSOA = CARGOORGANIZACAOPESSOA.N_SEQ_CARGOORGPESSOA AND 
+                         PESSOA.N_PESSOA_PESSOA = CARGOORGANIZACAOPESSOA.N_PESSOA_PESSOA
+
+						 WHERE CARGOORGANIZACAOPESSOA.N_CODORI_ORGPESSOA = @matricula AND CARGOORGANIZACAOPESSOA.S_REGIME_REGIMETRAB = 'P' AND S_RESPTEMPO_TEMPOSERVCALC = 'I' AND N_ORG_ORG = @ente
+						 
+						 ORDER BY N_SEQ_SIMULBNFEPFPESSOA DESC)
+
+						 --Variável para declarar as faltas
+DECLARE @MESdiastotais INT
+SET @MESdiastotais =		(SELECT TOP 1 TEMPOSERVICOCALCULADO.N_MES_TEMPOSERVCALC
+						 
+						 FROM  
+						 
+						 TEMPOSERVICOCALCULADO INNER JOIN
+                         PESSOA ON TEMPOSERVICOCALCULADO.N_PESSOA_PESSOA = PESSOA.N_PESSOA_PESSOA INNER JOIN
+                         CARGOORGANIZACAOPESSOA ON TEMPOSERVICOCALCULADO.N_PESSOACARGO_PESSOA = CARGOORGANIZACAOPESSOA.N_PESSOA_PESSOA AND 
+                         TEMPOSERVICOCALCULADO.N_SEQ_CARGOORGPESSOA = CARGOORGANIZACAOPESSOA.N_SEQ_CARGOORGPESSOA AND 
+                         PESSOA.N_PESSOA_PESSOA = CARGOORGANIZACAOPESSOA.N_PESSOA_PESSOA
+
+						 WHERE CARGOORGANIZACAOPESSOA.N_CODORI_ORGPESSOA = @matricula AND CARGOORGANIZACAOPESSOA.S_REGIME_REGIMETRAB = 'P' AND S_RESPTEMPO_TEMPOSERVCALC = 'I' AND N_ORG_ORG = @ente
+						 
+						 ORDER BY N_SEQ_SIMULBNFEPFPESSOA DESC)
+
+--Variável para declarar as faltas
+DECLARE @DIASdiastotais INT
+SET @DIASdiastotais =		(SELECT TOP 1 TEMPOSERVICOCALCULADO.N_DIA_TEMPOSERVCALC
+						 
+						 FROM  
+						 
+						 TEMPOSERVICOCALCULADO INNER JOIN
+                         PESSOA ON TEMPOSERVICOCALCULADO.N_PESSOA_PESSOA = PESSOA.N_PESSOA_PESSOA INNER JOIN
+                         CARGOORGANIZACAOPESSOA ON TEMPOSERVICOCALCULADO.N_PESSOACARGO_PESSOA = CARGOORGANIZACAOPESSOA.N_PESSOA_PESSOA AND 
+                         TEMPOSERVICOCALCULADO.N_SEQ_CARGOORGPESSOA = CARGOORGANIZACAOPESSOA.N_SEQ_CARGOORGPESSOA AND 
+                         PESSOA.N_PESSOA_PESSOA = CARGOORGANIZACAOPESSOA.N_PESSOA_PESSOA
+
+						 WHERE CARGOORGANIZACAOPESSOA.N_CODORI_ORGPESSOA = @matricula AND CARGOORGANIZACAOPESSOA.S_REGIME_REGIMETRAB = 'P' AND S_RESPTEMPO_TEMPOSERVCALC = 'I' AND N_ORG_ORG = @ente
+						 
+						 ORDER BY N_SEQ_SIMULBNFEPFPESSOA DESC)
+
+--Variável para declarar os dias líquidos
+DECLARE @diastotaisliq360 FLOAT
+SET @diastotaisliq360 = ((360*@ANOdiastotais)+(30*@MESdiastotais)+@DIASdiastotais)-@faltas360
+
+--Variável para declarar os anos líquidos
+DECLARE @anosliq360 FLOAT
+SET @anosliq360 = ROUND(@diastotaisliq360/360,0,1)
+
+--Variável para declarar os meses líquidos
+DECLARE @mesliq360 FLOAT
+SET @mesliq360 = ROUND(((@diastotaisliq360/360)-ROUND(@diastotaisliq360/360,0,1))*360/30,0,1)
+
+--Variável para declarar os meses líquidos
+DECLARE @diasliq360 FLOAT
+SET @diasliq360 = ROUND((((@diastotaisliq360/360)-ROUND(@diastotaisliq360/360,0,1))*360/30-(ROUND(((@diastotaisliq360/360)-ROUND(@diastotaisliq360/360,0,1))*360/30,0,1)))*30,0)
+
+--365 SÓ PARA MOSTRAR NO RESULTADO FINAL, TODOS OS CÁLCULOS PRECISAM SER FEITOS COM 360 DIAS
+DECLARE @diastotaisliq365 FLOAT
+SET @diastotaisliq365 = (365*@anosliq360)+(30*@mesliq360)+@diasliq360
+
+
+--Variável para declarar os dias líquidos
+DECLARE @diastotaisliq FLOAT
+SET @diastotaisliq = @diastotais - @faltas
+
+--Variável para declarar os anos líquidos
+DECLARE @anosliq FLOAT
+SET @anosliq = ROUND(@diastotaisliq/365,0,1)
+
+--Variável para declarar os meses líquidos
+DECLARE @mesliq FLOAT
+SET @mesliq = ROUND(((@diastotaisliq/365)-ROUND(@diastotaisliq/365,0,1))*365/30,0,1)
+
+--Variável para declarar os meses líquidos
+DECLARE @diasliq FLOAT
+SET @diasliq = ROUND((((@diastotaisliq/365)-ROUND(@diastotaisliq/365,0,1))*365/30-(ROUND(((@diastotaisliq/365)-ROUND(@diastotaisliq/365,0,1))*365/30,0,1)))*30,0)
+
+SELECT        TOP 1		 TEMPOSERVICOCALCULADO.N_PESSOA_PESSOA AS NUMPESSOA, 
+						 CARGOORGANIZACAOPESSOA.N_CODORI_ORGPESSOA AS MATRICULA, 
+						 TEMPOSERVICOCALCULADO.N_SEQ_SIMULBNFEPFPESSOA AS SIMULACAO, 
+                         TEMPOSERVICOCALCULADO.N_TOTDIAS_TEMPOSERVCALC AS DIASTOTAL,
+						 @ANOdiastotais AS ANO_DIASTOTAL,
+						 @MESdiastotais AS MES_DIASTOTAL,
+						 @DIASdiastotais AS DIA_MESTOTAL,
+                         (SELECT min(COP.DT_INIVIG_CARGOORGPESSOA )
+						 FROM CARGOORGANIZACAOPESSOA COP
+						 WHERE COP.N_CODORI_ORGPESSOA = CARGOORGANIZACAOPESSOA.N_CODORI_ORGPESSOA AND COP.N_ORG_ORG = CARGOORGANIZACAOPESSOA.N_ORG_ORG AND COP.S_REGIME_REGIMETRAB = 'P'
+						 )AS DATAINICIOIPRESB,
+
+
+						 (CASE WHEN TEMPOSERVICOCALCULADO.DT_FIMVIGCARGO_TEMPOSERVCALC IS NULL THEN 'a presente data'
+						 ELSE CONVERT(VARCHAR,TEMPOSERVICOCALCULADO.DT_FIMVIGCARGO_TEMPOSERVCALC,103) END) AS DATAFIMIPRESB,
+
+
+						 TEMPOSERVICOCALCULADO.S_RESPTEMPO_TEMPOSERVCALC, 
+                         PESSOA.S_NOM_PESSOA AS NOME, 
+						 PESSOA.S_SEXO_PESSOA AS SEXO, 
+						 PESSOA.S_RG_PESSOA AS RG, 
+						 RTRIM(SUBSTRING(PESSOA.S_CPF_PESSOA,1,3)
+						+'.'
+						+SUBSTRING(PESSOA.S_CPF_PESSOA,4,3)
+						+'.'
+						+SUBSTRING(PESSOA.S_CPF_PESSOA,7,3)
+						+'-'
+						+SUBSTRING(PESSOA.S_CPF_PESSOA,10,2)) AS CPF,
+                         PESSOA.S_PISPASEP_PESSOA AS PIS, 
+						 CARGOORGANIZACAOPESSOA.N_SEQ_CARGOORGPESSOA, 
+						 CARGOORGANIZACAOPESSOA.N_ORG_ORG, 
+                         CARGO.S_DCR_CARGO AS CARGO, 
+						 @MUsuario AS MATRICULAIPRESB,
+
+						 @faltas AS FALTAS,
+
+						 @faltas_ANO AS [FALTAS ANOS],
+
+						 @faltas_MES AS [FALTAS MESES],
+
+						 @faltas_DIA AS [FALTAS DIAS],
+
+ 						 CONVERT(int,@diastotaisliq) AS DIASTOTALLIQ,
+						 CONVERT(int,@diastotaisliq365) AS DIASTOTALLIQ365,
+						 CONVERT(int,@anosliq360) AS ANOLIQ360,
+						 CONVERT(int,@mesliq360) AS MESLIQ360,
+						 CONVERT(int,@diasliq360) AS DIASLIQ360,
+
+                             (SELECT        dbo.FN_PRIMEIRALETRAMAIUSCULA(LOWER(PESSOA_2.S_NOM_PESSOA)) AS Expr1
+                               FROM            AUTORIDADECOMPETENTE AS AUTORIDADECOMPETENTE_1 INNER JOIN
+                                                         PESSOA AS PESSOA_2 ON AUTORIDADECOMPETENTE_1.N_PESSOA_PESSOA = PESSOA_2.N_PESSOA_PESSOA
+                               WHERE        (AUTORIDADECOMPETENTE_1.N_SEQ_AUTDCOMPTT = 2)) AS DIRETOR,
+                             (SELECT        dbo.FN_PRIMEIRALETRAMAIUSCULA(LOWER(PESSOA_3.S_NOM_PESSOA)) AS USUARIO
+                               FROM            PESSOA AS PESSOA_3 INNER JOIN
+                                                         ORGANIZACAOPESSOA AS ORGANIZACAOPESSOA_3 ON PESSOA_3.N_PESSOA_PESSOA = ORGANIZACAOPESSOA_3.N_PESSOA_PESSOA INNER JOIN
+                                                         CARGOORGANIZACAOPESSOA AS CARGOORGANIZACAOPESSOA_3 ON ORGANIZACAOPESSOA_3.N_CODORI_ORGPESSOA = CARGOORGANIZACAOPESSOA_3.N_CODORI_ORGPESSOA AND 
+                                                         ORGANIZACAOPESSOA_3.N_ORG_ORG = CARGOORGANIZACAOPESSOA_3.N_ORG_ORG INNER JOIN
+                                                         CARGO AS CARGO_3 ON CARGOORGANIZACAOPESSOA_3.N_ORG_ORG = CARGO_3.N_ORG_ORG AND CARGOORGANIZACAOPESSOA_3.N_CARGO_CARGO = CARGO_3.N_CARGO_CARGO
+                               WHERE        (ORGANIZACAOPESSOA_3.N_ORG_ORG = 4) AND (ORGANIZACAOPESSOA_3.N_CODORI_ORGPESSOA = @MUsuario)) AS USUARIO,
+                             (SELECT        dbo.FN_PRIMEIRALETRAMAIUSCULA(LOWER(CARGO_3.S_DCR_CARGO)) AS [CARGO USUARIO]
+                               FROM            PESSOA AS PESSOA_3 INNER JOIN
+                                                         ORGANIZACAOPESSOA AS ORGANIZACAOPESSOA_3 ON PESSOA_3.N_PESSOA_PESSOA = ORGANIZACAOPESSOA_3.N_PESSOA_PESSOA INNER JOIN
+                                                         CARGOORGANIZACAOPESSOA AS CARGOORGANIZACAOPESSOA_3 ON ORGANIZACAOPESSOA_3.N_CODORI_ORGPESSOA = CARGOORGANIZACAOPESSOA_3.N_CODORI_ORGPESSOA AND 
+                                                         ORGANIZACAOPESSOA_3.N_ORG_ORG = CARGOORGANIZACAOPESSOA_3.N_ORG_ORG INNER JOIN
+                                                         CARGO AS CARGO_3 ON CARGOORGANIZACAOPESSOA_3.N_ORG_ORG = CARGO_3.N_ORG_ORG AND CARGOORGANIZACAOPESSOA_3.N_CARGO_CARGO = CARGO_3.N_CARGO_CARGO
+                               WHERE        (ORGANIZACAOPESSOA_3.N_ORG_ORG = 4) AND (ORGANIZACAOPESSOA_3.N_CODORI_ORGPESSOA = @MUsuario)) AS CARGO_USUARIO,
+                               
+							   (CASE WHEN PESSOA.S_SEXO_PESSOA = 'M' THEN 'o Sr.' ELSE 'a Sra.' END) AS GENERO_SR,
+							   (CASE WHEN PESSOA.S_SEXO_PESSOA = 'M' THEN 'segurado' ELSE 'segurada' END) AS SEGURADOA,
+							   (CASE WHEN PESSOA.S_SEXO_PESSOA = 'M' THEN 'portador' ELSE 'portadora' END) AS GENERO_PORTADOR,
+							   (CASE WHEN PESSOA.S_SEXO_PESSOA = 'M' THEN 'inscrito' ELSE 'inscrita' END) AS GENERO_INSCRITO,
+							   (CASE WHEN CARGOORGANIZACAOPESSOA.N_ORG_ORG = 1 OR CARGOORGANIZACAOPESSOA.N_ORG_ORG = 2 THEN 'Administração Municipal Direta' ELSE 'Administração Municipal Indireta' END) AS ADM_MUNIC,
+							   
+						--CONVERT(int,@anosliq) AS ANO,					   
+						--CONVERT(int,@mesliq) AS MES,
+						--CONVERT(int,@diasliq) AS DIA,
+
+							   (CASE WHEN 	(SELECT SUM((CONVERT (INT,SITUACAOFUNCIONAL.DT_FIMVIG_SITFUNC-SITUACAOFUNCIONAL.DT_INIVIG_SITFUNC+1))) 
+						 FROM SITUACAOFUNCIONAL INNER JOIN
+                         CARGOORGANIZACAOPESSOA ON SITUACAOFUNCIONAL.N_PESSOA_PESSOA = CARGOORGANIZACAOPESSOA.N_PESSOA_PESSOA AND 
+                         SITUACAOFUNCIONAL.N_SEQ_CARGOORGPESSOA = CARGOORGANIZACAOPESSOA.N_SEQ_CARGOORGPESSOA 
+						 WHERE CARGOORGANIZACAOPESSOA.N_CODORI_ORGPESSOA = @matricula AND SITUACAOFUNCIONAL.N_SEQ_CARGOORGPESSOA = 1 AND (SITUACAOFUNCIONAL.N_TIPSITFUNC_TIPSITFUNC = 12 OR SITUACAOFUNCIONAL.N_TIPSITFUNC_TIPSITFUNC = 13 OR SITUACAOFUNCIONAL.N_TIPSITFUNC_TIPSITFUNC = 261 OR SITUACAOFUNCIONAL.N_TIPSITFUNC_TIPSITFUNC = 6)) IS NULL THEN ', já considerando as faltas e afastamentos dedutíveis.' ELSE ', já considerando as faltas e afastamentos dedutíveis.' END) AS CONDFALTAS,
+						 
+						(CASE WHEN @DInt = UPPER('S') THEN 'Gestor(a) Interino(a) de Benefícios Previdenciários' ELSE 'Gestor de Benefícios Previdenciários' END) AS CARGO_DIRETOR,
+			  			(CASE WHEN @DInt = UPPER('S') THEN (SELECT dbo.[FN_PRIMEIRALETRAMAIUSCULA](LOWER(PESSOA.S_NOM_PESSOA)) FROM PESSOA INNER JOIN ORGANIZACAOPESSOA ON PESSOA.N_PESSOA_PESSOA = ORGANIZACAOPESSOA.N_PESSOA_PESSOA INNER JOIN CARGOORGANIZACAOPESSOA ON CARGOORGANIZACAOPESSOA .N_PESSOA_PESSOA = ORGANIZACAOPESSOA.N_PESSOA_PESSOA AND CARGOORGANIZACAOPESSOA .N_CODORI_ORGPESSOA = ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA AND CARGOORGANIZACAOPESSOA.N_ORG_ORG = ORGANIZACAOPESSOA.N_ORG_ORG INNER JOIN CARGO  ON CARGO.N_ORG_ORG = CARGOORGANIZACAOPESSOA.N_ORG_ORG AND CARGO.N_CARGO_CARGO = CARGOORGANIZACAOPESSOA.N_CARGO_CARGO INNER JOIN AUTORIDADECOMPETENTE ON PESSOA.N_PESSOA_PESSOA = AUTORIDADECOMPETENTE.N_PESSOA_PESSOA AND ORGANIZACAOPESSOA.N_ORG_ORG = AUTORIDADECOMPETENTE.N_ORG_ORG AND ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA = AUTORIDADECOMPETENTE.N_CODORI_ORGPESSOA WHERE (AUTORIDADECOMPETENTE.N_SEQ_AUTDCOMPTT = 5)) ELSE (SELECT dbo.[FN_PRIMEIRALETRAMAIUSCULA](LOWER(PESSOA.S_NOM_PESSOA)) FROM PESSOA INNER JOIN ORGANIZACAOPESSOA ON PESSOA.N_PESSOA_PESSOA = ORGANIZACAOPESSOA.N_PESSOA_PESSOA INNER JOIN CARGOORGANIZACAOPESSOA ON CARGOORGANIZACAOPESSOA .N_PESSOA_PESSOA = ORGANIZACAOPESSOA.N_PESSOA_PESSOA AND CARGOORGANIZACAOPESSOA .N_CODORI_ORGPESSOA = ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA AND CARGOORGANIZACAOPESSOA.N_ORG_ORG = ORGANIZACAOPESSOA.N_ORG_ORG INNER JOIN CARGO  ON CARGO.N_ORG_ORG = CARGOORGANIZACAOPESSOA.N_ORG_ORG AND CARGO.N_CARGO_CARGO = CARGOORGANIZACAOPESSOA.N_CARGO_CARGO INNER JOIN AUTORIDADECOMPETENTE ON PESSOA.N_PESSOA_PESSOA = AUTORIDADECOMPETENTE.N_PESSOA_PESSOA AND ORGANIZACAOPESSOA.N_ORG_ORG = AUTORIDADECOMPETENTE.N_ORG_ORG AND ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA = AUTORIDADECOMPETENTE.N_CODORI_ORGPESSOA WHERE (AUTORIDADECOMPETENTE.N_SEQ_AUTDCOMPTT = 2)) END) AS NOME_DIRETOR
+						 						 	   							   							   						 						 	   							   							   
+FROM            TEMPOSERVICOCALCULADO INNER JOIN
+                         PESSOA ON TEMPOSERVICOCALCULADO.N_PESSOA_PESSOA = PESSOA.N_PESSOA_PESSOA INNER JOIN
+                         CARGOORGANIZACAOPESSOA ON TEMPOSERVICOCALCULADO.N_PESSOACARGO_PESSOA = CARGOORGANIZACAOPESSOA.N_PESSOA_PESSOA AND 
+                         TEMPOSERVICOCALCULADO.N_SEQ_CARGOORGPESSOA = CARGOORGANIZACAOPESSOA.N_SEQ_CARGOORGPESSOA AND 
+                         PESSOA.N_PESSOA_PESSOA = CARGOORGANIZACAOPESSOA.N_PESSOA_PESSOA INNER JOIN CARGO ON
+						 CARGO.N_ORG_ORG = CARGOORGANIZACAOPESSOA.N_ORG_ORG AND
+						 CARGO.N_CARGO_CARGO = CARGOORGANIZACAOPESSOA.N_CARGO_CARGO
+
+WHERE CARGOORGANIZACAOPESSOA.N_CODORI_ORGPESSOA = @matricula AND TEMPOSERVICOCALCULADO.S_RESPTEMPO_TEMPOSERVCALC = 'I' AND CARGOORGANIZACAOPESSOA.N_ORG_ORG = @ente
+
+ORDER BY N_SEQ_SIMULBNFEPFPESSOA DESC]]>
+	</queryString>
+	<field name="NUMPESSOA" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="NUMPESSOA"/>
+		<property name="com.jaspersoft.studio.field.label" value="NUMPESSOA"/>
+	</field>
+	<field name="MATRICULA" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="MATRICULA"/>
+		<property name="com.jaspersoft.studio.field.label" value="MATRICULA"/>
+	</field>
+	<field name="SIMULACAO" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="SIMULACAO"/>
+		<property name="com.jaspersoft.studio.field.label" value="SIMULACAO"/>
+	</field>
+	<field name="DIASTOTAL" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="DIASTOTAL"/>
+		<property name="com.jaspersoft.studio.field.label" value="DIASTOTAL"/>
+	</field>
+	<field name="ANO_DIASTOTAL" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="ANO_DIASTOTAL"/>
+		<property name="com.jaspersoft.studio.field.label" value="ANO_DIASTOTAL"/>
+	</field>
+	<field name="MES_DIASTOTAL" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="MES_DIASTOTAL"/>
+		<property name="com.jaspersoft.studio.field.label" value="MES_DIASTOTAL"/>
+	</field>
+	<field name="DIA_MESTOTAL" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="DIA_MESTOTAL"/>
+		<property name="com.jaspersoft.studio.field.label" value="DIA_MESTOTAL"/>
+	</field>
+	<field name="DATAINICIOIPRESB" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.name" value="DATAINICIOIPRESB"/>
+		<property name="com.jaspersoft.studio.field.label" value="DATAINICIOIPRESB"/>
+	</field>
+	<field name="DATAFIMIPRESB" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="DATAFIMIPRESB"/>
+		<property name="com.jaspersoft.studio.field.label" value="DATAFIMIPRESB"/>
+	</field>
+	<field name="S_RESPTEMPO_TEMPOSERVCALC" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="S_RESPTEMPO_TEMPOSERVCALC"/>
+		<property name="com.jaspersoft.studio.field.label" value="S_RESPTEMPO_TEMPOSERVCALC"/>
+	</field>
+	<field name="NOME" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NOME"/>
+		<property name="com.jaspersoft.studio.field.label" value="NOME"/>
+	</field>
+	<field name="SEXO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="SEXO"/>
+		<property name="com.jaspersoft.studio.field.label" value="SEXO"/>
+	</field>
+	<field name="RG" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="RG"/>
+		<property name="com.jaspersoft.studio.field.label" value="RG"/>
+	</field>
+	<field name="CPF" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CPF"/>
+		<property name="com.jaspersoft.studio.field.label" value="CPF"/>
+	</field>
+	<field name="PIS" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="PIS"/>
+		<property name="com.jaspersoft.studio.field.label" value="PIS"/>
+	</field>
+	<field name="N_SEQ_CARGOORGPESSOA" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="N_SEQ_CARGOORGPESSOA"/>
+		<property name="com.jaspersoft.studio.field.label" value="N_SEQ_CARGOORGPESSOA"/>
+	</field>
+	<field name="N_ORG_ORG" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="N_ORG_ORG"/>
+		<property name="com.jaspersoft.studio.field.label" value="N_ORG_ORG"/>
+	</field>
+	<field name="CARGO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CARGO"/>
+		<property name="com.jaspersoft.studio.field.label" value="CARGO"/>
+	</field>
+	<field name="MATRICULAIPRESB" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="MATRICULAIPRESB"/>
+		<property name="com.jaspersoft.studio.field.label" value="MATRICULAIPRESB"/>
+	</field>
+	<field name="FALTAS" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="FALTAS"/>
+		<property name="com.jaspersoft.studio.field.label" value="FALTAS"/>
+	</field>
+	<field name="FALTAS ANOS" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="FALTAS ANOS"/>
+		<property name="com.jaspersoft.studio.field.label" value="FALTAS ANOS"/>
+	</field>
+	<field name="FALTAS MESES" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="FALTAS MESES"/>
+		<property name="com.jaspersoft.studio.field.label" value="FALTAS MESES"/>
+	</field>
+	<field name="FALTAS DIAS" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="FALTAS DIAS"/>
+		<property name="com.jaspersoft.studio.field.label" value="FALTAS DIAS"/>
+	</field>
+	<field name="DIASTOTALLIQ" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="DIASTOTALLIQ"/>
+		<property name="com.jaspersoft.studio.field.label" value="DIASTOTALLIQ"/>
+	</field>
+	<field name="DIASTOTALLIQ365" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="DIASTOTALLIQ365"/>
+		<property name="com.jaspersoft.studio.field.label" value="DIASTOTALLIQ365"/>
+	</field>
+	<field name="ANOLIQ360" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="ANOLIQ360"/>
+		<property name="com.jaspersoft.studio.field.label" value="ANOLIQ360"/>
+	</field>
+	<field name="MESLIQ360" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="MESLIQ360"/>
+		<property name="com.jaspersoft.studio.field.label" value="MESLIQ360"/>
+	</field>
+	<field name="DIASLIQ360" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="DIASLIQ360"/>
+		<property name="com.jaspersoft.studio.field.label" value="DIASLIQ360"/>
+	</field>
+	<field name="DIRETOR" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="DIRETOR"/>
+		<property name="com.jaspersoft.studio.field.label" value="DIRETOR"/>
+	</field>
+	<field name="USUARIO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="USUARIO"/>
+		<property name="com.jaspersoft.studio.field.label" value="USUARIO"/>
+	</field>
+	<field name="CARGO_USUARIO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CARGO_USUARIO"/>
+		<property name="com.jaspersoft.studio.field.label" value="CARGO_USUARIO"/>
+	</field>
+	<field name="GENERO_SR" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="GENERO_SR"/>
+		<property name="com.jaspersoft.studio.field.label" value="GENERO_SR"/>
+	</field>
+	<field name="SEGURADOA" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="SEGURADOA"/>
+		<property name="com.jaspersoft.studio.field.label" value="SEGURADOA"/>
+	</field>
+	<field name="GENERO_PORTADOR" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="GENERO_PORTADOR"/>
+		<property name="com.jaspersoft.studio.field.label" value="GENERO_PORTADOR"/>
+	</field>
+	<field name="GENERO_INSCRITO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="GENERO_INSCRITO"/>
+		<property name="com.jaspersoft.studio.field.label" value="GENERO_INSCRITO"/>
+	</field>
+	<field name="ADM_MUNIC" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ADM_MUNIC"/>
+		<property name="com.jaspersoft.studio.field.label" value="ADM_MUNIC"/>
+	</field>
+	<field name="CONDFALTAS" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CONDFALTAS"/>
+		<property name="com.jaspersoft.studio.field.label" value="CONDFALTAS"/>
+	</field>
+	<field name="CARGO_DIRETOR" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CARGO_DIRETOR"/>
+		<property name="com.jaspersoft.studio.field.label" value="CARGO_DIRETOR"/>
+	</field>
+	<field name="NOME_DIRETOR" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NOME_DIRETOR"/>
+		<property name="com.jaspersoft.studio.field.label" value="NOME_DIRETOR"/>
+	</field>
+	<pageHeader>
+		<band height="79" splitType="Stretch">
+			<componentElement>
+				<reportElement x="-20" y="0" width="530" height="70" uuid="cc52b66d-a63d-4318-b3ea-71f74a236b9e"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Logo" uuid="c67ef43c-b5ee-46d6-81e7-14fc2ce97490">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="70" width="530">
+						<image>
+							<reportElement x="0" y="0" width="520" height="70" uuid="a89bc311-ed75-48e0-8462-39e98da43de4"/>
+							<imageExpression><![CDATA[$F{IMG_IMGFUNDO_IMGORG}]]></imageExpression>
+						</image>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="692" splitType="Stretch">
+			<rectangle>
+				<reportElement x="219" y="412" width="231" height="129" uuid="2f0919ec-47a2-4cf5-ad37-19cacd71fbd2"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="-11" y="412" width="230" height="129" uuid="b770d572-8ff3-4629-9837-72fb92482269"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="-11" y="10" width="461" height="371" uuid="914d9f79-425c-4ab3-85ce-0d2f5739419f"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<textField>
+				<reportElement x="-11" y="22" width="460" height="30" uuid="d95e8383-9820-4837-8baa-109eec176f5d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["CERTIDÃO"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-11" y="73" width="461" height="308" uuid="b998975e-d92b-499f-ac13-bab6e1080608"/>
+				<box>
+					<pen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Justified" verticalAlignment="Top" markup="styled">
+					<font fontName="Arial" size="12" isBold="false"/>
+					<paragraph lineSpacing="Double" firstLineIndent="60" leftIndent="14" rightIndent="14" spacingBefore="5" spacingAfter="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Certifico, à vista dos assentamentos arquivados, que "+$F{GENERO_SR}+" <style isBold='true'>"+$F{NOME}+"</style>, "+$F{GENERO_PORTADOR}+" do <style isBold='true'>CPF nº "+$F{CPF} +"</style> " +$F{GENERO_INSCRITO}+" no <style isBold='true'>PIS/PASEP</style> sob o <style isBold='true'>nº "+$F{PIS}.substring(0, 3)+"."+$F{PIS}.substring(3, 8)+"."+$F{PIS}.substring(8, 10)+"-"+$F{PIS}.substring(10, 11)+"</style>, com matrícula funcional nº <style isBold='true'>"+$F{MATRICULA}+"</style> na <style isBold='true'>"+$F{ADM_MUNIC}+"</style> e com o cargo efetivo de  <style isBold='true'>"+$F{CARGO}+",</style> é "+$F{SEGURADOA}+" do <style isBold='true'>IPRESB – Instituto de Previdência Social dos Servidores Municipais de Barueri</style>, Regime Próprio de Previdência Social, criado pela Lei Complementar Municipal nº 171, de 26/10/2006, atualmente regulamentado pela Lei Complementar Municipal nº 434 de 14 de agosto de 2018, desde <style isBold='true'>"+DATEFORMAT($F{DATAINICIOIPRESB},"dd/MM/yyyy")+"</style>" + " até " + "<style isBold='true'>" + $F{DATAFIMIPRESB} +"</style>, com um tempo de contribuição total de <style isBold='true'>"+$F{DIASTOTALLIQ365} +"</style> dias ou <style isBold='true'>"+$F{ANOLIQ360}+"</style> ano(s), <style isBold='true'>"+$F{MESLIQ360}+" </style>mes(es) e <style isBold='true'>"+$F{DIASLIQ360}+" </style>dia(s)"+$F{CONDFALTAS}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-11" y="381" width="461" height="31" uuid="3568dc3e-6b7d-47c0-ae79-5ab4b72bc074">
+					<property name="com.jaspersoft.studio.unit.tabStopWidth" value="cm"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+					<paragraph leftIndent="11" rightIndent="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Local e Data: Barueri, "+ LOWER(DATEFORMAT(TODAY(),"d 'de' MMMM 'de' yyyy"))+"."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-11" y="423" width="230" height="19" uuid="486593fd-8793-4a33-a3fa-782beb7662d5"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Lavrei a Certidão"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="219" y="423" width="231" height="19" uuid="59789e8d-0aa7-4bb3-aeea-82c6d56fcfac"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Conferi e confirmo"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-11" y="482" width="230" height="20" uuid="d7a319a7-6ca6-4f46-85d1-e6a34ea164b6"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="12" isBold="true"/>
+					<paragraph leftIndent="5" rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{USUARIO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-11" y="502" width="230" height="20" uuid="209baf69-dd69-499c-9ff0-139cf0a83b9f"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="Arial" size="12"/>
+					<paragraph spacingBefore="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Matrícula n.º "+$F{MATRICULAIPRESB}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="219" y="482" width="231" height="20" uuid="c5252385-c80a-4cd2-ada5-8e5862c3d35c"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NOME_DIRETOR}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="219" y="502" width="231" height="39" uuid="61f14723-4220-4be6-8d07-f5076b85f091">
+					<property name="com.jaspersoft.studio.unit.spacingBefore" value="cm"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="Arial" size="12"/>
+					<paragraph spacingBefore="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CARGO_DIRETOR}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-11" y="463" width="230" height="19" uuid="2fcac6b2-75bc-4aba-b7b9-19140a504ddb"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ASSINADO DIGITALMENTE POR"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="219" y="463" width="231" height="19" uuid="2ce706ce-76ec-4561-87dc-89995323bc80"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ASSINADO DIGITALMENTE POR"]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="57" splitType="Stretch">
+			<componentElement>
+				<reportElement x="-21" y="1" width="490" height="55" uuid="c43c2739-7688-4e79-9ce6-e24cf5343f7f"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Rodape" uuid="a9951ccb-0f72-4209-ae27-ddac87839b56">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="55" width="490">
+						<image>
+							<reportElement x="0" y="5" width="490" height="50" uuid="7869b72f-3ee9-4e57-8e1a-cd7d425c0643"/>
+							<imageExpression><![CDATA[$F{IMG_IMGFUNDO_IMGORG}]]></imageExpression>
+						</image>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+		</band>
+	</pageFooter>
+</jasperReport>

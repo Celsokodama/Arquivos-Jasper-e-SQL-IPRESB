@@ -1,0 +1,848 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.21.2.final using JasperReports Library version 6.21.2-8434a0bd7c3bbc37cbf916f2968d35e4b165821a  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4" pageWidth="595" pageHeight="842" columnWidth="470" leftMargin="85" rightMargin="40" topMargin="14" bottomMargin="0" uuid="d946ebe6-2e92-44c5-aed7-8f7380925278">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ASPPREV"/>
+	<property name="com.jaspersoft.studio.unit." value="cm"/>
+	<subDataset name="Logo" uuid="e9f90e01-6f3f-44b6-9906-95c12f91afd0">
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="IPRESB"/>
+		<queryString language="SQL">
+			<![CDATA[Select  IMG_IMGFUNDO_IMGORG
+ from dbo."IMAGEMORGANIZACAO"  
+ where  "N_ORG_ORG" = 42]]>
+		</queryString>
+		<field name="IMG_IMGFUNDO_IMGORG" class="java.awt.Image"/>
+	</subDataset>
+	<subDataset name="Rodape" uuid="848c67d2-d15a-4bee-a03e-4616d865bbac">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="IPRESB"/>
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<queryString>
+			<![CDATA[Select dbo."IMAGEMORGANIZACAO"."IMG_IMGFUNDO_IMGORG" 
+ from dbo."IMAGEMORGANIZACAO" 
+ where  dbo."IMAGEMORGANIZACAO"."N_ORG_ORG" = 43]]>
+		</queryString>
+		<field name="IMG_IMGFUNDO_IMGORG" class="java.awt.Image"/>
+	</subDataset>
+	<parameter name="Protocolo" class="java.lang.String"/>
+	<parameter name="Ano" class="java.lang.String"/>
+	<parameter name="MUsuario" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[SET LANGUAGE PORTUGUESE	
+
+DECLARE @Protocolo AS INT
+DECLARE @Ano AS INT
+DECLARE @MUsuario AS INT
+
+
+
+DECLARE @Ente AS INT
+DECLARE @Cargo AS INT
+DECLARE @ExtraT AS varchar(1)
+DECLARE @Matricula AS INT
+
+SET @Protocolo =  $P{Protocolo}
+SET @Ano = $P{Ano}
+SET @MUsuario = $P{MUsuario}
+
+
+--SET @Protocolo =  622
+--SET @Ano = 2026
+--SET @MUsuario = 96
+
+
+
+SET @Ente = (Select SP2.N_ORG_ORG
+			FROM SERVICOPESSOA SP2
+			WHERE SP2.N_NUMPROT_SERVPESSOA = @Protocolo AND
+			SP2.N_ANOREFER_SERVPESSOA = @Ano)
+
+			SET @Matricula = (Select SP3.N_CODORI_ORGPESSOA
+			FROM SERVICOPESSOA SP3
+			WHERE SP3.N_NUMPROT_SERVPESSOA = @Protocolo AND
+			SP3.N_ANOREFER_SERVPESSOA = @Ano)
+
+SET @Cargo = (Select TOP 1 COP3.N_CARGO_CARGO
+				FROM CARGOORGANIZACAOPESSOA COP3 INNER JOIN SERVICOPESSOA SP3 ON SP3.N_CODORI_ORGPESSOA = COP3.N_CODORI_ORGPESSOA AND SP3.N_ORG_ORG = COP3.N_ORG_ORG
+				WHERE SP3.N_NUMPROT_SERVPESSOA = @Protocolo AND SP3.N_ANOREFER_SERVPESSOA = @Ano  )
+
+SELECT DISTINCT
+
+(CASE	WHEN CONVERT(VarChar(5), SP.N_ANOREFER_SERVPESSOA) <=2018 
+						THEN 'BI-'+ CONVERT(VarChar(5), SP.N_NUMPROT_SERVPESSOA) + '/' + CONVERT(VarChar(5), SP.N_ANOREFER_SERVPESSOA) 
+						ELSE 'PA-'+ CONVERT(VarChar(5), SP.N_NUMPROT_SERVPESSOA) + '/' + CONVERT(VarChar(5), SP.N_ANOREFER_SERVPESSOA) 
+						END) AS NOMEPROT,
+
+P.S_NOM_PESSOA AS NOME,
+convert(varchar,P.DT_NASC_PESSOA,103) AS NASCIMENTO,
+
+FLOOR(
+    DATEDIFF(DAY, P.DT_NASC_PESSOA, P.DT_FALEC_PESSOA) / 365.0
+) AS [IDADE DO SERVIDOR],
+RTRIM(SUBSTRING(P.S_CPF_PESSOA,1,3)	+'.'+SUBSTRING(P.S_CPF_PESSOA,4,3)	+'.'+SUBSTRING(P.S_CPF_PESSOA,7,3)	+'-'+SUBSTRING(P.S_CPF_PESSOA,10,2)) AS [CPF],
+COP.N_CODORI_ORGPESSOA AS MATRICULA,
+P.DT_FALEC_PESSOA AS OBITO,
+SP.DT_SLCT_SERVPESSOA  AS [DATAREQUERIMENTO],
+
+CASE
+    WHEN DATEDIFF(DAY,  P.DT_FALEC_PESSOA , SP.DT_SLCT_SERVPESSOA) > 30
+        THEN  SP.DT_SLCT_SERVPESSOA
+		ELSE P.DT_FALEC_PESSOA
+END AS DIB,
+
+O.S_DCR_ORG AS ORGANIZAÇÃO,
+CARGO.S_DCR_CARGO AS CARGO,
+TIPO.S_DCRSERV_TIPSERV AS SERVIÇO,
+@MUsuario as MUsuario,
+USUARIO as [Nome IPRESB],
+[CARGO USUARIO] AS [Cargo IPRESB],
+
+P2.S_NOM_PESSOA AS NOMEDEP,
+CONVERT(VARCHAR,P2.DT_NASC_PESSOA,103) AS [NASCIMENTO DEP],
+FLOOR(
+    DATEDIFF(DAY, P2.DT_NASC_PESSOA, P.DT_FALEC_PESSOA) / 365.0
+) AS [IDADE DEP],
+LOWER(PARENT.S_DCR_GRAUPARENT) AS parentesco,
+CONVERT(VARCHAR,R.DT_INIVIG_RELACPESSOA,103) AS [INICIO RELACIONAMENTO],
+CONVERT(VARCHAR,R.DT_FIMVIG_RELACPESSOA,103) AS [FIM RELACIONAMENTO],
+(CASE WHEN PARENT.N_GRAUPARENT_GRAUPARENT IN (1,2) THEN 
+
+
+CONVERT(VARCHAR,FLOOR(
+    DATEDIFF(DAY, R.DT_INIVIG_RELACPESSOA, P.DT_FALEC_PESSOA) / 365.0
+),103) + ' ANOS' ELSE '' END)AS [TEMPO DE RELACIONAMENTO],
+
+-- DECLARADO OU PARENTE:
+
+(CASE WHEN PARENT.N_GRAUPARENT_GRAUPARENT IN (1,2) THEN 'Declarado:'
+	ELSE 'Parentesco:' END) AS TEXTO_PARENTESCO,
+
+
+--TEXTO DO DEPENDENTE:
+
+(CASE PARENT.N_GRAUPARENT_GRAUPARENT
+
+-- TEMPO DE CONTRIBUIÇÃO
+WHEN 1 THEN (CASE WHEN (S.N_ANOTOTAL_SIMULBNFEPFPESSOA * 365 + S.N_MESTOTAL_SIMULBNFEPFPESSOA *30 + S.N_DIATOTAL_SIMULBNFEPFPESSOA) < 540 THEN '4 meses de benefício'
+					--TEMPO DE RELACIONAMENTO
+			ELSE  (CASE WHEN FLOOR(DATEDIFF(DAY, R.DT_INIVIG_RELACPESSOA, P.DT_FALEC_PESSOA) / 365.0) < 2  THEN '4 meses de benefício'
+					-- IDADE DO VIÚVO
+					ELSE (CASE 
+								WHEN (FLOOR(DATEDIFF(DAY, P2.DT_NASC_PESSOA, P.DT_FALEC_PESSOA) / 365.0)) < 21 THEN '3 anos de benefício'
+								WHEN ((FLOOR(DATEDIFF(DAY, P2.DT_NASC_PESSOA, P.DT_FALEC_PESSOA) / 365.0)) >= 21 AND (FLOOR(DATEDIFF(DAY, P2.DT_NASC_PESSOA, P.DT_FALEC_PESSOA) / 365.0)) < 27 )THEN '6 anos de benefício'
+								WHEN ((FLOOR(DATEDIFF(DAY, P2.DT_NASC_PESSOA, P.DT_FALEC_PESSOA) / 365.0)) >= 27 AND (FLOOR(DATEDIFF(DAY, P2.DT_NASC_PESSOA, P.DT_FALEC_PESSOA) / 365.0)) < 30 )THEN '10 anos de benefício'
+								WHEN ((FLOOR(DATEDIFF(DAY, P2.DT_NASC_PESSOA, P.DT_FALEC_PESSOA) / 365.0)) >= 30 AND (FLOOR(DATEDIFF(DAY, P2.DT_NASC_PESSOA, P.DT_FALEC_PESSOA) / 365.0)) < 41 )THEN '15 anos de benefício'
+								WHEN ((FLOOR(DATEDIFF(DAY, P2.DT_NASC_PESSOA, P.DT_FALEC_PESSOA) / 365.0)) >= 41 AND (FLOOR(DATEDIFF(DAY, P2.DT_NASC_PESSOA, P.DT_FALEC_PESSOA) / 365.0)) < 43 )THEN '20 anos de benefício'
+								WHEN ((FLOOR(DATEDIFF(DAY, P2.DT_NASC_PESSOA, P.DT_FALEC_PESSOA) / 365.0)) >= 44 )THEN 'Vitalício'
+						END) END) END)
+
+
+
+WHEN 2 THEN (CASE WHEN (S.N_ANOTOTAL_SIMULBNFEPFPESSOA * 365 + S.N_MESTOTAL_SIMULBNFEPFPESSOA *30 + S.N_DIATOTAL_SIMULBNFEPFPESSOA) < 540 THEN '4 meses de benefício'
+					--TEMPO DE RELACIONAMENTO
+			ELSE  (CASE WHEN DATEDIFF(YEAR,R.DT_INIVIG_RELACPESSOA,GETDATE()) < 2  THEN '4 meses de benefício'
+					-- IDADE DO VIÚVO
+					ELSE (CASE 
+								WHEN (FLOOR(DATEDIFF(DAY, P2.DT_NASC_PESSOA, P.DT_FALEC_PESSOA) / 365.0)) < 21 THEN '3 anos de benefício'
+								WHEN ((FLOOR(DATEDIFF(DAY, P2.DT_NASC_PESSOA, P.DT_FALEC_PESSOA) / 365.0)) >= 21 AND (FLOOR(DATEDIFF(DAY, P2.DT_NASC_PESSOA, P.DT_FALEC_PESSOA) / 365.0)) < 27 )THEN '6 anos de benefício'
+								WHEN ((FLOOR(DATEDIFF(DAY, P2.DT_NASC_PESSOA, P.DT_FALEC_PESSOA) / 365.0)) >= 27 AND (FLOOR(DATEDIFF(DAY, P2.DT_NASC_PESSOA, P.DT_FALEC_PESSOA) / 365.0)) < 30 )THEN '10 anos de benefício'
+								WHEN ((FLOOR(DATEDIFF(DAY, P2.DT_NASC_PESSOA, P.DT_FALEC_PESSOA) / 365.0)) >= 30 AND (FLOOR(DATEDIFF(DAY, P2.DT_NASC_PESSOA, P.DT_FALEC_PESSOA) / 365.0)) < 41 )THEN '15 anos de benefício'
+								WHEN ((FLOOR(DATEDIFF(DAY, P2.DT_NASC_PESSOA, P.DT_FALEC_PESSOA) / 365.0)) >= 41 AND (FLOOR(DATEDIFF(DAY, P2.DT_NASC_PESSOA, P.DT_FALEC_PESSOA) / 365.0)) < 43 )THEN '20 anos de benefício'
+								WHEN ((FLOOR(DATEDIFF(DAY, P2.DT_NASC_PESSOA, P.DT_FALEC_PESSOA) / 365.0)) >= 44 )THEN 'Vitalício'
+			END) END) END)
+
+-- FILHO OU ENTEADO MENOR DE 21
+WHEN 3 THEN convert(varchar,dateadd(YEAR,21,P2.DT_NASC_PESSOA),103)
+WHEN 10 THEN convert(varchar,dateadd(YEAR,21,P2.DT_NASC_PESSOA),103)
+
+-- INVÁLIDO
+WHEN 4 THEN 'Enquanto perdurar a invalidez'
+WHEN 7 THEN 'Enquanto perdurar a invalidez'
+WHEN 9 THEN 'Enquanto perdurar a invalidez'
+
+-- OUTROS
+ELSE 'Vitalício'
+
+END) AS [TEXTO DEPENDENTE] ,
+
+CONVERT(VARCHAR,S.N_ANOTOTAL_SIMULBNFEPFPESSOA * 365 + S.N_MESTOTAL_SIMULBNFEPFPESSOA *30 + S.N_DIATOTAL_SIMULBNFEPFPESSOA) + ' dias ou ' + CONVERT(VARCHAR,S.N_ANOTOTAL_SIMULBNFEPFPESSOA) + ' ano(s) ' + CONVERT(VARCHAR,S.N_MESTOTAL_SIMULBNFEPFPESSOA) + ' mes(es) ' + CONVERT(VARCHAR,S.N_DIATOTAL_SIMULBNFEPFPESSOA) + ' dia(s)'  AS [TEMPO DE CONTR],
+S.N_SEQ_SIMULBNFEPFPESSOA AS [N SIMULAÇÃO],
+
+(CASE WHEN PARENT.N_GRAUPARENT_GRAUPARENT IN (1,2) THEN 'S' ELSE 'N'
+END) AS IMPRIME,
+
+DIB.DTDIB AS DIB,
+SP.N_TIPSERV_TIPSERV AS TIPOSERV,
+				(select count (*) 
+
+				FROM SERVICOPESSOA SP
+				INNER JOIN ORGANIZACAO O ON SP.N_ORG_ORG = O.N_ORG_ORG
+				INNER JOIN TIPOSERVICO TIPO ON TIPO.N_TIPSERV_TIPSERV = SP.N_TIPSERV_TIPSERV				
+				LEFT JOIN PESSOA P ON SP.N_PESSOA_PESSOA = P.N_PESSOA_PESSOA
+				LEFT JOIN GRUPOFAMILIAR GFAM ON GFAM.N_PESSOA_PESSOA = SP.N_PESSOA_PESSOA AND GFAM.S_DIREITOCOTA_GRPFAM = 'S'
+				
+				WHERE 
+				SP.N_TIPSERV_TIPSERV IN (21,32,41,42,43,57,66,91) AND
+				SP.N_NUMPROT_SERVPESSOA = @Protocolo AND
+				SP.N_ANOREFER_SERVPESSOA = @Ano
+				) as linhas
+
+FROM SERVICOPESSOA SP
+INNER JOIN ORGANIZACAO O ON SP.N_ORG_ORG = O.N_ORG_ORG
+INNER JOIN TIPOSERVICO TIPO ON TIPO.N_TIPSERV_TIPSERV = SP.N_TIPSERV_TIPSERV
+INNER JOIN SIMULACAOBENEFICIOESPECIFICACAOPESSOA S ON SP.N_PESSOA_PESSOA = S.N_PESSOA_PESSOA
+LEFT JOIN CARGOORGANIZACAOPESSOA COP ON SP.N_CODORI_ORGPESSOA = COP.N_CODORI_ORGPESSOA AND COP.N_ORG_ORG = SP.N_ORG_ORG AND COP.DT_INIVIG_CARGOORGPESSOA = (SELECT MAX(COP4.DT_INIVIG_CARGOORGPESSOA)
+																																									FROM CARGOORGANIZACAOPESSOA COP4
+																																									WHERE COP4.N_CODORI_ORGPESSOA = COP.N_CODORI_ORGPESSOA AND COP.N_ORG_ORG = COP4.N_ORG_ORG)
+LEFT JOIN CARGO ON COP.N_CARGO_CARGO = CARGO.N_CARGO_CARGO AND COP.N_ORG_ORG = CARGO.N_ORG_ORG 
+LEFT JOIN REFERENCIAGRUPO RG ON RG.N_COD_REFERGRP = COP.N_COD_REFERGRP
+LEFT JOIN REFERENCIACLASSE RC ON RC.N_COD_REFERCLASS = COP.N_COD_REFERCLASS
+LEFT JOIN REFERENCIANIVEL RN ON RN.N_COD_REFERNIV = COP.N_COD_REFERNIV
+LEFT JOIN PESSOA P ON SP.N_PESSOA_PESSOA = P.N_PESSOA_PESSOA
+LEFT JOIN GRUPOFAMILIAR GFAM ON GFAM.N_PESSOA_PESSOA = SP.N_PESSOA_PESSOA AND GFAM.S_DIREITOCOTA_GRPFAM = 'S'
+LEFT JOIN RELACAOPESSOA R ON GFAM.N_PESSOA_PESSOA = R.N_PESSOA_PESSOA AND GFAM.N_PESSOARELAC_PESSOA = R.N_PESSOARELAC_PESSOA
+LEFT JOIN GRAUDEPARENTESCO PARENT ON R.N_GRAUPARENT_GRAUPARENT = PARENT.N_GRAUPARENT_GRAUPARENT
+LEFT JOIN PESSOA P2 ON GFAM.N_PESSOARELAC_PESSOA = P2.N_PESSOA_PESSOA
+
+	OUTER APPLY 
+		(SELECT 
+				CASE WHEN DATEDIFF(day, P4.DT_FALEC_PESSOA, SP4.DT_SLCT_SERVPESSOA) <= 30
+				THEN P4.DT_FALEC_PESSOA 
+				ELSE SP4.DT_SLCT_SERVPESSOA
+				END	AS DT_DIB
+		FROM SERVICOPESSOA SP4 inner JOIN PESSOA P4 ON P4.N_PESSOA_PESSOA = SP4.N_PESSOA_PESSOA
+		WHERE 
+		SP4.N_NUMPROT_SERVPESSOA = @Protocolo AND
+		SP4.N_ANOREFER_SERVPESSOA = @Ano 
+		) DIB(DTDIB)
+
+	OUTER APPLY
+
+		  (SELECT        PESSOA_3.S_NOM_PESSOA AS USUARIO
+                               FROM            PESSOA AS PESSOA_3 INNER JOIN
+                                                         ORGANIZACAOPESSOA AS ORGANIZACAOPESSOA_3 ON PESSOA_3.N_PESSOA_PESSOA = ORGANIZACAOPESSOA_3.N_PESSOA_PESSOA INNER JOIN
+                                                         CARGOORGANIZACAOPESSOA AS CARGOORGANIZACAOPESSOA_3 ON ORGANIZACAOPESSOA_3.N_CODORI_ORGPESSOA = CARGOORGANIZACAOPESSOA_3.N_CODORI_ORGPESSOA AND 
+                                                         ORGANIZACAOPESSOA_3.N_ORG_ORG = CARGOORGANIZACAOPESSOA_3.N_ORG_ORG INNER JOIN
+                                                         CARGO AS CARGO_3 ON CARGOORGANIZACAOPESSOA_3.N_ORG_ORG = CARGO_3.N_ORG_ORG AND CARGOORGANIZACAOPESSOA_3.N_CARGO_CARGO = CARGO_3.N_CARGO_CARGO
+                               WHERE        (ORGANIZACAOPESSOA_3.N_ORG_ORG = 4) AND (ORGANIZACAOPESSOA_3.N_CODORI_ORGPESSOA = @MUsuario)) AS USUARIO,
+                             (SELECT       CARGO_3.S_DCR_CARGO AS [CARGO USUARIO]
+                               FROM            PESSOA AS PESSOA_3 INNER JOIN
+                                                         ORGANIZACAOPESSOA AS ORGANIZACAOPESSOA_3 ON PESSOA_3.N_PESSOA_PESSOA = ORGANIZACAOPESSOA_3.N_PESSOA_PESSOA INNER JOIN
+                                                         CARGOORGANIZACAOPESSOA AS CARGOORGANIZACAOPESSOA_3 ON ORGANIZACAOPESSOA_3.N_CODORI_ORGPESSOA = CARGOORGANIZACAOPESSOA_3.N_CODORI_ORGPESSOA AND 
+                                                         ORGANIZACAOPESSOA_3.N_ORG_ORG = CARGOORGANIZACAOPESSOA_3.N_ORG_ORG INNER JOIN
+                                                         CARGO AS CARGO_3 ON CARGOORGANIZACAOPESSOA_3.N_ORG_ORG = CARGO_3.N_ORG_ORG AND CARGOORGANIZACAOPESSOA_3.N_CARGO_CARGO = CARGO_3.N_CARGO_CARGO
+                               WHERE        (ORGANIZACAOPESSOA_3.N_ORG_ORG = 4) AND (ORGANIZACAOPESSOA_3.N_CODORI_ORGPESSOA = @MUsuario)) AS CARGO_USUARIO
+
+
+	
+
+WHERE 
+SP.N_TIPSERV_TIPSERV IN (21,32,41,42,43,57,66,91) AND
+SP.N_NUMPROT_SERVPESSOA = @Protocolo AND
+SP.N_ANOREFER_SERVPESSOA = @Ano and 
+SP.N_PESSOA_PESSOA = S.N_PESSOA_PESSOA AND
+COP.DT_INIVIG_CARGOORGPESSOA = (SELECT MAX(COP5.DT_INIVIG_CARGOORGPESSOA)
+								FROM CARGOORGANIZACAOPESSOA COP5
+								WHERE COP5.N_CODORI_ORGPESSOA = COP.N_CODORI_ORGPESSOA AND COP.N_ORG_ORG = COP5.N_ORG_ORG)
+
+							
+
+
+												AND  S.N_SEQ_SIMULBNFEPFPESSOA = (SELECT	max(S2.N_SEQ_SIMULBNFEPFPESSOA)
+																FROM	SIMULACAOBENEFICIOESPECIFICACAOPESSOA S2
+																WHERE	S2.N_PESSOA_PESSOA = S.N_PESSOA_PESSOA)]]>
+	</queryString>
+	<field name="NOMEPROT" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NOMEPROT"/>
+		<property name="com.jaspersoft.studio.field.label" value="NOMEPROT"/>
+	</field>
+	<field name="NOME" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NOME"/>
+		<property name="com.jaspersoft.studio.field.label" value="NOME"/>
+	</field>
+	<field name="NASCIMENTO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NASCIMENTO"/>
+		<property name="com.jaspersoft.studio.field.label" value="NASCIMENTO"/>
+	</field>
+	<field name="IDADE DO SERVIDOR" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="IDADE DO SERVIDOR"/>
+		<property name="com.jaspersoft.studio.field.label" value="IDADE DO SERVIDOR"/>
+	</field>
+	<field name="CPF" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CPF"/>
+		<property name="com.jaspersoft.studio.field.label" value="CPF"/>
+	</field>
+	<field name="MATRICULA" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="MATRICULA"/>
+		<property name="com.jaspersoft.studio.field.label" value="MATRICULA"/>
+	</field>
+	<field name="OBITO" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.name" value="OBITO"/>
+		<property name="com.jaspersoft.studio.field.label" value="OBITO"/>
+	</field>
+	<field name="DATAREQUERIMENTO" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.name" value="DATAREQUERIMENTO"/>
+		<property name="com.jaspersoft.studio.field.label" value="DATAREQUERIMENTO"/>
+	</field>
+	<field name="DIB" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.name" value="DIB"/>
+		<property name="com.jaspersoft.studio.field.label" value="DIB"/>
+	</field>
+	<field name="ORGANIZAÇÃO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ORGANIZAÇÃO"/>
+		<property name="com.jaspersoft.studio.field.label" value="ORGANIZAÇÃO"/>
+	</field>
+	<field name="CARGO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CARGO"/>
+		<property name="com.jaspersoft.studio.field.label" value="CARGO"/>
+	</field>
+	<field name="SERVIÇO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="SERVIÇO"/>
+		<property name="com.jaspersoft.studio.field.label" value="SERVIÇO"/>
+	</field>
+	<field name="MUsuario" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="MUsuario"/>
+		<property name="com.jaspersoft.studio.field.label" value="MUsuario"/>
+	</field>
+	<field name="Nome IPRESB" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="Nome IPRESB"/>
+		<property name="com.jaspersoft.studio.field.label" value="Nome IPRESB"/>
+	</field>
+	<field name="Cargo IPRESB" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="Cargo IPRESB"/>
+		<property name="com.jaspersoft.studio.field.label" value="Cargo IPRESB"/>
+	</field>
+	<field name="NOMEDEP" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NOMEDEP"/>
+		<property name="com.jaspersoft.studio.field.label" value="NOMEDEP"/>
+	</field>
+	<field name="NASCIMENTO DEP" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NASCIMENTO DEP"/>
+		<property name="com.jaspersoft.studio.field.label" value="NASCIMENTO DEP"/>
+	</field>
+	<field name="IDADE DEP" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="IDADE DEP"/>
+		<property name="com.jaspersoft.studio.field.label" value="IDADE DEP"/>
+	</field>
+	<field name="parentesco" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="parentesco"/>
+		<property name="com.jaspersoft.studio.field.label" value="parentesco"/>
+	</field>
+	<field name="INICIO RELACIONAMENTO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="INICIO RELACIONAMENTO"/>
+		<property name="com.jaspersoft.studio.field.label" value="INICIO RELACIONAMENTO"/>
+	</field>
+	<field name="FIM RELACIONAMENTO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="FIM RELACIONAMENTO"/>
+		<property name="com.jaspersoft.studio.field.label" value="FIM RELACIONAMENTO"/>
+	</field>
+	<field name="TEMPO DE RELACIONAMENTO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="TEMPO DE RELACIONAMENTO"/>
+		<property name="com.jaspersoft.studio.field.label" value="TEMPO DE RELACIONAMENTO"/>
+	</field>
+	<field name="TEXTO_PARENTESCO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="TEXTO_PARENTESCO"/>
+		<property name="com.jaspersoft.studio.field.label" value="TEXTO_PARENTESCO"/>
+	</field>
+	<field name="TEXTO DEPENDENTE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="TEXTO DEPENDENTE"/>
+		<property name="com.jaspersoft.studio.field.label" value="TEXTO DEPENDENTE"/>
+	</field>
+	<field name="TEMPO DE CONTR" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="TEMPO DE CONTR"/>
+		<property name="com.jaspersoft.studio.field.label" value="TEMPO DE CONTR"/>
+	</field>
+	<field name="N SIMULAÇÃO" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="N SIMULAÇÃO"/>
+		<property name="com.jaspersoft.studio.field.label" value="N SIMULAÇÃO"/>
+	</field>
+	<field name="IMPRIME" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="IMPRIME"/>
+		<property name="com.jaspersoft.studio.field.label" value="IMPRIME"/>
+	</field>
+	<field name="COLUMN_28" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.name" value="DIB"/>
+		<property name="com.jaspersoft.studio.field.label" value="DIB"/>
+	</field>
+	<field name="TIPOSERV" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="TIPOSERV"/>
+		<property name="com.jaspersoft.studio.field.label" value="TIPOSERV"/>
+	</field>
+	<field name="linhas" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="linhas"/>
+		<property name="com.jaspersoft.studio.field.label" value="linhas"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="334" splitType="Stretch">
+			<componentElement>
+				<reportElement x="-20" y="0" width="530" height="70" uuid="f4174901-f3eb-4680-bbca-d2c628938d0d"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Logo" uuid="8860c172-a91f-4636-a65a-c91118869014">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="70" width="530">
+						<image>
+							<reportElement x="0" y="0" width="520" height="70" uuid="72dd9e0c-3681-48da-80a0-457c506984bf"/>
+							<imageExpression><![CDATA[$F{IMG_IMGFUNDO_IMGORG}]]></imageExpression>
+						</image>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<textField>
+				<reportElement x="-20" y="225" width="238" height="21" uuid="29120b5c-3c27-4adb-98c6-6dfe786837bc">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="cm"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="html">
+					<font fontName="Times New Roman" size="9"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<b>BENEFÍCIO: </b>" +$F{SERVIÇO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="119" y="141" width="200" height="20" uuid="0e2a701f-3593-439f-9bf7-0a999c0e8122"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font fontName="Times New Roman" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DADOS DO SERVIDOR]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="-20" y="204" width="238" height="21" uuid="023b98ba-03c0-47e1-bec6-e2922872f4da"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="html">
+					<font fontName="Times New Roman" size="9"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<b>ENTE: </b>" + $F{ORGANIZAÇÃO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-20" y="162" width="489" height="21" uuid="947b595c-511e-4d6a-a672-be906202786f">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="cm"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="styled">
+					<font fontName="Times New Roman" size="9"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<style isBold='true'>NOME DO SERVIDOR: </style>" + $F{NOME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="218" y="183" width="251" height="21" uuid="4bfadc87-1ca9-43c0-a549-f3b1259c3f68">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="cm"/>
+				</reportElement>
+				<box padding="0">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="html">
+					<font fontName="Times New Roman" size="9"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<b>CARGO: </b>" +$F{CARGO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-20" y="183" width="238" height="21" uuid="7796756e-b780-4617-b8a9-ab22cdabb344"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="html">
+					<font fontName="Times New Roman" size="9"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<b>CPF: </b>" + $F{CPF}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="218" y="204" width="131" height="21" uuid="b4105d4d-6bc5-4bb5-b6d3-1f761e8f997d"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="html">
+					<font fontName="Times New Roman" size="9"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<b>MATRÍCULA: </b>" + $F{MATRICULA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-21" y="100" width="489" height="21" uuid="5e8ead78-e09b-4770-a14a-8635c6749606">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="cm"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Times New Roman" size="14" isBold="true"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<style isBold='true'>RELAÇÃO DE DEPENDENTES </style>"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="119" y="306" width="200" height="20" uuid="fa880432-f73d-4fed-a158-6189c7484d9b"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font fontName="Times New Roman" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REQUERENTE(S)]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="349" y="225" width="120" height="21" uuid="9bab5d07-3e25-4272-bf2f-5476b9794454"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="html">
+					<font fontName="Times New Roman" size="9"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<b>ÓBITO: </b>" + new java.text.SimpleDateFormat("dd/MM/yyyy").format($F{OBITO})]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="-20" y="246" width="489" height="22" uuid="bc197566-5086-48c6-b8eb-0513fd42bcdc">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="cm"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="html">
+					<font fontName="Times New Roman" size="9"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<b>TEMPO DE CONTRIBUIÇÃO: </b>" + $F{TEMPO DE CONTR}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="-20" y="268" width="238" height="22" uuid="6bf1231b-b6aa-47b7-b9c1-cfa9fcf98eaa">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="cm"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="html">
+					<font fontName="Times New Roman" size="9"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<b>DATA DO INÍCIO DO BENEFÍCIO: </b>" + new java.text.SimpleDateFormat("dd/MM/yyyy").format($F{DIB})]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="218" y="268" width="251" height="22" uuid="bdad6119-3deb-4c4a-900f-a68cc2f37509"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="html">
+					<font fontName="Times New Roman" size="9"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<b>DATA DO REQUERIMENTO: </b>" +new java.text.SimpleDateFormat("dd/MM/yyyy").format($F{DATAREQUERIMENTO})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-20" y="121" width="488" height="20" uuid="5d7634a3-c83c-4877-8b05-c71512efd1b0"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="Times New Roman" size="11" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Art. 29 e seguintes da Lei Complementar 434 de 14 de agosto de 2018.]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="349" y="204" width="120" height="21" uuid="6fdf1e20-0e07-410b-95d1-5bd94495f1d6"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="html">
+					<font fontName="Times New Roman" size="9"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<b>NASCIMENTO: </b>" +  $F{NASCIMENTO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="218" y="225" width="131" height="21" uuid="fa0a66d9-60a2-48ce-b713-99da752191c8"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="html">
+					<font fontName="Times New Roman" size="9"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<b>  PROCESSO: </b>" +$F{NOMEPROT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band/>
+	</columnHeader>
+	<detail>
+		<band height="111" splitType="Stretch">
+			<printWhenExpression><![CDATA[$F{TIPOSERV}.intValue() == 21]]></printWhenExpression>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="119" y="0" width="349" height="19" isRemoveLineWhenBlank="true" uuid="f9cf07b9-62da-460b-9881-e8518f509ac0">
+					<printWhenExpression><![CDATA[$F{TIPOSERV}.intValue() == 21]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NOMEDEP}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-21" y="0" width="140" height="20" uuid="51ca4ffb-7c11-491e-a06f-8f426d20fae8"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nome:]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="119" y="19" width="101" height="20" isRemoveLineWhenBlank="true" uuid="ad8f2a82-e808-4867-a3b0-a3c7e110ec84">
+					<printWhenExpression><![CDATA[$F{TIPOSERV}.intValue() == 21]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NASCIMENTO DEP}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-21" y="20" width="140" height="20" uuid="866c0707-3db7-4597-93f2-941742184f7d"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Data de nascimento:]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="410" y="20" width="58" height="21" isRemoveLineWhenBlank="true" uuid="d63ba942-24b7-4568-87dc-33468603fa7d">
+					<printWhenExpression><![CDATA[$F{TIPOSERV}.intValue() == 21]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{IDADE DEP}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="220" y="19" width="190" height="21" uuid="01e57889-8455-471d-99da-74c1e04072fb"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<text><![CDATA[Idade na data do falecimento do servidor:]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="119" y="40" width="349" height="20" isRemoveLineWhenBlank="true" uuid="ce420a03-8307-4074-8819-74f44368acb8">
+					<printWhenExpression><![CDATA[$F{TIPOSERV}.intValue() == 21]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{parentesco}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement isPrintRepeatedValues="false" x="-21" y="60" width="140" height="20" isRemoveLineWhenBlank="true" uuid="802c5af8-b3bd-413a-84c6-5beafd027370">
+					<printWhenExpression><![CDATA[!("N".equals($F{IMPRIME}))]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Início do relacionamento:]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="119" y="60" width="101" height="20" isRemoveLineWhenBlank="true" uuid="0a49189f-4ed1-4439-a38a-b9eeee20d6e1">
+					<printWhenExpression><![CDATA[!("N".equals($F{IMPRIME}))]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{INICIO RELACIONAMENTO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement isPrintRepeatedValues="false" x="220" y="60" width="140" height="20" isRemoveLineWhenBlank="true" uuid="e1b98589-7462-48ba-bff9-3e038d354ba8">
+					<printWhenExpression><![CDATA[!("N".equals($F{IMPRIME}))]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Tempo de relacionamento:]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="360" y="60" width="101" height="20" isRemoveLineWhenBlank="true" uuid="f83ac768-1022-4e7b-ae09-06815baae14f">
+					<printWhenExpression><![CDATA[!("N".equals($F{IMPRIME}))]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TEMPO DE RELACIONAMENTO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-21" y="80" width="140" height="20" uuid="80cef497-3a9c-43f8-9daf-6be56d4cf814"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cessação do benefício:]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="119" y="80" width="349" height="20" isRemoveLineWhenBlank="true" uuid="f5dca39f-7c1d-44d8-8b8d-ff2300157b41">
+					<printWhenExpression><![CDATA[$F{TIPOSERV}.intValue() == 21]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TEXTO DEPENDENTE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="-21" y="40" width="140" height="20" isRemoveLineWhenBlank="true" uuid="6e4eb0ed-c3c2-4db1-ae52-c1583c198309">
+					<printWhenExpression><![CDATA[$F{TIPOSERV}.intValue() == 21]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TEXTO_PARENTESCO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="169" splitType="Stretch">
+			<textField>
+				<reportElement x="104" y="52" width="239" height="57" uuid="ed35d714-8eff-420d-a458-4d7186c697f0"/>
+				<box padding="1">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" markup="html">
+					<font fontName="Times New Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA["RESPONSÁVEL PELAS INFORMAÇÕES "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-16" y="5" width="500" height="32" uuid="3e2550bd-3f44-4d3a-be26-53e058939990">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="cm"/>
+				</reportElement>
+				<box padding="1">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Bottom" markup="html">
+					<font fontName="Times New Roman"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<b>LOCAL E DATA:</b> <br> BARUERI, " + LOWER(DATEFORMAT(TODAY(),"d 'de' MMMM 'de' yyyy"))+"."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="113" y="61" width="220" height="18" uuid="1fe21b17-b2d6-45c9-ba8f-7b1d6d81c882"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font fontName="Times New Roman" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ASSINADO DIGITALMENTE POR"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="113" y="79" width="220" height="30" uuid="52343424-224e-478e-ae70-ed27da54ed9e"/>
+				<textElement textAlignment="Center" verticalAlignment="Top" markup="html">
+					<font fontName="Times New Roman" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Nome IPRESB}+ "<br> Matrícula: "+ $F{MUsuario}+ "<br>"]]></textFieldExpression>
+			</textField>
+			<componentElement>
+				<reportElement x="-11" y="101" width="490" height="55" uuid="d9e30884-fbee-43cb-b497-3cfa76808906"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Rodape" uuid="c2c96a01-ec05-49c8-bf81-1bbcd92ee3c7">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="55" width="490">
+						<image>
+							<reportElement x="0" y="5" width="490" height="50" uuid="04136a1e-c82c-4a25-9a0d-3a6347f6eb5e"/>
+							<imageExpression><![CDATA[$F{IMG_IMGFUNDO_IMGORG}]]></imageExpression>
+						</image>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+		</band>
+	</pageFooter>
+</jasperReport>

@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4" pageWidth="595" pageHeight="842" columnWidth="470" leftMargin="85" rightMargin="40" topMargin="14" bottomMargin="0" uuid="d946ebe6-2e92-44c5-aed7-8f7380925278">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="IPRESB"/>
+	<property name="com.jaspersoft.studio.unit." value="cm"/>
+	<subDataset name="Logo" uuid="e9f90e01-6f3f-44b6-9906-95c12f91afd0">
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="IPRESB"/>
+		<queryString language="SQL">
+			<![CDATA[Select  IMG_IMGFUNDO_IMGORG
+ from dbo."IMAGEMORGANIZACAO"  
+ where  "N_ORG_ORG" = 42]]>
+		</queryString>
+		<field name="IMG_IMGFUNDO_IMGORG" class="java.awt.Image"/>
+	</subDataset>
+	<subDataset name="Rodape" uuid="848c67d2-d15a-4bee-a03e-4616d865bbac">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="IPRESB"/>
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<queryString>
+			<![CDATA[Select dbo."IMAGEMORGANIZACAO"."IMG_IMGFUNDO_IMGORG" 
+ from dbo."IMAGEMORGANIZACAO" 
+ where  dbo."IMAGEMORGANIZACAO"."N_ORG_ORG" = 43]]>
+		</queryString>
+		<field name="IMG_IMGFUNDO_IMGORG" class="java.awt.Image"/>
+	</subDataset>
+	<queryString language="SQL">
+		<![CDATA[USE aspprev2_baruerisp_prd
+
+
+DECLARE @ANOATUAL INT
+SET @ANOATUAL = YEAR(GETDATE())
+
+DECLARE @MESATUAL INT
+SET @MESATUAL = MONTH(GETDATE())
+
+DECLARE @DIAATUAL INT
+SET @DIAATUAL = DAY(GETDATE())
+
+DECLARE @REFATUAL INT
+SET @REFATUAL = CONCAT(@ANOATUAL,@MESATUAL)
+
+DECLARE @DATAATUAL VARCHAR(10)
+SET @DATAATUAL = DATEFROMPARTS(@ANOATUAL,@MESATUAL,@DIAATUAL)
+--SET @DATAATUAL = DATEFROMPARTS(@ANOATUAL,@MESATUAL,31)
+
+
+Select DISTINCT ---TOP 50
+
+  --CONCAT(o.N_ORG_ORG,op.N_CODORI_ORGPESSOA) AS [NUMERO UNICO],
+  --o.S_CNPJ_ORG As [CNPJ_ColE],
+  (CASE o.N_ORG_ORG 
+	
+	WHEN 1 THEN 'PMB' 
+	WHEN 2 THEN 'CMB' 
+	WHEN 3 THEN 'FIEB'
+	WHEN 4 THEN 'IPRESB' END) AS [ENTE],
+  --o.S_DCR_ORG AS [ENTE],
+  
+  op.N_CODORI_ORGPESSOA As [MATRÍCULA],
+  --p.S_CPF_PESSOA As [CPF],
+  p.S_NOM_PESSOA as [NOME],
+  c.S_DCR_CARGO As [CARGO ATUAL],
+  Convert(VARCHAR,p.DT_NASC_PESSOA,103) As [NASCIMENTO],
+  p.DT_NASC_PESSOA AS [NASC ORG],
+
+	 (CASE 
+        WHEN 
+        MONTH(@DATAATUAL) > MONTH(DT_NASC_PESSOA) -- *1
+        OR
+        -- *2
+        (
+            MONTH(@DATAATUAL) = MONTH(DT_NASC_PESSOA) 
+            AND DAY(@DATAATUAL) >= DAY(DT_NASC_PESSOA) 
+        )
+    THEN DATEDIFF(YEAR, DT_NASC_PESSOA, @DATAATUAL) 
+    ELSE DATEDIFF(YEAR, DT_NASC_PESSOA, @DATAATUAL) -1 END) AS IDADE,
+
+	CONVERT(VARCHAR,DATEADD(year, 75 ,DATEFROMPARTS(YEAR(p.DT_NASC_PESSOA),MONTH(p.DT_NASC_PESSOA),DAY(p.DT_NASC_PESSOA))),103) As [CUMPRIMENTO 75 ANOS]
+
+
+	--  TIPO DE VÍNCULO
+	--1 - Servidor Efetivo
+	--2 - Servido Efetivo Ocupante de Cargo em Comissão
+	--3 - Estável
+	--4 - Outros
+  --Case When cop.N_VINC_CARGOORGPESSOA = 2 Then 1 When cop.N_VINC_CARGOORGPESSOA = 4 Then 2 Else 4 End As [TIPO VÍNCULO],
+	
+	--Convert(VARCHAR,op.DT_ADM_ORGPESSOA,103) As [INGRESSO NO ENTE],
+
+	--Convert(VARCHAR,op.DT_ADM_ORGPESSOA,103) As [INGRESSO NA CARREIRA],
+
+	--Convert(VARCHAR,cop.DT_INIVIG_CARGOORGPESSOA,103) As [DATA INÍCIO CARGO ATUAL],
+
+
+From PESSOA p
+Inner Join ORGANIZACAOPESSOA op On p.N_PESSOA_PESSOA = op.N_PESSOA_PESSOA
+Inner Join ORGANIZACAO o On o.N_ORG_ORG = op.N_ORG_ORG
+Inner Join CARGOORGANIZACAOPESSOA cop On (cop.N_PESSOA_PESSOA = p.N_PESSOA_PESSOA) 
+	And (cop.N_ORG_ORG = op.N_ORG_ORG) And (cop.N_CODORI_ORGPESSOA =  op.N_CODORI_ORGPESSOA) 
+	And (cop.DT_INIVIG_CARGOORGPESSOA <= @DATAATUAL) 
+	And (IsNull(cop.DT_FIMVIG_CARGOORGPESSOA, Convert(DATETIME,@DATAATUAL,102)) >=  Convert(DATETIME,@DATAATUAL,102))
+Inner Join CARGO c On (c.N_ORG_ORG = cop.N_ORG_ORG) And (c.N_CARGO_CARGO = cop.N_CARGO_CARGO)
+Left Join CARREIRA car On car.N_COD_CARREIRA = c.N_COD_CARREIRA
+Inner Join PLANOORGANIZACAOPESSOA pop On (pop.N_ORG_ORG = op.N_ORG_ORG) And (pop.N_CODORI_ORGPESSOA = op.N_CODORI_ORGPESSOA)
+Inner Join PLANO On PLANO.N_PLN_PLN = pop.N_PLN_PLN
+
+
+
+Where  (PLANO.S_TIP_PLN In ('P', 'F')) And  (pop.DT_INIVIG_PLNORGPESSOA <= @DATAATUAL) 
+  And (pop.DT_FIMVIG_PLNORGPESSOA >= @DATAATUAL Or pop.DT_FIMVIG_PLNORGPESSOA Is Null) 
+  And (op.DT_DSL_ORGPESSOA Is Null Or op.DT_DSL_ORGPESSOA >= @DATAATUAL) 
+  And (p.DT_FALEC_PESSOA Is Null Or p.DT_FALEC_PESSOA >= @DATAATUAL)
+  --Definindo as aposentadorias compulsórias dos próximos 12 meses
+  And DATEADD(year, 75 ,DATEFROMPARTS(YEAR(p.DT_NASC_PESSOA),MONTH(p.DT_NASC_PESSOA),DAY(p.DT_NASC_PESSOA))) <= DATEADD (Month, Datediff(Month, 0, DATEADD(m, 12, current_timestamp)), 0) 
+  AND (cop.N_VINC_CARGOORGPESSOA = 2 OR cop.N_VINC_CARGOORGPESSOA = 4)
+
+Order By p.DT_NASC_PESSOA ASC
+
+]]>
+	</queryString>
+	<field name="ENTE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="ENTE"/>
+	</field>
+	<field name="MATRÍCULA" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="MATRÍCULA"/>
+	</field>
+	<field name="NOME" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="NOME"/>
+	</field>
+	<field name="CARGO ATUAL" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CARGO ATUAL"/>
+	</field>
+	<field name="NASCIMENTO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="NASCIMENTO"/>
+	</field>
+	<field name="NASC ORG" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.label" value="NASC ORG"/>
+	</field>
+	<field name="IDADE" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="IDADE"/>
+	</field>
+	<field name="CUMPRIMENTO 75 ANOS" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CUMPRIMENTO 75 ANOS"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="77" splitType="Stretch">
+			<componentElement>
+				<reportElement x="-30" y="-5" width="549" height="82" uuid="f4174901-f3eb-4680-bbca-d2c628938d0d"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Logo" uuid="8860c172-a91f-4636-a65a-c91118869014">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="82" width="549">
+						<image>
+							<reportElement x="0" y="0" width="520" height="70" uuid="72dd9e0c-3681-48da-80a0-457c506984bf"/>
+							<imageExpression><![CDATA[$F{IMG_IMGFUNDO_IMGORG}]]></imageExpression>
+						</image>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="79">
+			<staticText>
+				<reportElement mode="Opaque" x="407" y="50" width="63" height="29" forecolor="#006699" backcolor="#E6E6E6" uuid="8be8f81d-1439-44cd-ab62-b162c306f5e8">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4058f1d-2bcc-49b6-8de2-3a1e4f62f649"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DATA COMPULSÓRIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="-20" y="50" width="31" height="29" forecolor="#006699" backcolor="#E6E6E6" uuid="48dcdb6a-71ec-4f7a-be13-bec6d8bcf8f1">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="32bb3ea0-7607-4dc0-8785-1b0138b45b72"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ENTE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="61" y="50" width="169" height="29" forecolor="#006699" backcolor="#E6E6E6" uuid="6a55c20b-880f-4fc8-b755-124a03be51b5">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4058f1d-2bcc-49b6-8de2-3a1e4f62f649"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOME]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="310" y="50" width="63" height="29" forecolor="#006699" backcolor="#E6E6E6" uuid="5ebe2103-8c1c-4747-9f89-f734616193cc">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4058f1d-2bcc-49b6-8de2-3a1e4f62f649"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DATA NASCIMENTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="373" y="50" width="34" height="29" forecolor="#006699" backcolor="#E6E6E6" uuid="c8359031-e838-444b-80cf-4b7c628e59cb">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4058f1d-2bcc-49b6-8de2-3a1e4f62f649"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[IDADE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="11" y="50" width="50" height="29" forecolor="#006699" backcolor="#E6E6E6" uuid="91ff91b9-dd55-453a-b381-e33917f96815">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4058f1d-2bcc-49b6-8de2-3a1e4f62f649"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MATRÍCULA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="-20" y="0" width="489" height="30" forecolor="#006699" backcolor="#E6E6E6" uuid="60c1b618-c97d-4c8a-a3cf-c3fa0171a125">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4058f1d-2bcc-49b6-8de2-3a1e4f62f649"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[APOSENTADORIAS COMPULSÓRIAS - PRÓXIMOS 12 MESES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="230" y="50" width="80" height="29" forecolor="#006699" backcolor="#E6E6E6" uuid="40a202da-e9a5-4590-8e5e-15471e5ec491">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4058f1d-2bcc-49b6-8de2-3a1e4f62f649"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CARGO]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="39" splitType="Stretch">
+			<textField>
+				<reportElement x="407" y="0" width="63" height="39" uuid="dee77f17-abc2-492b-8451-6d301ac75827"/>
+				<box>
+					<pen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CUMPRIMENTO 75 ANOS}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="373" y="0" width="34" height="39" uuid="bc8a0c64-e679-4fa5-8d89-baded1ed4080"/>
+				<box>
+					<pen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{IDADE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="11" y="0" width="50" height="39" uuid="c503973d-b571-425e-aed3-aa872528f398"/>
+				<box>
+					<pen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MATRÍCULA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="61" y="0" width="169" height="39" uuid="3071d4bb-2791-4aa8-a504-dd0701f32705"/>
+				<box>
+					<pen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NOME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-20" y="0" width="31" height="39" uuid="54e8be82-d9cd-4d3d-ad2c-24db9c5a829d"/>
+				<box>
+					<pen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ENTE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="310" y="0" width="63" height="39" uuid="407a95b1-5fbd-4728-9934-50b3f8e18375"/>
+				<box>
+					<pen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NASCIMENTO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="230" y="0" width="80" height="39" uuid="2379ad5d-9c26-46f6-959f-aaa41a8c84b9"/>
+				<box>
+					<pen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CARGO ATUAL}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="65" splitType="Stretch">
+			<componentElement>
+				<reportElement x="-20" y="3" width="490" height="55" uuid="d9e30884-fbee-43cb-b497-3cfa76808906"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Rodape" uuid="c2c96a01-ec05-49c8-bf81-1bbcd92ee3c7">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="55" width="490">
+						<image>
+							<reportElement x="0" y="5" width="490" height="50" uuid="04136a1e-c82c-4a25-9a0d-3a6347f6eb5e"/>
+							<imageExpression><![CDATA[$F{IMG_IMGFUNDO_IMGORG}]]></imageExpression>
+						</image>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<textField evaluationTime="Report">
+				<reportElement mode="Opaque" x="440" y="0" width="30" height="13" backcolor="#E6E6E6" uuid="8b596d60-410a-48af-bdf4-f18ef20d3d2a"/>
+				<textElement>
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="-20" y="0" width="460" height="13" backcolor="#E6E6E6" uuid="ba724af8-f611-476d-9ad8-36f26c29f713"/>
+				<textElement textAlignment="Right">
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="-20" y="0" width="240" height="13" uuid="2b12c914-36c4-4970-b364-64b1e6af4cf4"/>
+				<textElement>
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["   Barueri, "+(DATEFORMAT(TODAY(),"dd/MM/yyyy"))+"."]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

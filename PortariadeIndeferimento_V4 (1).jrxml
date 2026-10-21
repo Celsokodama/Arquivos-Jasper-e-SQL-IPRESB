@@ -1,0 +1,1458 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.6.final using JasperReports Library version 6.20.6-5c96b6aa8a39ac1dc6b6bea4b81168e16dd39231  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4" pageWidth="595" pageHeight="842" columnWidth="454" leftMargin="85" rightMargin="56" topMargin="14" bottomMargin="0" isFloatColumnFooter="true" uuid="d946ebe6-2e92-44c5-aed7-8f7380925278">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="RPPS - Barueri"/>
+	<property name="com.jaspersoft.studio.unit." value="cm"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="289"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="706"/>
+	<subDataset name="Logo" uuid="e9f90e01-6f3f-44b6-9906-95c12f91afd0">
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="IPRESB"/>
+		<queryString language="SQL">
+			<![CDATA[Select  IMG_IMGFUNDO_IMGORG
+ from dbo."IMAGEMORGANIZACAO"  
+ where  "N_ORG_ORG" = 42]]>
+		</queryString>
+		<field name="IMG_IMGFUNDO_IMGORG" class="java.awt.Image"/>
+	</subDataset>
+	<subDataset name="Rodape" uuid="6faeb3da-4b82-4ebb-bf15-6b631cf2c980">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="IPRESB"/>
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<queryString>
+			<![CDATA[Select dbo."IMAGEMORGANIZACAO"."IMG_IMGFUNDO_IMGORG" 
+ from dbo."IMAGEMORGANIZACAO" 
+ where  dbo."IMAGEMORGANIZACAO"."N_ORG_ORG" = 43]]>
+		</queryString>
+		<field name="IMG_IMGFUNDO_IMGORG" class="java.awt.Image"/>
+	</subDataset>
+	<parameter name="Ano" class="java.lang.String"/>
+	<parameter name="Portaria" class="java.lang.String"/>
+	<parameter name="DInt" class="java.lang.String"/>
+	<parameter name="PInt" class="java.lang.String"/>
+	<parameter name="MUsuario" class="java.lang.String"/>
+	<parameter name="PortPInt" class="java.lang.String"/>
+	<parameter name="PortDInt" class="java.lang.String"/>
+	<parameter name="AnoProt" class="java.lang.String"/>
+	<parameter name="NumProt" class="java.lang.String"/>
+	<parameter name="Tconvert" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[SET LANGUAGE Português
+
+
+DECLARE @ANO AS INTEGER
+SET @ANO = $P{Ano}
+
+DECLARE @PORTARIA AS INTEGER
+SET @PORTARIA = $P{Portaria}
+
+DECLARE @ANOPROT AS INTEGER
+SET @ANOPROT = $P{AnoProt}
+
+DECLARE @NUMPROT AS INTEGER
+SET @NUMPROT = $P{NumProt}
+
+DECLARE @DInt as VARCHAR(30)
+SET @DInt = $P{DInt}
+
+DECLARE @PInt as VARCHAR(30)
+SET @PInt = $P{PInt}
+
+DECLARE @PortDInt as VARCHAR(30)
+SET @PortDInt = $P{PortDInt}
+
+DECLARE @PortPInt as VARCHAR(30)
+SET @PortPInt = $P{PortPInt}
+
+--Matrícula Usuário IPRESB
+DECLARE @MUsuario as VARCHAR(30)
+SET @MUsuario = $P{MUsuario}
+
+--Tempo de conversão
+DECLARE @Tconvert as VARCHAR(30)
+SET @Tconvert = $P{Tconvert}
+
+SELECT			TOP 1
+
+				--ENTE POR EXTENSO
+				ORGANIZACAO.S_DCR_ORG AS ENTE_EXTENSO,
+
+				--CNPJ
+				ORGANIZACAO.S_CNPJ_ORG AS CNPJ,
+
+				--RG
+				P_INSTITUIDOR.S_RG_PESSOA AS RG,
+
+				--DATA NASCIMENTO
+				CONVERT(VARCHAR, P_INSTITUIDOR.DT_NASC_PESSOA, 103) AS NASCIMENTO,
+
+				--CPF
+				RTRIM(SUBSTRING(P_INSTITUIDOR.S_CPF_PESSOA,1,3)
+				+'.'
+				+SUBSTRING(P_INSTITUIDOR.S_CPF_PESSOA,4,3)
+				+'.'
+				+SUBSTRING(P_INSTITUIDOR.S_CPF_PESSOA,7,3)
+				+'-'
+				+SUBSTRING(P_INSTITUIDOR.S_CPF_PESSOA,10,2)) AS CPF,
+				
+				--PISPASEP
+				RTRIM(SUBSTRING(P_INSTITUIDOR.S_PISPASEP_PESSOA,1,3)
+				+'.'
+				+SUBSTRING(P_INSTITUIDOR.S_PISPASEP_PESSOA,4,5)
+				+'.'
+				+SUBSTRING(P_INSTITUIDOR.S_PISPASEP_PESSOA,9,2)
+				+'-'
+				+SUBSTRING(P_INSTITUIDOR.S_PISPASEP_PESSOA,11,1)) AS NIT,
+
+				--NOME
+				P_INSTITUIDOR.S_NOM_PESSOA AS NOME,
+
+				--CARGO EFETIVO
+				CARGO.S_DCR_CARGO AS [CARGO EFETIVO],
+
+				--MATRÍCULA DO USUÁRIO
+				SERVICOPESSOA.N_CODORI_ORGPESSOA AS [MATRÍCULA],
+				
+				--TEMPO DE CONVERSÃO
+				
+								
+				(CASE WHEN @Tconvert = UPPER('S')
+					THEN 'Considerando, finalmente, a Análise e Decisão Técnica de Atividade Especial emitida pelo perito, o PPP - Perfil Profissiográfico Previdenciário e o LTCAT - Laudo Técnico das Condições Ambientais do Trabalho.'
+					ELSE ' '
+				END) AS Tconvert,
+
+				--PROTOCOLO DO PROCESSO
+				(CASE	WHEN CONVERT(VarChar(5), SERVICOPESSOA.N_ANOREFER_SERVPESSOA) <=2018 
+						THEN 'BI-'+ CONVERT(VarChar(5), SERVICOPESSOA.N_NUMPROT_SERVPESSOA) + '/' + CONVERT(VarChar(5), SERVICOPESSOA.N_ANOREFER_SERVPESSOA) 
+						ELSE 'PA-'+ CONVERT(VarChar(5), SERVICOPESSOA.N_NUMPROT_SERVPESSOA) + '/' + CONVERT(VarChar(5), SERVICOPESSOA.N_ANOREFER_SERVPESSOA) 
+						END) AS NUMPROC,
+
+				--DIB POR EXTENSO
+				CONVERT(varchar(02),DATEPART(DAY,ASSENTAMENTOANEXOCONCESSAO.DT_PUBL_ASSENTANEXOCONCES)) 
+				+ ' de ' 
+				+ DATENAME(MONTH,ASSENTAMENTOANEXOCONCESSAO.DT_PUBL_ASSENTANEXOCONCES) 
+				+ ' de ' 
+				+ CONVERT(varchar(04),DATEPART(YEAR,ASSENTAMENTOANEXOCONCESSAO.DT_PUBL_ASSENTANEXOCONCES)
+				) as DIB,		
+				
+				--TIPO BENEFÍCIO
+				TIPOSERVICO.S_DCRSERV_TIPSERV AS [TIPO DE BENEFICIO],
+				
+				--Parte 1 Dados Segurado
+				(CASE	
+						--APOSENTADORIA ESPECIAL
+						WHEN ASSENTAMENTOANEXOCONCESSAO.N_TIPATO_TIPATO IN (13,15) 
+						THEN (', '
+								+(CASE	WHEN P_INSTITUIDOR.S_SEXO_PESSOA = 'M' THEN 'segurado'
+									WHEN P_INSTITUIDOR.S_SEXO_PESSOA = 'F' THEN 'segurada'
+								END)+
+							+', RG '+ CONVERT(VARCHAR(30),P_INSTITUIDOR.S_RG_PESSOA)
+							+', CPF '
+							+RTRIM(SUBSTRING(P_INSTITUIDOR.S_CPF_PESSOA,1,3)
+							+'.'
+							+SUBSTRING(P_INSTITUIDOR.S_CPF_PESSOA,4,3)
+							+'.'
+							+SUBSTRING(P_INSTITUIDOR.S_CPF_PESSOA,7,3)
+							+'-'
+							+SUBSTRING(P_INSTITUIDOR.S_CPF_PESSOA,10,2))
+							+', PIS/PASEP/NIT '
+							+RTRIM(SUBSTRING(P_INSTITUIDOR.S_PISPASEP_PESSOA,1,3)
+							+'.'
+							+SUBSTRING(P_INSTITUIDOR.S_PISPASEP_PESSOA,4,5)
+							+'.'
+							+SUBSTRING(P_INSTITUIDOR.S_PISPASEP_PESSOA,9,2)
+							+'-'
+							+SUBSTRING(P_INSTITUIDOR.S_PISPASEP_PESSOA,11,1))
+							+', servidor(a) em atividade da '
+							+ ORGANIZACAO.S_DCR_ORG
+							+' e titular do cargo efetivo de '
+							+ CARGO.S_DCR_CARGO
+							)
+						
+						--APOSENTADORIA POR INVALIDEZ
+						WHEN ASSENTAMENTOANEXOCONCESSAO.N_TIPATO_TIPATO IN (10) 
+						THEN (', '
+								+(CASE	WHEN P_INSTITUIDOR.S_SEXO_PESSOA = 'M' THEN 'segurado'
+									WHEN P_INSTITUIDOR.S_SEXO_PESSOA = 'F' THEN 'segurada'
+								END)+
+							+', RG '+ CONVERT(VARCHAR(30),P_INSTITUIDOR.S_RG_PESSOA)
+							+', CPF '
+							+RTRIM(SUBSTRING(P_INSTITUIDOR.S_CPF_PESSOA,1,3)
+							+'.'
+							+SUBSTRING(P_INSTITUIDOR.S_CPF_PESSOA,4,3)
+							+'.'
+							+SUBSTRING(P_INSTITUIDOR.S_CPF_PESSOA,7,3)
+							+'-'
+							+SUBSTRING(P_INSTITUIDOR.S_CPF_PESSOA,10,2))
+							+', PIS/PASEP/NIT '
+							+RTRIM(SUBSTRING(P_INSTITUIDOR.S_PISPASEP_PESSOA,1,3)
+							+'.'
+							+SUBSTRING(P_INSTITUIDOR.S_PISPASEP_PESSOA,4,5)
+							+'.'
+							+SUBSTRING(P_INSTITUIDOR.S_PISPASEP_PESSOA,9,2)
+							+'-'
+							+SUBSTRING(P_INSTITUIDOR.S_PISPASEP_PESSOA,11,1))
+							+', é titular do cargo efetivo de '
+							+ CARGO.S_DCR_CARGO
+							+' na '+ ORGANIZACAO.S_DCR_ORG
+							
+							)
+						-- APOSENTADORIA POR TEMPO DE CONTRIBUIÇÃO E IDADE OU APOSENTADORIA POR IDADE OU MAGISTÉRIO
+						WHEN ASSENTAMENTOANEXOCONCESSAO.N_TIPATO_TIPATO IN (24)
+						THEN  (', '
+								+(CASE	WHEN P_INSTITUIDOR.S_SEXO_PESSOA = 'M' THEN 'segurado'
+									WHEN P_INSTITUIDOR.S_SEXO_PESSOA = 'F' THEN 'segurada'
+								END)+
+							+', RG '+ CONVERT(VARCHAR(30),P_INSTITUIDOR.S_RG_PESSOA)
+							+', CPF '
+							+RTRIM(SUBSTRING(P_INSTITUIDOR.S_CPF_PESSOA,1,3)
+							+'.'
+							+SUBSTRING(P_INSTITUIDOR.S_CPF_PESSOA,4,3)
+							+'.'
+							+SUBSTRING(P_INSTITUIDOR.S_CPF_PESSOA,7,3)
+							+'-'
+							+SUBSTRING(P_INSTITUIDOR.S_CPF_PESSOA,10,2))
+							+', PIS/PASEP/NIT '
+							+RTRIM(SUBSTRING(P_INSTITUIDOR.S_PISPASEP_PESSOA,1,3)
+							+'.'
+							+SUBSTRING(P_INSTITUIDOR.S_PISPASEP_PESSOA,4,5)
+							+'.'
+							+SUBSTRING(P_INSTITUIDOR.S_PISPASEP_PESSOA,9,2)
+							+'-'
+							+SUBSTRING(P_INSTITUIDOR.S_PISPASEP_PESSOA,11,1))
+							+', é titular do cargo efetivo de '
+							+ CARGO.S_DCR_CARGO
+							+' na '+ (ORGANIZACAO.S_DCR_ORG)
+														)
+														
+						--PENSÃO POR MORTE
+						WHEN ASSENTAMENTOANEXOCONCESSAO.N_TIPATO_TIPATO IN (33) 
+						THEN (', '
+								+(CASE	WHEN P_INSTITUIDOR.S_SEXO_PESSOA = 'M' THEN 'segurado'
+									WHEN P_INSTITUIDOR.S_SEXO_PESSOA = 'F' THEN 'segurada'
+								END)+
+							+', RG '+ CONVERT(VARCHAR(30),P_INSTITUIDOR.S_RG_PESSOA)
+							+', CPF '
+							+RTRIM(SUBSTRING(P_INSTITUIDOR.S_CPF_PESSOA,1,3)
+							+'.'
+							+SUBSTRING(P_INSTITUIDOR.S_CPF_PESSOA,4,3)
+							+'.'
+							+SUBSTRING(P_INSTITUIDOR.S_CPF_PESSOA,7,3)
+							+'-'
+							+SUBSTRING(P_INSTITUIDOR.S_CPF_PESSOA,10,2))
+							+', PIS/PASEP/NIT '
+							+RTRIM(SUBSTRING(P_INSTITUIDOR.S_PISPASEP_PESSOA,1,3)
+							+'.'
+							+SUBSTRING(P_INSTITUIDOR.S_PISPASEP_PESSOA,4,5)
+							+'.'
+							+SUBSTRING(P_INSTITUIDOR.S_PISPASEP_PESSOA,9,2)
+							+'-'
+							+SUBSTRING(P_INSTITUIDOR.S_PISPASEP_PESSOA,11,1))
+							+', titular do cargo efetivo de '
+							+ CARGO.S_DCR_CARGO
+							+' na '+ ORGANIZACAO.S_DCR_ORG
+							+' , faleceu aos '+ CONVERT(VARCHAR, P_INSTITUIDOR.DT_FALEC_PESSOA, 103)
+							)
+
+
+						END) AS [DADOS SEGURADO],
+
+				--Parte 1 Final
+				(CASE	
+						--APOSENTADORIA ESPECIAL
+						WHEN ASSENTAMENTOANEXOCONCESSAO.N_TIPATO_TIPATO IN (13,15) 
+						THEN 'instruído com documentos pessoais, com informações do órgão de pessoal da '
+							+ ORGANIZACAO.S_DCR_ORG
+							+' e com parecer jurídico desfavorável à concessão do benefício da '
+							+ TIPOSERVICO.S_DCRSERV_TIPSERV
+							+'.'
+						--APOSENTADORIA POR INVALIDEZ
+						WHEN ASSENTAMENTOANEXOCONCESSAO.N_TIPATO_TIPATO IN (10) 
+						THEN 'instruído com documentos pessoais, com informações do órgão de pessoal da '
+							+ ORGANIZACAO.S_DCR_ORG
+							+' e com o Laudo Médico Pericial indicando a não homologação da '
+							+ TIPOSERVICO.S_DCRSERV_TIPSERV
+							+'.'
+						--PENSÃO POR MORTE
+						WHEN ASSENTAMENTOANEXOCONCESSAO.N_TIPATO_TIPATO IN (33) 
+						THEN 'instruído com documentos pessoais, com informações do órgão de pessoal da '
+							+ ORGANIZACAO.S_DCR_ORG
+							+' e com parecer jurídico desfavorável à concessão do benefício da '
+							+ TIPOSERVICO.S_DCRSERV_TIPSERV
+							+'.'
+						--APOSENTADORIA POR TEMPO DE CONTRIBUIÇÃO E IDADE POR IDADE E MAGISTÉRIO	
+						WHEN ASSENTAMENTOANEXOCONCESSAO.N_TIPATO_TIPATO IN (24) 
+						THEN 'instruído com documentos pessoais, com informações do órgão de pessoal da '
+							+ ORGANIZACAO.S_DCR_ORG
+							+' e com parecer jurídico desfavorável à concessão do benefício da '
+							+ TIPOSERVICO.S_DCRSERV_TIPSERV
+							+';'
+
+						END) AS [Parte 1 FINAL],
+
+
+				--BASE LEGAL RELACIONADA AO BENEFÍCIO
+				(CASE	
+						--APOSENTADORIA ESPECIAL
+						WHEN ASSENTAMENTOANEXOCONCESSAO.N_TIPATO_TIPATO IN (13,15) THEN 'nos termos do artigo 40, § 4º, inciso III da Constituição Federal e artigo 57, da Lei Federal nº 8.213, de 24 de julho de 1991'
+						--APOSENTADORIA POR INVALIDEZ
+						WHEN ASSENTAMENTOANEXOCONCESSAO.N_TIPATO_TIPATO IN (10) THEN 'nos termos do artigo 38 e seguintes da Lei Complementar nº 434 de 14 de agosto de 2018'
+						--PENSÃO POR MORTE
+						WHEN ASSENTAMENTOANEXOCONCESSAO.N_TIPATO_TIPATO IN (33) THEN 'nos termos dos artigos 72 a 83 da Lei Complementar n° 434 de 14 de agosto de 2018'
+						--APOSENTADORIA POR TEMPO DE CONTRIBUIÇÃO E IDADE E POR IDADE E MAGISTÉRIO
+						WHEN ASSENTAMENTOANEXOCONCESSAO.N_TIPATO_TIPATO IN (24) THEN 'nos termos da Lei Complementar n° 434 de 14 de agosto de 2018 e da EC 103/2019 de 12 de novembro de 2019'
+
+						END) AS [BASE LEGAL],
+
+
+				--AO SEGURADO OU AO REQUERENTE
+				(CASE	
+						--APOSENTADORIA ESPECIAL
+						WHEN ASSENTAMENTOANEXOCONCESSAO.N_TIPATO_TIPATO IN (13,15,10,24) 
+						THEN	(CASE	WHEN P_INSTITUIDOR.S_SEXO_PESSOA = 'M' THEN 'ao segurado'
+										WHEN P_INSTITUIDOR.S_SEXO_PESSOA = 'F' THEN 'à segurada'
+								END)
+						--PENSÃO POR MORTE
+						WHEN ASSENTAMENTOANEXOCONCESSAO.N_TIPATO_TIPATO IN (33) 
+						THEN	(CASE	WHEN P_REQUERENTE.S_SEXO_PESSOA = 'M' THEN 'ao requerente'
+										WHEN P_REQUERENTE.S_SEXO_PESSOA = 'F' THEN 'à requerente'
+								END)
+
+				END) AS [AO SEGURADO OU AO REQUERENTE],
+
+				--NOME DO SEGURADO OU REQUERENTE DA 2ª PARTE
+				(CASE	WHEN ASSENTAMENTOANEXOCONCESSAO.N_TIPATO_TIPATO IN (33) 
+						THEN ISNULL((P_REQUERENTE.S_NOM_PESSOA),'')
+								+', RG '+  ISNULL(CONVERT(VARCHAR(30),P_REQUERENTE.S_RG_PESSOA),'')
+						ELSE NULL
+						END) AS [REQUERENTE DADOS],
+
+				--PORTARIA
+				ASSENTAMENTOANEXOCONCESSAO.N_ATO_ASSENTANEXOCONCES AS PORTARIA, 
+				
+				--ANO PORTARIA
+				ASSENTAMENTOANEXOCONCESSAO.N_ANOREF_ASSENTANEXOCONCES AS [ANO PORTARIA], 
+				
+				--DADOS DO REQUERENTE
+				P_REQUERENTE.S_NOM_PESSOA AS [NOME REQUERENTE],
+
+				P_REQUERENTE.S_RG_PESSOA AS [RG REQUERENTE],
+
+				RTRIM(SUBSTRING(P_REQUERENTE.S_CPF_PESSOA,1,3)
+				+'.'
+				+SUBSTRING(P_REQUERENTE.S_CPF_PESSOA,4,3)
+				+'.'
+				+SUBSTRING(P_REQUERENTE.S_CPF_PESSOA,7,3)
+				+'-'
+				+SUBSTRING(P_REQUERENTE.S_CPF_PESSOA,10,2)) AS [CPF REQUERENTE],
+
+				RTRIM(SUBSTRING(P_REQUERENTE.S_PISPASEP_PESSOA,1,3)
+				+'.'
+				+SUBSTRING(P_REQUERENTE.S_PISPASEP_PESSOA,4,5)
+				+'.'
+				+SUBSTRING(P_REQUERENTE.S_PISPASEP_PESSOA,9,2)
+				+'-'
+				+SUBSTRING(P_REQUERENTE.S_PISPASEP_PESSOA,11,1)) AS [NIT REQUERENTE],
+
+				--TIPO DO REQUERIMENTO APE = 1, API = 2, PM = 3, APTC,APID,APTCP = 4
+				(CASE	WHEN ASSENTAMENTOANEXOCONCESSAO.N_TIPATO_TIPATO IN (13,15) THEN 1
+						WHEN ASSENTAMENTOANEXOCONCESSAO.N_TIPATO_TIPATO = 10 THEN 2
+						WHEN ASSENTAMENTOANEXOCONCESSAO.N_TIPATO_TIPATO = 33 THEN 3
+						WHEN ASSENTAMENTOANEXOCONCESSAO.N_TIPATO_TIPATO = 24 THEN 4
+						ELSE NULL
+						END) AS [TIPO REQUERIMENTO],		
+
+				--INCISO II
+				'II - Esta portaria entrará em vigor na data de sua publicação retroagindo seus efeitos a partir de '
+				+CONVERT(varchar(02),DATEPART(DAY,ASSENTAMENTOANEXOCONCESSAO.DT_PUBL_ASSENTANEXOCONCES)) 
+				+ ' de ' 
+				+ DATENAME(MONTH,ASSENTAMENTOANEXOCONCESSAO.DT_PUBL_ASSENTANEXOCONCES) 
+				+ ' de ' 
+				+ CONVERT(varchar(04),DATEPART(YEAR,ASSENTAMENTOANEXOCONCESSAO.DT_PUBL_ASSENTANEXOCONCES))
+				+'.' AS [INCISO II],
+
+				--INCISO III
+				'III - Publique-se e cumpra-se a presente Portaria.' AS [INCISO III],
+	
+				--TEXTO DO INCISO II
+				(CASE	WHEN ASSENTAMENTOANEXOCONCESSAO.N_TIPATO_TIPATO = 31 
+						THEN 'II - A referida isenção será aplicada a partir da Folha de Pagamento de Benefícios de '
+						+ ' e será válida até '
+						+', mês do próximo Exame Médico - Pericial.'
+						ELSE 'II - Publique-se e cumpra-se a presente Portaria.' 
+						END) AS [TEXTO INCISO II DEFERIDO],
+
+
+				--CARGO EFETIVO DO GESTOR INTERINO
+				GESTOR_INTERINO.Cargo_Efetivo AS [CARGO DO DIRETOR INTERINO], 
+
+				--CARGO EFETIVO DO PRESIDENTE INTERINO
+				PRESIDENTE_INTERINO.Cargo_Efetivo AS [CARGO DO PRESIDENTE INTERINO],
+
+				--MATRÍCULA DO CARGO EFETIVO DO GESTOR INTERINO
+				GESTOR_INTERINO.Matrícula AS [MATRICULA DO DIRETOR INTERINO], 
+
+				--MATRÍCULA DO CARGO EFETIVO DO PRESIDENTE INTERINO
+				PRESIDENTE_INTERINO.Matrícula AS [MATRICULA DO PRESIDENTE INTERINO],
+				
+				--GÊNERO DO GESTOR INTERINO
+				GESTOR_INTERINO.Gênero AS [GENERO DO DIRETOR INTERINO],
+				
+				----GÊNERO DO PRESIDENTE INTERINO
+				PRESIDENTE_INTERINO.Gênero AS [GENERO DO PRESIDENTE INTERINO],
+
+				--GÊNERO DO EFETIVO
+				(CASE		WHEN P_INSTITUIDOR.S_SEXO_PESSOA = 'M' 
+							THEN 'segurado' 
+							ELSE 'segurada' 
+							END) AS GENERO,
+				
+				--TEXTO GESTOR INTERINO NA PORTARIA
+				(CASE		WHEN @DInt = UPPER('S') 
+							THEN CONCAT(', ',(GESTOR_INTERINO.Cargo_Efetivo)
+							,', matrícula '
+							,CONVERT(VarChar(5), GESTOR_INTERINO.Matrícula)
+							,', desempenhando, interinamente, as funções do cargo de Gestor de Benefícios Previdenciários, conforme a portaria n.º '
+							,@PortDInt
+							,'/'
+							,@ANO)
+							ELSE ', Gestor de Benefícios Previdenciários' 
+							END) AS COND_DIRETOR,
+
+				--TEXTO PRESIDENTE INTERINO NA PORTARIA
+				(CASE		WHEN @PInt = UPPER('S') 
+							THEN CONCAT(', ',(PRESIDENTE_INTERINO.Cargo_Efetivo)
+							,', matrícula '
+							,CONVERT(VarChar(5), PRESIDENTE_INTERINO.Matrícula)
+							,', desempenhando, interinamente, as funções de Presidente do IPRESB - Instituto de Previdência Social dos Servidores Municipais de Barueri, conforme a portaria n.º '
+							,@PortPInt
+							,'/'
+							,@ANO) 
+							ELSE ', Presidente do IPRESB - Instituto de Previdência Social dos Servidores Municipais de Barueri' 
+							END) AS COND_PRESIDENTE,
+
+				--NOMENCLATURA DO CARGO DE GESTOR
+				(CASE		WHEN @DInt = UPPER('S') 
+							THEN GESTOR_INTERINO.Nomenclatura_Cargo 
+							ELSE GESTOR_TITULAR.Nomenclatura_Cargo
+							END) AS CARGO_DIRETOR,
+
+				--NOMENCLATURA DO CARGO DE PRESIDENTE
+				(CASE		WHEN @PInt = UPPER('S') 
+							THEN PRESIDENTE_INTERINO.Nomenclatura_Cargo 
+							ELSE PRESIDENTE_TITULAR.Nomenclatura_Cargo
+							END) AS CARGO_PRESIDENTE,
+
+				--NOME DO GESTOR EM EXERCÍCIO
+				(CASE		WHEN @DInt = UPPER('S') 
+							THEN GESTOR_INTERINO.Nome
+							ELSE GESTOR_TITULAR.Nome
+							END) AS NOME_DIRETOR,
+
+				--NOME DO PRESIDENTE EM EXERCÍCIO
+				(CASE		WHEN @PInt = UPPER('S') 
+							THEN PRESIDENTE_INTERINO.Nome
+							ELSE PRESIDENTE_TITULAR.Nome
+							END) AS NOME_PRESIDENTE,
+
+				--CPF DO GESTOR EM EXERCÍCIO
+				(CASE		WHEN @DInt = UPPER('S') 
+							THEN GESTOR_INTERINO.CPF
+							ELSE GESTOR_TITULAR.CPF
+							END) AS CPF_GESTOR,
+
+				--CPF DO PRESIDENTE EM EXERCÍCIO
+				(CASE		WHEN @PInt = UPPER('S') 
+							THEN PRESIDENTE_INTERINO.CPF
+							ELSE PRESIDENTE_TITULAR.CPF
+							END) AS CPF_PRESIDENTE,
+
+				--RG DO GESTOR EM EXERCÍCIO
+				(CASE		WHEN @DInt = UPPER('S') 
+							THEN GESTOR_INTERINO.RG
+							ELSE GESTOR_TITULAR.RG
+							END) AS RG_GESTOR,
+
+				--RG DO PRESIDENTE EM EXERCÍCIO
+				(CASE		WHEN @PInt = UPPER('S') 
+							THEN PRESIDENTE_INTERINO.RG
+							ELSE PRESIDENTE_TITULAR.RG
+							END) AS RG_PRESIDENTE,
+
+				--NASCIMENTO DO GESTOR EM EXERCÍCIO
+				(CASE		WHEN @DInt = UPPER('S') 
+							THEN GESTOR_INTERINO.Nascimento
+							ELSE GESTOR_TITULAR.Nascimento
+							END) AS NASC_GESTOR,
+
+				--NASCIMENTO DO PRESIDENTE EM EXERCÍCIO
+				(CASE		WHEN @PInt = UPPER('S') 
+							THEN PRESIDENTE_INTERINO.Nascimento
+							ELSE PRESIDENTE_TITULAR.Nascimento
+							END) AS NASC_PRESIDENTE,
+
+				--EMAIL DO GESTOR EM EXERCÍCIO
+				(CASE		WHEN @DInt = UPPER('S') 
+							THEN GESTOR_INTERINO.Email
+							ELSE GESTOR_TITULAR.Email
+							END) AS EMAIL_GESTOR,
+
+				--EMAIL DO PRESIDENTE EM EXERCÍCIO
+				(CASE		WHEN @PInt = UPPER('S') 
+							THEN PRESIDENTE_INTERINO.Email
+							ELSE PRESIDENTE_TITULAR.Email
+							END) AS EMAIL_PRESIDENTE,
+
+				--ENDEREÇO DO GESTOR EM EXERCÍCIO
+				(CASE		WHEN @DInt = UPPER('S') 
+							THEN GESTOR_INTERINO.Endereço
+							ELSE GESTOR_TITULAR.Endereço
+							END) AS END_GESTOR,
+
+				--ENDEREÇO DO PRESIDENTE EM EXERCÍCIO
+				(CASE		WHEN @PInt = UPPER('S') 
+							THEN PRESIDENTE_INTERINO.Endereço
+							ELSE PRESIDENTE_TITULAR.Endereço
+							END) AS END_PRESIDENTE,
+				
+				--NOME DO USUÁRIO DO IPRESB RESPONSÁVEL PELO DOCUMENTO
+				USUARIO_IPRESB.Nome AS USUARIO,
+
+				--CARGO DO USUÁRIO DO IPRESB RESPONSÁVEL PELO DOCUMENTO
+				USUARIO_IPRESB.Cargo AS CARGO_USUARIO
+
+
+FROM			
+				
+				SERVICOPESSOA
+				INNER JOIN	ASSENTAMENTOANEXOCONCESSAO ON SERVICOPESSOA.N_CODORI_ORGPESSOA = ASSENTAMENTOANEXOCONCESSAO.N_CODORI_ORGPESSOA
+					AND	SERVICOPESSOA.N_ORG_ORG = ASSENTAMENTOANEXOCONCESSAO.N_ORG_ORG
+				INNER JOIN	ORGANIZACAO ON SERVICOPESSOA.N_ORG_ORG = ORGANIZACAO.N_ORG_ORG
+				INNER JOIN	TIPOSERVICO ON SERVICOPESSOA.N_TIPSERV_TIPSERV = TIPOSERVICO.N_TIPSERV_TIPSERV
+				INNER JOIN	PESSOA AS P_INSTITUIDOR ON SERVICOPESSOA.N_PESSOA_PESSOA = P_INSTITUIDOR.N_PESSOA_PESSOA				
+				FULL OUTER JOIN	PESSOA AS P_REQUERENTE ON SERVICOPESSOA.N_PESSOA_RESP = P_REQUERENTE.N_PESSOA_PESSOA
+				FULL OUTER JOIN	TIPOREGRA ON SERVICOPESSOA.N_TIPREGRA_TIPREGRA = TIPOREGRA.N_TIPREGRA_TIPREGRA
+				--DADOS PARA PUXAR O CARGO DO INSTITUIDOR
+				INNER JOIN	ORGANIZACAOPESSOA On P_INSTITUIDOR.N_PESSOA_PESSOA = ORGANIZACAOPESSOA.N_PESSOA_PESSOA
+					AND	(SERVICOPESSOA.N_ORG_ORG = ORGANIZACAOPESSOA.N_ORG_ORG)
+					AND	(SERVICOPESSOA.N_CODORI_ORGPESSOA = ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA)
+				INNER JOIN	CARGOORGANIZACAOPESSOA On (CARGOORGANIZACAOPESSOA.N_PESSOA_PESSOA = P_INSTITUIDOR.N_PESSOA_PESSOA) 
+					AND (CARGOORGANIZACAOPESSOA.N_ORG_ORG = ORGANIZACAOPESSOA.N_ORG_ORG)
+					AND (CARGOORGANIZACAOPESSOA.N_CODORI_ORGPESSOA =  ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA) 
+				INNER JOIN CARGO On (CARGO.N_ORG_ORG = CARGOORGANIZACAOPESSOA.N_ORG_ORG) 
+					And (CARGO.N_CARGO_CARGO = CARGOORGANIZACAOPESSOA.N_CARGO_CARGO)
+
+
+			OUTER APPLY
+
+			--DADOS DO GESTOR TITULAR
+			(SELECT
+						PESSOA.S_NOM_PESSOA AS [NOME]
+						
+						,CARGO.S_DCR_CARGO AS [CARGO EFETIVO]
+
+						,ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA AS [MATRÍCULA]
+
+						,(CASE	WHEN PESSOA.S_SEXO_PESSOA = 'M' 
+									THEN 'designado' 
+									ELSE 'designada' 
+									END) AS [GÊNERO]
+
+						, AUTORIDADECOMPETENTE.S_DCRCARGO_AUTDCOMPTT AS [NOMENCLATURA CARGO DIREÇÃO]
+
+						,PESSOA.S_RG_PESSOA AS [RG]
+
+						,RTRIM(SUBSTRING(PESSOA.S_CPF_PESSOA,1,3)
+						+'.'
+						+SUBSTRING(PESSOA.S_CPF_PESSOA,4,3)
+						+'.'
+						+SUBSTRING(PESSOA.S_CPF_PESSOA,7,3)
+						+'-'
+						+SUBSTRING(PESSOA.S_CPF_PESSOA,10,2)) AS [CPF]
+
+						,FORMAT(PESSOA.DT_NASC_PESSOA,'dd/MM/yyyy') AS [DATA NASCIMENTO]
+
+						,PESSOA.S_EMAIL_PESSOA AS [EMAIL]
+
+						,(CASE	HISTORICOENDERECOPESSOA.N_TIPLOGRAD_HISTENDPESSOA	WHEN 4 THEN 'Alameda'  
+																					WHEN 8 THEN 'Av.' 
+																					WHEN 31 THEN 'Estrada' 
+																					WHEN 65 THEN 'Praça' 
+																					WHEN 77 THEN 'Quadra' 
+																					WHEN 81 THEN 'Rua' 
+																					WHEN 90 THEN 'Rodovia' 
+																					WHEN 100 THEN 'Travessa' 
+																					WHEN 104 THEN 'Vila' 
+																					ELSE '' 
+																					END) 
+						+' '
+						+ (RTRIM(ISNULL(HISTORICOENDERECOPESSOA.S_DCRRUA_HISTENDPESSOA, '')
+						+ CASE	WHEN HISTORICOENDERECOPESSOA.S_NUMLOGRAD_HISTENDPESSOA IS NULL 
+								THEN ''  
+								ELSE ', '+RTRIM(HISTORICOENDERECOPESSOA.S_NUMLOGRAD_HISTENDPESSOA) 
+								END
+						+ CASE	WHEN HISTORICOENDERECOPESSOA.S_DCRBAIRRO_HISTENDPESSOA IS NULL 
+								THEN '' 
+								ELSE +', '+RTRIM(HISTORICOENDERECOPESSOA.S_DCRBAIRRO_HISTENDPESSOA) 
+								END
+						+ CASE	WHEN HISTORICOENDERECOPESSOA.S_DCRCOMPL_HISTENDPESSOA IS NULL 
+								THEN '' 
+								ELSE ', '+RTRIM(HISTORICOENDERECOPESSOA.S_DCRCOMPL_HISTENDPESSOA) 
+								END
+						+ CASE	WHEN HISTORICOENDERECOPESSOA.S_DCRMUN_HISTENDPESSOA IS NULL 
+								THEN '' 
+								ELSE ', '+RTRIM(S_DCRMUN_HISTENDPESSOA) 
+								END))
+						+', '+RTRIM(ISNULL(S_DCRUF_HISTENDPESSOA, ''))
+						+', CEP: '+RTRIM(ISNULL(substring(S_CEP_HISTENDPESSOA, 1,2) + '.' + substring(S_CEP_HISTENDPESSOA,3,3) + '-' + substring(S_CEP_HISTENDPESSOA, 6, 9), '')) AS [ENDEREÇO]
+
+			FROM
+
+						PESSOA 
+						INNER JOIN	ORGANIZACAOPESSOA ON PESSOA.N_PESSOA_PESSOA = ORGANIZACAOPESSOA.N_PESSOA_PESSOA 
+						INNER JOIN	CARGOORGANIZACAOPESSOA ON CARGOORGANIZACAOPESSOA.N_PESSOA_PESSOA = ORGANIZACAOPESSOA.N_PESSOA_PESSOA
+								AND	CARGOORGANIZACAOPESSOA.N_CODORI_ORGPESSOA = ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA 
+								AND CARGOORGANIZACAOPESSOA.N_ORG_ORG = ORGANIZACAOPESSOA.N_ORG_ORG 
+						INNER JOIN	CARGO ON CARGO.N_ORG_ORG = CARGOORGANIZACAOPESSOA.N_ORG_ORG 
+								AND CARGO.N_CARGO_CARGO = CARGOORGANIZACAOPESSOA.N_CARGO_CARGO 
+						INNER JOIN	AUTORIDADECOMPETENTE ON PESSOA.N_PESSOA_PESSOA = AUTORIDADECOMPETENTE.N_PESSOA_PESSOA 
+								AND ORGANIZACAOPESSOA.N_ORG_ORG = AUTORIDADECOMPETENTE.N_ORG_ORG 
+								AND ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA = AUTORIDADECOMPETENTE.N_CODORI_ORGPESSOA
+						INNER JOIN	HISTORICOENDERECOPESSOA ON PESSOA.N_PESSOA_PESSOA = HISTORICOENDERECOPESSOA.N_PESSOA_PESSOA
+
+			WHERE		AUTORIDADECOMPETENTE.N_SEQ_AUTDCOMPTT = 2 AND HISTORICOENDERECOPESSOA.DT_FIMVIG_HISTENDPESSOA IS NULL)
+
+			GESTOR_TITULAR(Nome,Cargo_Efetivo,Matrícula,Gênero,Nomenclatura_Cargo,RG,CPF,Nascimento,Email,Endereço)
+
+			OUTER APPLY
+
+			--DADOS DO GESTOR INTERINO
+			(SELECT
+						PESSOA.S_NOM_PESSOA AS [NOME]
+						
+						,CARGO.S_DCR_CARGO AS [CARGO EFETIVO]
+
+						,ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA AS [MATRÍCULA]
+
+						,(CASE	WHEN PESSOA.S_SEXO_PESSOA = 'M' 
+									THEN 'designado' 
+									ELSE 'designada' 
+									END) AS [GÊNERO]
+
+						,AUTORIDADECOMPETENTE.S_DCRCARGO_AUTDCOMPTT AS [NOMENCLATURA CARGO DIREÇÃO]
+
+						,PESSOA.S_RG_PESSOA AS [RG]
+
+						,RTRIM(SUBSTRING(PESSOA.S_CPF_PESSOA,1,3)
+						+'.'
+						+SUBSTRING(PESSOA.S_CPF_PESSOA,4,3)
+						+'.'
+						+SUBSTRING(PESSOA.S_CPF_PESSOA,7,3)
+						+'-'
+						+SUBSTRING(PESSOA.S_CPF_PESSOA,10,2)) AS [CPF]
+
+						,FORMAT(PESSOA.DT_NASC_PESSOA,'dd/MM/yyyy') AS [DATA NASCIMENTO]
+
+						,PESSOA.S_EMAIL_PESSOA AS [EMAIL]
+
+						,(CASE	HISTORICOENDERECOPESSOA.N_TIPLOGRAD_HISTENDPESSOA	WHEN 4 THEN 'Alameda'  
+																					WHEN 8 THEN 'Av.' 
+																					WHEN 31 THEN 'Estrada' 
+																					WHEN 65 THEN 'Praça' 
+																					WHEN 77 THEN 'Quadra' 
+																					WHEN 81 THEN 'Rua' 
+																					WHEN 90 THEN 'Rodovia' 
+																					WHEN 100 THEN 'Travessa' 
+																					WHEN 104 THEN 'Vila' 
+																					ELSE '' 
+																					END) 
+						+' '
+						+ (RTRIM(ISNULL(HISTORICOENDERECOPESSOA.S_DCRRUA_HISTENDPESSOA, '')
+						+ CASE	WHEN HISTORICOENDERECOPESSOA.S_NUMLOGRAD_HISTENDPESSOA IS NULL 
+								THEN ''  
+								ELSE ', '+RTRIM(HISTORICOENDERECOPESSOA.S_NUMLOGRAD_HISTENDPESSOA) 
+								END
+						+ CASE	WHEN HISTORICOENDERECOPESSOA.S_DCRBAIRRO_HISTENDPESSOA IS NULL 
+								THEN '' 
+								ELSE +', '+RTRIM(HISTORICOENDERECOPESSOA.S_DCRBAIRRO_HISTENDPESSOA) 
+								END
+						+ CASE	WHEN HISTORICOENDERECOPESSOA.S_DCRCOMPL_HISTENDPESSOA IS NULL 
+								THEN '' 
+								ELSE ', '+RTRIM(HISTORICOENDERECOPESSOA.S_DCRCOMPL_HISTENDPESSOA) 
+								END
+						+ CASE	WHEN HISTORICOENDERECOPESSOA.S_DCRMUN_HISTENDPESSOA IS NULL 
+								THEN '' 
+								ELSE ', '+RTRIM(S_DCRMUN_HISTENDPESSOA) 
+								END))
+						+', '+RTRIM(ISNULL(S_DCRUF_HISTENDPESSOA, ''))
+						+', CEP: '+RTRIM(ISNULL(substring(S_CEP_HISTENDPESSOA, 1,2) + '.' + substring(S_CEP_HISTENDPESSOA,3,3) + '-' + substring(S_CEP_HISTENDPESSOA, 6, 9), '')) AS [ENDEREÇO]
+
+			FROM
+
+						PESSOA 
+						INNER JOIN	ORGANIZACAOPESSOA ON PESSOA.N_PESSOA_PESSOA = ORGANIZACAOPESSOA.N_PESSOA_PESSOA 
+						INNER JOIN	CARGOORGANIZACAOPESSOA ON CARGOORGANIZACAOPESSOA.N_PESSOA_PESSOA = ORGANIZACAOPESSOA.N_PESSOA_PESSOA
+								AND	CARGOORGANIZACAOPESSOA.N_CODORI_ORGPESSOA = ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA 
+								AND CARGOORGANIZACAOPESSOA.N_ORG_ORG = ORGANIZACAOPESSOA.N_ORG_ORG 
+						INNER JOIN	CARGO ON CARGO.N_ORG_ORG = CARGOORGANIZACAOPESSOA.N_ORG_ORG 
+								AND CARGO.N_CARGO_CARGO = CARGOORGANIZACAOPESSOA.N_CARGO_CARGO 
+						INNER JOIN	AUTORIDADECOMPETENTE ON PESSOA.N_PESSOA_PESSOA = AUTORIDADECOMPETENTE.N_PESSOA_PESSOA 
+								AND ORGANIZACAOPESSOA.N_ORG_ORG = AUTORIDADECOMPETENTE.N_ORG_ORG 
+								AND ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA = AUTORIDADECOMPETENTE.N_CODORI_ORGPESSOA
+						INNER JOIN	HISTORICOENDERECOPESSOA ON PESSOA.N_PESSOA_PESSOA = HISTORICOENDERECOPESSOA.N_PESSOA_PESSOA
+
+			WHERE		AUTORIDADECOMPETENTE.N_SEQ_AUTDCOMPTT = 5 AND HISTORICOENDERECOPESSOA.DT_FIMVIG_HISTENDPESSOA IS NULL)
+
+			GESTOR_INTERINO(Nome,Cargo_Efetivo,Matrícula,Gênero,Nomenclatura_Cargo,RG,CPF,Nascimento,Email,Endereço)
+
+			OUTER APPLY
+
+			--DADOS DO PRESIDENTE TITULAR
+			(SELECT
+						PESSOA.S_NOM_PESSOA AS [NOME]
+						
+						,CARGO.S_DCR_CARGO AS [CARGO EFETIVO]
+
+						,ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA AS [MATRÍCULA]
+
+						,(CASE	WHEN PESSOA.S_SEXO_PESSOA = 'M' 
+									THEN 'designado' 
+									ELSE 'designada' 
+									END) AS [GÊNERO]
+
+						,AUTORIDADECOMPETENTE.S_DCRCARGO_AUTDCOMPTT AS [NOMENCLATURA CARGO DIREÇÃO]
+
+						,PESSOA.S_RG_PESSOA AS [RG]
+
+						,RTRIM(SUBSTRING(PESSOA.S_CPF_PESSOA,1,3)
+						+'.'
+						+SUBSTRING(PESSOA.S_CPF_PESSOA,4,3)
+						+'.'
+						+SUBSTRING(PESSOA.S_CPF_PESSOA,7,3)
+						+'-'
+						+SUBSTRING(PESSOA.S_CPF_PESSOA,10,2)) AS [CPF]
+
+						,FORMAT(PESSOA.DT_NASC_PESSOA,'dd/MM/yyyy') AS [DATA NASCIMENTO]
+
+						,PESSOA.S_EMAIL_PESSOA AS [EMAIL]
+
+						,(CASE	HISTORICOENDERECOPESSOA.N_TIPLOGRAD_HISTENDPESSOA	WHEN 4 THEN 'Alameda'  
+																					WHEN 8 THEN 'Av.' 
+																					WHEN 31 THEN 'Estrada' 
+																					WHEN 65 THEN 'Praça' 
+																					WHEN 77 THEN 'Quadra' 
+																					WHEN 81 THEN 'Rua' 
+																					WHEN 90 THEN 'Rodovia' 
+																					WHEN 100 THEN 'Travessa' 
+																					WHEN 104 THEN 'Vila' 
+																					ELSE '' 
+																					END) 
+						+' '
+						+ (ISNULL(HISTORICOENDERECOPESSOA.S_DCRRUA_HISTENDPESSOA, '')
+						+ CASE	WHEN HISTORICOENDERECOPESSOA.S_NUMLOGRAD_HISTENDPESSOA IS NULL 
+								THEN ''  
+								ELSE ', '+RTRIM(HISTORICOENDERECOPESSOA.S_NUMLOGRAD_HISTENDPESSOA) 
+								END
+						+ CASE	WHEN HISTORICOENDERECOPESSOA.S_DCRBAIRRO_HISTENDPESSOA IS NULL 
+								THEN '' 
+								ELSE +', '+RTRIM(HISTORICOENDERECOPESSOA.S_DCRBAIRRO_HISTENDPESSOA) 
+								END
+						+ CASE	WHEN HISTORICOENDERECOPESSOA.S_DCRCOMPL_HISTENDPESSOA IS NULL 
+								THEN '' 
+								ELSE ', '+RTRIM(HISTORICOENDERECOPESSOA.S_DCRCOMPL_HISTENDPESSOA) 
+								END
+						+ CASE	WHEN HISTORICOENDERECOPESSOA.S_DCRMUN_HISTENDPESSOA IS NULL 
+								THEN '' 
+								ELSE ', '+RTRIM(S_DCRMUN_HISTENDPESSOA) 
+								END)
+						+', '+RTRIM(ISNULL(S_DCRUF_HISTENDPESSOA, ''))
+						+', CEP: '+RTRIM(ISNULL(substring(S_CEP_HISTENDPESSOA, 1,2) + '.' + substring(S_CEP_HISTENDPESSOA,3,3) + '-' + substring(S_CEP_HISTENDPESSOA, 6, 9), '')) AS [ENDEREÇO]
+
+			FROM
+
+						PESSOA 
+						INNER JOIN	ORGANIZACAOPESSOA ON PESSOA.N_PESSOA_PESSOA = ORGANIZACAOPESSOA.N_PESSOA_PESSOA 
+						INNER JOIN	CARGOORGANIZACAOPESSOA ON CARGOORGANIZACAOPESSOA.N_PESSOA_PESSOA = ORGANIZACAOPESSOA.N_PESSOA_PESSOA
+								AND	CARGOORGANIZACAOPESSOA.N_CODORI_ORGPESSOA = ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA 
+								AND CARGOORGANIZACAOPESSOA.N_ORG_ORG = ORGANIZACAOPESSOA.N_ORG_ORG 
+						INNER JOIN	CARGO ON CARGO.N_ORG_ORG = CARGOORGANIZACAOPESSOA.N_ORG_ORG 
+								AND CARGO.N_CARGO_CARGO = CARGOORGANIZACAOPESSOA.N_CARGO_CARGO 
+						INNER JOIN	AUTORIDADECOMPETENTE ON PESSOA.N_PESSOA_PESSOA = AUTORIDADECOMPETENTE.N_PESSOA_PESSOA 
+								AND ORGANIZACAOPESSOA.N_ORG_ORG = AUTORIDADECOMPETENTE.N_ORG_ORG 
+								AND ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA = AUTORIDADECOMPETENTE.N_CODORI_ORGPESSOA
+						INNER JOIN	HISTORICOENDERECOPESSOA ON PESSOA.N_PESSOA_PESSOA = HISTORICOENDERECOPESSOA.N_PESSOA_PESSOA
+
+			WHERE		AUTORIDADECOMPETENTE.N_SEQ_AUTDCOMPTT = 3 AND HISTORICOENDERECOPESSOA.DT_FIMVIG_HISTENDPESSOA IS NULL)
+
+			PRESIDENTE_TITULAR(Nome,Cargo_Efetivo,Matrícula,Gênero,Nomenclatura_Cargo,RG,CPF,Nascimento,Email,Endereço)
+
+			OUTER APPLY
+
+			--DADOS DO PRESIDENTE INTERINO
+			(SELECT
+					PESSOA.S_NOM_PESSOA AS [NOME]
+						
+						,CARGO.S_DCR_CARGO AS [CARGO EFETIVO]
+
+						,ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA AS [MATRÍCULA]
+
+						,(CASE	WHEN PESSOA.S_SEXO_PESSOA = 'M' 
+									THEN 'designado' 
+									ELSE 'designada' 
+									END) AS [GÊNERO]
+
+						,AUTORIDADECOMPETENTE.S_DCRCARGO_AUTDCOMPTT AS [NOMENCLATURA CARGO DIREÇÃO]
+
+						,PESSOA.S_RG_PESSOA AS [RG]
+
+						,RTRIM(SUBSTRING(PESSOA.S_CPF_PESSOA,1,3)
+						+'.'
+						+SUBSTRING(PESSOA.S_CPF_PESSOA,4,3)
+						+'.'
+						+SUBSTRING(PESSOA.S_CPF_PESSOA,7,3)
+						+'-'
+						+SUBSTRING(PESSOA.S_CPF_PESSOA,10,2)) AS [CPF]
+
+						,FORMAT(PESSOA.DT_NASC_PESSOA,'dd/MM/yyyy') AS [DATA NASCIMENTO]
+
+						,PESSOA.S_EMAIL_PESSOA AS [EMAIL]
+
+						,(CASE	HISTORICOENDERECOPESSOA.N_TIPLOGRAD_HISTENDPESSOA	WHEN 4 THEN 'Alameda'  
+																					WHEN 8 THEN 'Av.' 
+																					WHEN 31 THEN 'Estrada' 
+																					WHEN 65 THEN 'Praça' 
+																					WHEN 77 THEN 'Quadra' 
+																					WHEN 81 THEN 'Rua' 
+																					WHEN 90 THEN 'Rodovia' 
+																					WHEN 100 THEN 'Travessa' 
+																					WHEN 104 THEN 'Vila' 
+																					ELSE '' 
+																					END) 
+						+' '
+						+ (ISNULL(HISTORICOENDERECOPESSOA.S_DCRRUA_HISTENDPESSOA, '')
+						+ CASE	WHEN HISTORICOENDERECOPESSOA.S_NUMLOGRAD_HISTENDPESSOA IS NULL 
+								THEN ''  
+								ELSE ', '+RTRIM(HISTORICOENDERECOPESSOA.S_NUMLOGRAD_HISTENDPESSOA) 
+								END
+						+ CASE	WHEN HISTORICOENDERECOPESSOA.S_DCRBAIRRO_HISTENDPESSOA IS NULL 
+								THEN '' 
+								ELSE +', '+RTRIM(HISTORICOENDERECOPESSOA.S_DCRBAIRRO_HISTENDPESSOA) 
+								END
+						+ CASE	WHEN HISTORICOENDERECOPESSOA.S_DCRCOMPL_HISTENDPESSOA IS NULL 
+								THEN '' 
+								ELSE ', '+RTRIM(HISTORICOENDERECOPESSOA.S_DCRCOMPL_HISTENDPESSOA) 
+								END
+						+ CASE	WHEN HISTORICOENDERECOPESSOA.S_DCRMUN_HISTENDPESSOA IS NULL 
+								THEN '' 
+								ELSE ', '+RTRIM(S_DCRMUN_HISTENDPESSOA) 
+								END)
+						+', '+RTRIM(ISNULL(S_DCRUF_HISTENDPESSOA, ''))
+						+', CEP: '+RTRIM(ISNULL(substring(S_CEP_HISTENDPESSOA, 1,2) + '.' + substring(S_CEP_HISTENDPESSOA,3,3) + '-' + substring(S_CEP_HISTENDPESSOA, 6, 9), '')) AS [ENDEREÇO]
+			FROM
+
+						PESSOA 
+						INNER JOIN	ORGANIZACAOPESSOA ON PESSOA.N_PESSOA_PESSOA = ORGANIZACAOPESSOA.N_PESSOA_PESSOA 
+						INNER JOIN	CARGOORGANIZACAOPESSOA ON CARGOORGANIZACAOPESSOA.N_PESSOA_PESSOA = ORGANIZACAOPESSOA.N_PESSOA_PESSOA
+								AND	CARGOORGANIZACAOPESSOA.N_CODORI_ORGPESSOA = ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA 
+								AND CARGOORGANIZACAOPESSOA.N_ORG_ORG = ORGANIZACAOPESSOA.N_ORG_ORG 
+						INNER JOIN	CARGO ON CARGO.N_ORG_ORG = CARGOORGANIZACAOPESSOA.N_ORG_ORG 
+								AND CARGO.N_CARGO_CARGO = CARGOORGANIZACAOPESSOA.N_CARGO_CARGO 
+						INNER JOIN	AUTORIDADECOMPETENTE ON PESSOA.N_PESSOA_PESSOA = AUTORIDADECOMPETENTE.N_PESSOA_PESSOA 
+								AND ORGANIZACAOPESSOA.N_ORG_ORG = AUTORIDADECOMPETENTE.N_ORG_ORG 
+								AND ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA = AUTORIDADECOMPETENTE.N_CODORI_ORGPESSOA
+						INNER JOIN	HISTORICOENDERECOPESSOA ON PESSOA.N_PESSOA_PESSOA = HISTORICOENDERECOPESSOA.N_PESSOA_PESSOA
+
+			WHERE		AUTORIDADECOMPETENTE.N_SEQ_AUTDCOMPTT = 4 AND HISTORICOENDERECOPESSOA.DT_FIMVIG_HISTENDPESSOA IS NULL)
+
+			PRESIDENTE_INTERINO(Nome,Cargo_Efetivo,Matrícula,Gênero,Nomenclatura_Cargo,RG,CPF,Nascimento,Email,Endereço)
+
+			OUTER APPLY
+	
+				(SELECT        
+
+								PESSOA_3.S_NOM_PESSOA
+								,CARGO_3.S_DCR_CARGO
+
+				FROM           
+								PESSOA AS PESSOA_3
+								INNER JOIN ORGANIZACAOPESSOA AS ORGANIZACAOPESSOA_3 ON PESSOA_3.N_PESSOA_PESSOA = ORGANIZACAOPESSOA_3.N_PESSOA_PESSOA 
+								INNER JOIN CARGOORGANIZACAOPESSOA AS CARGOORGANIZACAOPESSOA_3 ON ORGANIZACAOPESSOA_3.N_CODORI_ORGPESSOA = CARGOORGANIZACAOPESSOA_3.N_CODORI_ORGPESSOA
+								AND ORGANIZACAOPESSOA_3.N_ORG_ORG = CARGOORGANIZACAOPESSOA_3.N_ORG_ORG
+								INNER JOIN CARGO AS CARGO_3 ON CARGOORGANIZACAOPESSOA_3.N_ORG_ORG = CARGO_3.N_ORG_ORG AND CARGOORGANIZACAOPESSOA_3.N_CARGO_CARGO = CARGO_3.N_CARGO_CARGO
+
+				WHERE        
+
+								(ORGANIZACAOPESSOA_3.N_ORG_ORG = 4) AND (ORGANIZACAOPESSOA_3.N_CODORI_ORGPESSOA = @MUsuario))
+				
+								USUARIO_IPRESB(Nome,Cargo)
+
+
+WHERE			(ASSENTAMENTOANEXOCONCESSAO.N_ANOREF_ASSENTANEXOCONCES = @ANO) 
+				AND (ASSENTAMENTOANEXOCONCESSAO.N_ATO_ASSENTANEXOCONCES = @PORTARIA)
+				--DEFININDO APENAS ISENÇÃO DE IR
+				--AND SERVICOPESSOA.N_TIPSERV_TIPSERV = 63
+				--DEFERIMENTO E INDEFERIMENTO NOS ASSENTAMENTOS
+				--AND (ASSENTAMENTOANEXOCONCESSAO.N_TIPATO_TIPATO IN (31,32))
+				--PROCESSO DEFERIDO 5 OU INDEFERIDO 6
+				--AND	SERVICOPESSOA.N_SIT_SERVPESSOA IN (6)
+				AND SERVICOPESSOA.N_NUMPROT_SERVPESSOA = @NUMPROT
+				AND SERVICOPESSOA.N_ANOREFER_SERVPESSOA = @ANOPROT
+
+
+ORDER BY		CARGOORGANIZACAOPESSOA.DT_INIVIG_CARGOORGPESSOA DESC]]>
+	</queryString>
+	<field name="ENTE_EXTENSO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ENTE_EXTENSO"/>
+		<property name="com.jaspersoft.studio.field.label" value="ENTE_EXTENSO"/>
+	</field>
+	<field name="CNPJ" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CNPJ"/>
+		<property name="com.jaspersoft.studio.field.label" value="CNPJ"/>
+	</field>
+	<field name="RG" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="RG"/>
+		<property name="com.jaspersoft.studio.field.label" value="RG"/>
+	</field>
+	<field name="NASCIMENTO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NASCIMENTO"/>
+		<property name="com.jaspersoft.studio.field.label" value="NASCIMENTO"/>
+	</field>
+	<field name="CPF" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CPF"/>
+		<property name="com.jaspersoft.studio.field.label" value="CPF"/>
+	</field>
+	<field name="NIT" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NIT"/>
+		<property name="com.jaspersoft.studio.field.label" value="NIT"/>
+	</field>
+	<field name="NOME" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NOME"/>
+		<property name="com.jaspersoft.studio.field.label" value="NOME"/>
+	</field>
+	<field name="CARGO EFETIVO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CARGO EFETIVO"/>
+		<property name="com.jaspersoft.studio.field.label" value="CARGO EFETIVO"/>
+	</field>
+	<field name="MATRÍCULA" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="MATRÍCULA"/>
+		<property name="com.jaspersoft.studio.field.label" value="MATRÍCULA"/>
+	</field>
+	<field name="Tconvert" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="Tconvert"/>
+		<property name="com.jaspersoft.studio.field.label" value="Tconvert"/>
+	</field>
+	<field name="NUMPROC" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NUMPROC"/>
+		<property name="com.jaspersoft.studio.field.label" value="NUMPROC"/>
+	</field>
+	<field name="DIB" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="DIB"/>
+		<property name="com.jaspersoft.studio.field.label" value="DIB"/>
+	</field>
+	<field name="TIPO DE BENEFICIO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="TIPO DE BENEFICIO"/>
+		<property name="com.jaspersoft.studio.field.label" value="TIPO DE BENEFICIO"/>
+	</field>
+	<field name="DADOS SEGURADO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="DADOS SEGURADO"/>
+		<property name="com.jaspersoft.studio.field.label" value="DADOS SEGURADO"/>
+	</field>
+	<field name="Parte 1 FINAL" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="Parte 1 FINAL"/>
+		<property name="com.jaspersoft.studio.field.label" value="Parte 1 FINAL"/>
+	</field>
+	<field name="BASE LEGAL" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="BASE LEGAL"/>
+		<property name="com.jaspersoft.studio.field.label" value="BASE LEGAL"/>
+	</field>
+	<field name="AO SEGURADO OU AO REQUERENTE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="AO SEGURADO OU AO REQUERENTE"/>
+		<property name="com.jaspersoft.studio.field.label" value="AO SEGURADO OU AO REQUERENTE"/>
+	</field>
+	<field name="REQUERENTE DADOS" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="REQUERENTE DADOS"/>
+		<property name="com.jaspersoft.studio.field.label" value="REQUERENTE DADOS"/>
+	</field>
+	<field name="PORTARIA" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="PORTARIA"/>
+		<property name="com.jaspersoft.studio.field.label" value="PORTARIA"/>
+	</field>
+	<field name="ANO PORTARIA" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="ANO PORTARIA"/>
+		<property name="com.jaspersoft.studio.field.label" value="ANO PORTARIA"/>
+	</field>
+	<field name="NOME REQUERENTE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NOME REQUERENTE"/>
+		<property name="com.jaspersoft.studio.field.label" value="NOME REQUERENTE"/>
+	</field>
+	<field name="RG REQUERENTE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="RG REQUERENTE"/>
+		<property name="com.jaspersoft.studio.field.label" value="RG REQUERENTE"/>
+	</field>
+	<field name="CPF REQUERENTE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CPF REQUERENTE"/>
+		<property name="com.jaspersoft.studio.field.label" value="CPF REQUERENTE"/>
+	</field>
+	<field name="NIT REQUERENTE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NIT REQUERENTE"/>
+		<property name="com.jaspersoft.studio.field.label" value="NIT REQUERENTE"/>
+	</field>
+	<field name="TIPO REQUERIMENTO" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="TIPO REQUERIMENTO"/>
+		<property name="com.jaspersoft.studio.field.label" value="TIPO REQUERIMENTO"/>
+	</field>
+	<field name="INCISO II" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="INCISO II"/>
+		<property name="com.jaspersoft.studio.field.label" value="INCISO II"/>
+	</field>
+	<field name="INCISO III" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="INCISO III"/>
+		<property name="com.jaspersoft.studio.field.label" value="INCISO III"/>
+	</field>
+	<field name="TEXTO INCISO II DEFERIDO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="TEXTO INCISO II DEFERIDO"/>
+		<property name="com.jaspersoft.studio.field.label" value="TEXTO INCISO II DEFERIDO"/>
+	</field>
+	<field name="CARGO DO DIRETOR INTERINO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CARGO DO DIRETOR INTERINO"/>
+		<property name="com.jaspersoft.studio.field.label" value="CARGO DO DIRETOR INTERINO"/>
+	</field>
+	<field name="CARGO DO PRESIDENTE INTERINO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CARGO DO PRESIDENTE INTERINO"/>
+		<property name="com.jaspersoft.studio.field.label" value="CARGO DO PRESIDENTE INTERINO"/>
+	</field>
+	<field name="MATRICULA DO DIRETOR INTERINO" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="MATRICULA DO DIRETOR INTERINO"/>
+		<property name="com.jaspersoft.studio.field.label" value="MATRICULA DO DIRETOR INTERINO"/>
+	</field>
+	<field name="MATRICULA DO PRESIDENTE INTERINO" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="MATRICULA DO PRESIDENTE INTERINO"/>
+		<property name="com.jaspersoft.studio.field.label" value="MATRICULA DO PRESIDENTE INTERINO"/>
+	</field>
+	<field name="GENERO DO DIRETOR INTERINO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="GENERO DO DIRETOR INTERINO"/>
+		<property name="com.jaspersoft.studio.field.label" value="GENERO DO DIRETOR INTERINO"/>
+	</field>
+	<field name="GENERO DO PRESIDENTE INTERINO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="GENERO DO PRESIDENTE INTERINO"/>
+		<property name="com.jaspersoft.studio.field.label" value="GENERO DO PRESIDENTE INTERINO"/>
+	</field>
+	<field name="GENERO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="GENERO"/>
+		<property name="com.jaspersoft.studio.field.label" value="GENERO"/>
+	</field>
+	<field name="COND_DIRETOR" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="COND_DIRETOR"/>
+		<property name="com.jaspersoft.studio.field.label" value="COND_DIRETOR"/>
+	</field>
+	<field name="COND_PRESIDENTE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="COND_PRESIDENTE"/>
+		<property name="com.jaspersoft.studio.field.label" value="COND_PRESIDENTE"/>
+	</field>
+	<field name="CARGO_DIRETOR" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CARGO_DIRETOR"/>
+		<property name="com.jaspersoft.studio.field.label" value="CARGO_DIRETOR"/>
+	</field>
+	<field name="CARGO_PRESIDENTE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CARGO_PRESIDENTE"/>
+		<property name="com.jaspersoft.studio.field.label" value="CARGO_PRESIDENTE"/>
+	</field>
+	<field name="NOME_DIRETOR" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NOME_DIRETOR"/>
+		<property name="com.jaspersoft.studio.field.label" value="NOME_DIRETOR"/>
+	</field>
+	<field name="NOME_PRESIDENTE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NOME_PRESIDENTE"/>
+		<property name="com.jaspersoft.studio.field.label" value="NOME_PRESIDENTE"/>
+	</field>
+	<field name="CPF_GESTOR" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CPF_GESTOR"/>
+		<property name="com.jaspersoft.studio.field.label" value="CPF_GESTOR"/>
+	</field>
+	<field name="CPF_PRESIDENTE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CPF_PRESIDENTE"/>
+		<property name="com.jaspersoft.studio.field.label" value="CPF_PRESIDENTE"/>
+	</field>
+	<field name="RG_GESTOR" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="RG_GESTOR"/>
+		<property name="com.jaspersoft.studio.field.label" value="RG_GESTOR"/>
+	</field>
+	<field name="RG_PRESIDENTE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="RG_PRESIDENTE"/>
+		<property name="com.jaspersoft.studio.field.label" value="RG_PRESIDENTE"/>
+	</field>
+	<field name="NASC_GESTOR" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NASC_GESTOR"/>
+		<property name="com.jaspersoft.studio.field.label" value="NASC_GESTOR"/>
+	</field>
+	<field name="NASC_PRESIDENTE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NASC_PRESIDENTE"/>
+		<property name="com.jaspersoft.studio.field.label" value="NASC_PRESIDENTE"/>
+	</field>
+	<field name="EMAIL_GESTOR" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="EMAIL_GESTOR"/>
+		<property name="com.jaspersoft.studio.field.label" value="EMAIL_GESTOR"/>
+	</field>
+	<field name="EMAIL_PRESIDENTE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="EMAIL_PRESIDENTE"/>
+		<property name="com.jaspersoft.studio.field.label" value="EMAIL_PRESIDENTE"/>
+	</field>
+	<field name="END_GESTOR" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="END_GESTOR"/>
+		<property name="com.jaspersoft.studio.field.label" value="END_GESTOR"/>
+	</field>
+	<field name="END_PRESIDENTE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="END_PRESIDENTE"/>
+		<property name="com.jaspersoft.studio.field.label" value="END_PRESIDENTE"/>
+	</field>
+	<field name="USUARIO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="USUARIO"/>
+		<property name="com.jaspersoft.studio.field.label" value="USUARIO"/>
+	</field>
+	<field name="CARGO_USUARIO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CARGO_USUARIO"/>
+		<property name="com.jaspersoft.studio.field.label" value="CARGO_USUARIO"/>
+	</field>
+	<pageHeader>
+		<band height="79" splitType="Stretch">
+			<componentElement>
+				<reportElement x="-20" y="0" width="530" height="70" uuid="cc52b66d-a63d-4318-b3ea-71f74a236b9e"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Logo" uuid="c67ef43c-b5ee-46d6-81e7-14fc2ce97490">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="70" width="530">
+						<image>
+							<reportElement x="0" y="0" width="520" height="70" uuid="a89bc311-ed75-48e0-8462-39e98da43de4"/>
+							<imageExpression><![CDATA[$F{IMG_IMGFUNDO_IMGORG}]]></imageExpression>
+						</image>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="692">
+			<textField>
+				<reportElement x="-6" y="177" width="454" height="20" uuid="dae9d30d-bba9-492f-9d7a-c669afa7428f"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Ao Sr. Presidente do IPRESB para decisão."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-6" y="327" width="454" height="20" uuid="e69a0032-d724-4162-8272-f20ead1d5e8b"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["À Unidade de Gestão de Benefícios Previdenciários."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-6" y="84" width="454" height="20" uuid="8228a22b-9467-4eea-9bb4-126a64aeeb06"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Assunto: " + new java.util.Scanner($F{TIPO DE BENEFICIO}.toLowerCase()).useDelimiter("\\s+").tokens()
+    .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1))
+    .collect(java.util.stream.Collectors.joining(" "))]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-6" y="398" width="454" height="20" uuid="9c9fe3b8-f197-48bb-9e5e-676f48a2183f"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Baixar portaria."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-6" y="488" width="454" height="20" uuid="31d15ae6-6dfe-4bfa-b82b-5aba2222f6b4"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="Times New Roman" size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Scanner($F{CARGO_PRESIDENTE}.toLowerCase()).useDelimiter("\\s+").tokens()
+    .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1))
+    .collect(java.util.stream.Collectors.joining(" "))]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-6" y="239" width="454" height="20" uuid="74e580ab-436d-4788-a0a3-fdda169b35ef"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Scanner($F{NOME_DIRETOR}.toLowerCase()).useDelimiter("\\s+").tokens()
+    .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1))
+    .collect(java.util.stream.Collectors.joining(" "))]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-6" y="427" width="454" height="20" uuid="d3e458ad-7856-407a-ba6c-2ce8dc6a5584"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Publique-se."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-6" y="7" width="452" height="20" uuid="0da0edad-cdb1-43da-928a-95b26f124fce"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Barueri, "+LOWER(DATEFORMAT(TODAY(),"d 'de' MMMM 'de' yyyy")+".")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-6" y="356" width="454" height="33" uuid="2a74c7d2-6441-41b4-a1f8-5ffe16c31238"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle" markup="styled">
+					<font fontName="Times New Roman" size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<style isBold='true'>"+"Indefiro"+ "</style> a <style isBold='true'>"+ new java.util.Scanner($F{TIPO DE BENEFICIO}.toLowerCase()).useDelimiter("\\s+").tokens()
+    .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1))
+    .collect(java.util.stream.Collectors.joining(" "))+"</style>"+" ao(à) servidor(a) <style isBold='true'>" + new java.util.Scanner($F{NOME}.toLowerCase()).useDelimiter("\\s+").tokens()
+    .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1))
+    .collect(java.util.stream.Collectors.joining(" ")) +"</style>"+", nos termos da decisão anterior."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-6" y="42" width="454" height="20" uuid="c675a69a-e3cb-4970-8d92-2a024ce4fb82"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Processo: n.º "+$F{NUMPROC}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-6" y="140" width="454" height="37" uuid="f4784ea7-afa8-4826-887d-4ffceab3002c"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle" markup="styled">
+					<font fontName="Times New Roman" size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<style isBold='true'>"+"Indefiro"+ "</style> a <style isBold='true'>"+new java.util.Scanner($F{TIPO DE BENEFICIO}.toLowerCase()).useDelimiter("\\s+").tokens()
+    .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1))
+    .collect(java.util.stream.Collectors.joining(" "))+"</style>"+" ao(à) servidor(a) <style isBold='true'>"+new java.util.Scanner($F{NOME}.toLowerCase()).useDelimiter("\\s+").tokens()
+    .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1))
+    .collect(java.util.stream.Collectors.joining(" ")) +"</style>"+"."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-6" y="259" width="454" height="20" uuid="cd8046e8-ba47-4731-bcdc-6c6de1e61ea6"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="Times New Roman" size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Scanner($F{CARGO_DIRETOR}.toLowerCase()).useDelimiter("\\s+").tokens()
+    .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1))
+    .collect(java.util.stream.Collectors.joining(" "))]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-6" y="63" width="454" height="20" uuid="07678fd2-d957-4a8f-9736-6f812a92d96e"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Interessado(a): "+new java.util.Scanner($F{NOME}.toLowerCase()).useDelimiter("\\s+").tokens()
+    .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1))
+    .collect(java.util.stream.Collectors.joining(" "))]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-6" y="468" width="454" height="20" uuid="ba74be4a-1e67-47c9-8eca-c40c4fb83993"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Scanner($F{NOME_PRESIDENTE}.toLowerCase()).useDelimiter("\\s+").tokens()
+    .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1))
+    .collect(java.util.stream.Collectors.joining(" "))]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-6" y="220" width="454" height="19" uuid="d93ea349-8d33-495c-987b-8b73988a66f9"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ASSINADO DIGITALMENTE POR"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-6" y="449" width="454" height="19" uuid="6d48f9ee-86f1-4c5f-bf63-2162c51148f9"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ASSINADO DIGITALMENTE POR"]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="692">
+			<textField>
+				<reportElement x="-5" y="31" width="454" height="474" uuid="7a4e5094-44f2-4a5d-be08-650e75d532ba"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top" markup="styled">
+					<font fontName="Times New Roman" size="12" isBold="false"/>
+					<paragraph lineSpacing="Proportional" lineSpacingSize="0.95" spacingAfter="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{TIPO REQUERIMENTO} == 1 ? "" : "<br/>") +
+
+"<style isBold='true'>"+UPPER($F{NOME_PRESIDENTE})+"</style>"+$F{COND_PRESIDENTE}+" e <style isBold='true'>"+UPPER($F{NOME_DIRETOR})+"</style>"+$F{COND_DIRETOR}+", usando das atribuições que lhes são conferidas por lei;<br/><br/>"
+
++($F{TIPO REQUERIMENTO} == 1 ? 
+	"Considerando que <style isBold='true'>" +new java.util.Scanner($F{NOME}.toLowerCase()).useDelimiter("\\s+").tokens()
+    .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1))
+    .collect(java.util.stream.Collectors.joining(" ")) +"</style>"+new java.util.Scanner($F{DADOS SEGURADO}.toLowerCase()).useDelimiter("\\s+").tokens()
+    .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1))
+    .collect(java.util.stream.Collectors.joining(" "))+";<br/><br/>"
+	+"Considerando a Súmula Vinculante nº 33/2014 do STF;<br/><br/>" 
+	+"Considerando o Anexo IV do Decreto nº 3048, de 06/05/1999;<br/><br/>"
+	+"Considerando a Lei 8.213/91 em seu artigo 57, que trata da Aposentadoria Especial do Regime Geral de Previdência e a Instrução Normativa MPS/SPS nº 1, de 22/07/2010, que estabelece as regras para análise da aposentadoria especial e finalmente;<br/><br/>"
+	
+: ("Considerando que <style isBold='true'>" +new java.util.Scanner($F{NOME}.toLowerCase()).useDelimiter("\\s+").tokens()
+    .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1))
+    .collect(java.util.stream.Collectors.joining(" "))+"</style>"+new java.util.Scanner($F{DADOS SEGURADO}.toLowerCase()).useDelimiter("\\s+").tokens()
+    .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1))
+    .collect(java.util.stream.Collectors.joining(" "))+";<br/><br/>")
+
+)
++"Considerando o que consta no Processo Administrativo n° <style isBold='true'>" +$F{NUMPROC}+"</style> "
++$F{Parte 1 FINAL}
+
++($F{TIPO REQUERIMENTO} == 1 ? "<br/><br/>" : "<br/><br/>")
+
++($F{TIPO REQUERIMENTO} == 4 ? $F{Tconvert} +"<br/><br/>"	
+: ("")
+
+)
+
++"<style isBold='true'>RESOLVEM:</style>"
+
++($F{TIPO REQUERIMENTO} == 1 ? "<br/><br/>" : "<br/><br/><br/>")
+
++"I - Indeferir o pedido do benefício de "+"Assunto: " + new java.util.Scanner($F{TIPO DE BENEFICIO}.toLowerCase()).useDelimiter("\\s+").tokens()
+    .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1))
+    .collect(java.util.stream.Collectors.joining(" "))
++ " " +$F{AO SEGURADO OU AO REQUERENTE}
++" <style isBold='true'>"+($F{TIPO REQUERIMENTO} == 3 ? $F{REQUERENTE DADOS} : $F{NOME})+"</style>, "
++$F{BASE LEGAL}+".<br/><br/>"
+
++$F{INCISO II}+"<br/><br/>"
+
++$F{INCISO III}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-5" y="505" width="454" height="24" uuid="86f43020-0f33-4919-940a-407f6a71c5a7"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Barueri, "+$F{DIB}+"."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-5" y="0" width="454" height="24" uuid="65511e09-34ca-49bb-b958-23af3e1f8b47"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["PORTARIA Nº "+$F{PORTARIA}+", DE "+UPPER($F{DIB})+"."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-5" y="549" width="454" height="19" uuid="14b8b76f-3043-4e0f-a624-3700073fa08d"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ASSINADO DIGITALMENTE POR"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-5" y="622" width="454" height="19" uuid="658c6d3d-7f9d-4a7b-9dea-62e5f96fb2bd"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ASSINADO DIGITALMENTE POR"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-5" y="570" width="454" height="20" uuid="18638186-28a7-47da-9123-f850cd777a82"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Scanner($F{NOME_PRESIDENTE}.toLowerCase()).useDelimiter("\\s+").tokens()
+    .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1))
+    .collect(java.util.stream.Collectors.joining(" "))]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-5" y="590" width="454" height="20" uuid="7ca2a08b-b2d8-4893-9119-b5a7b6bcaf70"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Scanner($F{CARGO_PRESIDENTE}.toLowerCase()).useDelimiter("\\s+").tokens()
+    .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1))
+    .collect(java.util.stream.Collectors.joining(" "))]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-5" y="640" width="454" height="20" uuid="30449aa0-edcc-457d-971b-df1db3d36342"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Scanner($F{NOME_DIRETOR}.toLowerCase()).useDelimiter("\\s+").tokens()
+    .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1))
+    .collect(java.util.stream.Collectors.joining(" "))]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-5" y="660" width="454" height="20" uuid="e79edd42-70cf-4f86-badd-fd1fa351e901"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Scanner($F{CARGO_DIRETOR}.toLowerCase()).useDelimiter("\\s+").tokens()
+    .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1))
+    .collect(java.util.stream.Collectors.joining(" "))]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="57" splitType="Stretch">
+			<componentElement>
+				<reportElement x="-21" y="1" width="490" height="55" uuid="c43c2739-7688-4e79-9ce6-e24cf5343f7f"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Rodape" uuid="a9951ccb-0f72-4209-ae27-ddac87839b56">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="55" width="490">
+						<image>
+							<reportElement x="0" y="5" width="490" height="50" uuid="7869b72f-3ee9-4e57-8e1a-cd7d425c0643"/>
+							<imageExpression><![CDATA[$F{IMG_IMGFUNDO_IMGORG}]]></imageExpression>
+						</image>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+		</band>
+	</pageFooter>
+</jasperReport>

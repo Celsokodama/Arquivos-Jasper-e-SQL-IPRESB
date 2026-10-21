@@ -1,0 +1,878 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.19.0.final using JasperReports Library version 6.19.0-646c68931cebf1a58bc65c4359d1f0ca223c5e94  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4" pageWidth="595" pageHeight="842" columnWidth="470" leftMargin="85" rightMargin="40" topMargin="14" bottomMargin="0" uuid="d946ebe6-2e92-44c5-aed7-8f7380925278">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ipresb"/>
+	<property name="com.jaspersoft.studio.unit." value="cm"/>
+	<subDataset name="Logo" uuid="e9f90e01-6f3f-44b6-9906-95c12f91afd0">
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="IPRESB"/>
+		<queryString language="SQL">
+			<![CDATA[Select  IMG_IMGFUNDO_IMGORG
+ from dbo."IMAGEMORGANIZACAO"  
+ where  "N_ORG_ORG" = 42]]>
+		</queryString>
+		<field name="IMG_IMGFUNDO_IMGORG" class="java.awt.Image"/>
+	</subDataset>
+	<subDataset name="Rodape" uuid="848c67d2-d15a-4bee-a03e-4616d865bbac">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="IPRESB"/>
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<queryString>
+			<![CDATA[Select dbo."IMAGEMORGANIZACAO"."IMG_IMGFUNDO_IMGORG" 
+ from dbo."IMAGEMORGANIZACAO" 
+ where  dbo."IMAGEMORGANIZACAO"."N_ORG_ORG" = 43]]>
+		</queryString>
+		<field name="IMG_IMGFUNDO_IMGORG" class="java.awt.Image"/>
+	</subDataset>
+	<parameter name="Protocolo" class="java.lang.String"/>
+	<parameter name="Ano" class="java.lang.String"/>
+	<parameter name="MUsuario" class="java.lang.String"/>
+	<parameter name="InfAdic1" class="java.lang.String"/>
+	<parameter name="InfAdic2" class="java.lang.String"/>
+	<parameter name="InfAdic3" class="java.lang.String"/>
+	<parameter name="Certid" class="java.lang.String"/>
+	<parameter name="Ender" class="java.lang.String"/>
+	<parameter name="CTPS" class="java.lang.String"/>
+	<parameter name="PISPASEP" class="java.lang.String"/>
+	<parameter name="ACCargo" class="java.lang.String"/>
+	<parameter name="ACCargoO" class="java.lang.String"/>
+	<parameter name="ACCargoC" class="java.lang.String"/>
+	<parameter name="ACBenef" class="java.lang.String"/>
+	<parameter name="ACBenefO" class="java.lang.String"/>
+	<parameter name="ACBenefV" class="java.lang.String"/>
+	<parameter name="TermoAbono" class="java.lang.String"/>
+	<parameter name="Exigencia" class="java.lang.String"/>
+	<parameter name="DInt" class="java.lang.String"/>
+	<parameter name="PInt" class="java.lang.String"/>
+	<parameter name="ACBenefD" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[DECLARE @PROT AS INTEGER
+SET @PROT = $P{Protocolo}
+
+DECLARE @ANO AS INTEGER
+SET @ANO =  $P{Ano}
+
+DECLARE @ACUMULOCARGO AS VARCHAR(2)
+SET @ACUMULOCARGO =  $P{ACCargo}
+
+DECLARE @ACUMULOCARGOORGAO AS VARCHAR(100)
+SET @ACUMULOCARGOORGAO =  $P{ACCargoO}
+
+DECLARE @ACUMULOCARGOCARGO AS VARCHAR(100)
+SET @ACUMULOCARGOCARGO =  $P{ACCargoC}
+
+DECLARE @ACUMULOBENEFICIOS AS VARCHAR(1)
+SET @ACUMULOBENEFICIOS =  $P{ACBenef}
+
+DECLARE @ACUMULOBENEFICIOSORGAO AS VARCHAR(100)
+SET @ACUMULOBENEFICIOSORGAO =  $P{ACBenefO}
+
+DECLARE @ACUMULOBENEFICIOSVALOR AS VARCHAR(15)
+SET @ACUMULOBENEFICIOSVALOR =  $P{ACBenefV}
+
+DECLARE @ACUMULOBENEFICIOSDATA AS VARCHAR(15)
+SET @ACUMULOBENEFICIOSDATA =  $P{ACBenefD}
+
+DECLARE @TermoAbono AS VARCHAR(1)
+SET @TermoAbono = $P{TermoAbono}
+
+
+
+
+
+DECLARE @InfAdic2 AS VARCHAR(1000)
+SET @InfAdic2 = $P{InfAdic2}
+
+DECLARE @InfAdic3 AS VARCHAR(1000)
+SET @InfAdic3 = $P{InfAdic3}
+
+DECLARE @Certid AS VARCHAR(1)
+SET @Certid = $P{Certid}
+
+DECLARE @Ender AS VARCHAR(1)
+SET @Ender = $P{Ender}
+
+DECLARE @CTPS AS VARCHAR(1)
+SET @CTPS = $P{CTPS}
+
+DECLARE @pis AS VARCHAR(1)
+SET @pis = $P{PISPASEP}
+
+DECLARE @Exigencia AS VARCHAR(1)
+SET @Exigencia = $P{Exigencia}
+
+DECLARE @MUsuario AS INT
+SET @MUsuario = $P{MUsuario}
+
+DECLARE @InfAdic1 AS VARCHAR(1000)
+SET @InfAdic1 = $P{InfAdic1}
+
+DECLARE @DInt as VARCHAR(30)
+SET @DInt = $P{DInt}
+
+DECLARE @PInt as VARCHAR(30)
+SET @PInt = $P{PInt}
+
+
+SELECT TOP 1
+
+--PROTOCOLO DO PROCESSO
+				(CASE	WHEN CONVERT(VarChar(5), SP.N_ANOREFER_SERVPESSOA) <=2018 
+						THEN 'BI-'+ CONVERT(VarChar(5), SP.N_NUMPROT_SERVPESSOA) + '/' + CONVERT(VarChar(5), SP.N_ANOREFER_SERVPESSOA) 
+						ELSE 'PA-'+ CONVERT(VarChar(5), SP.N_NUMPROT_SERVPESSOA) + '/' + CONVERT(VarChar(5), SP.N_ANOREFER_SERVPESSOA) 
+						END) AS NOMEPROT,
+
+						FORMAT(SP.DT_SLCT_SERVPESSOA,'dd/MM/yyyy') AS DATA_SOLICITAÇAO,
+
+						(CASE SP.S_TIPRESP_SERVPESSOA
+						WHEN 'S' THEN 'Solicitante'
+						WHEN 'O' THEN 'Outro(a)'
+						WHEN 'P' THEN 'Procurador(a)'
+						END ) AS TIPOSOLICITANTE,
+
+						(CASE SP.S_TIPRESP_SERVPESSOA
+						WHEN 'S' THEN  dbo.[FN_PRIMEIRALETRAMAIUSCULA](LOWER(P.S_NOM_PESSOA))
+						WHEN 'O' THEN dbo.[FN_PRIMEIRALETRAMAIUSCULA](LOWER(P2.S_NOM_PESSOA))
+						WHEN 'P' THEN dbo.[FN_PRIMEIRALETRAMAIUSCULA](LOWER(SP.S_NOMRESP_SERVPESSOA))
+						END ) AS [NOME SOLICITANTE],
+
+
+						--(CASE SP.S_NOMRESP_SERVPESSOA
+						--WHEN NULL THEN  P2.S_NOM_PESSOA 
+						--ELSE SP.S_NOMRESP_SERVPESSOA
+						--END) AS [NOME SOLICITANTE],
+
+LOWER(SP.S_DCR_SERVPESSOA) AS [SÚMULA],
+dbo.[FN_PRIMEIRALETRAMAIUSCULA](LOWER(P.S_NOM_PESSOA)) AS [NOMESERVIDOR],
+P.S_RG_PESSOA AS [RG],
+LOWER(P.S_EMAIL_PESSOA) AS [EMAIL],
+			(CASE P.S_SEXO_PESSOA WHEN 'M' THEN  (CASE  P.S_ESTCIVIL_PESSOA 
+			WHEN 'S' THEN 'Solteiro'
+			WHEN 'C' THEN 'Casado'
+			WHEN 'V' THEN 'Viúvo'
+			WHEN 'U' THEN 'União Estável'
+			WHEN 'D' THEN 'Divorciado'
+			WHEN 'P' THEN 'Separado'
+			END )
+			WHEN 'F' THEN  (CASE  P.S_ESTCIVIL_PESSOA 
+			WHEN 'S' THEN 'Solteira'
+			WHEN 'C' THEN 'Casada'
+			WHEN 'V' THEN 'Viúva'
+			WHEN 'U' THEN 'União Estável'
+			WHEN 'D' THEN 'Divorciada'
+			WHEN 'P' THEN 'Separada'
+			END )
+			END) AS [ESTADO CIVIL],
+
+			--ENDEREÇO
+				CASE H.N_TIPLOGRAD_HISTENDPESSOA	WHEN 4 THEN 'Alameda'  
+												WHEN 8 THEN 'Av.' 
+												WHEN 31 THEN 'Estrada' 
+												WHEN 65 THEN 'Praça' 
+												WHEN 77 THEN 'Quadra' 
+												WHEN 81 THEN 'Rua' 
+												WHEN 90 THEN 'Rodovia' 
+												WHEN 100 THEN 'Travessa' 
+												WHEN 104 THEN 'Vila' 
+												END 
+				+' '
+				+dbo.FN_PRIMEIRALETRAMAIUSCULA(LOWER(RTRIM(ISNULL(H.S_DCRRUA_HISTENDPESSOA, '')
+				+CASE	WHEN H.S_NUMLOGRAD_HISTENDPESSOA IS NULL 
+						THEN ''  
+						ELSE ', ' +RTRIM(H.S_NUMLOGRAD_HISTENDPESSOA) END
+				+CASE	WHEN H.S_DCRBAIRRO_HISTENDPESSOA IS NULL 
+						THEN '' 
+						ELSE +', '+RTRIM(H.S_DCRBAIRRO_HISTENDPESSOA) END
+				+CASE	WHEN H.S_DCRCOMPL_HISTENDPESSOA IS NULL 
+						THEN '' 
+						ELSE ', '+RTRIM(H.S_DCRCOMPL_HISTENDPESSOA) END
+				+CASE	WHEN H.S_DCRMUN_HISTENDPESSOA IS NULL 
+						THEN '' 
+						ELSE ', '+RTRIM(H.S_DCRMUN_HISTENDPESSOA) END))
+				+', '+RTRIM(ISNULL(H.S_DCRUF_HISTENDPESSOA, '')))
+				+', CEP: '
+				+RTRIM(ISNULL(substring(H.S_CEP_HISTENDPESSOA, 1,2)
+				+ '.' 
+				+ substring(H.S_CEP_HISTENDPESSOA,3,3) 
+				+ '-' 
+				+ substring(H.S_CEP_HISTENDPESSOA, 6, 9), '')
+				) as ENDERECO,
+
+CONVERT(VARCHAR, P.DT_NASC_PESSOA, 103) AS NASCIMENTO,
+--CPF
+				RTRIM(SUBSTRING(P.S_CPF_PESSOA,1,3)
+				+'.'
+				+SUBSTRING(P.S_CPF_PESSOA,4,3)
+				+'.'
+				+SUBSTRING(P.S_CPF_PESSOA,7,3)
+				+'-'
+				+SUBSTRING(P.S_CPF_PESSOA,10,2)) AS CPF,
+				
+				--PISPASEP
+				RTRIM(SUBSTRING(P.S_PISPASEP_PESSOA,1,3)
+				+'.'
+				+SUBSTRING(P.S_PISPASEP_PESSOA,4,5)
+				+'.'
+				+SUBSTRING(P.S_PISPASEP_PESSOA,9,2)
+				+'-'
+				+SUBSTRING(P.S_PISPASEP_PESSOA,11,1)) AS NIT,
+
+SP.N_CODORI_ORGPESSOA AS [MATRÍCULA],
+
+		(CASE CARGO.S_DCR_CARGO
+		WHEN 'PEB I' THEN 'PEB I'
+		WHEN 'PEB II' THEN 'PEB II'
+		WHEN 'PEB III' THEN 'PEB III'
+		ELSE dbo.[FN_PRIMEIRALETRAMAIUSCULA](LOWER(CARGO.S_DCR_CARGO))END) AS CARGO,
+		CONVERT(VARCHAR, OP.DT_ADM_ORGPESSOA, 103)  AS [DATA DE INGRESSO],
+
+			(CASE SP.N_ORG_ORG 
+			WHEN 1 THEN 'Prefeitura Municipal de Barueri'
+			WHEN 2 THEN 'Câmara Municipal de Barueri'
+			WHEN 3 THEN 'FIEB'
+			WHEN 4 THEN 'IPRESB'
+			END)AS [ENTE],
+
+			dbo.[FN_PRIMEIRALETRAMAIUSCULA](LOWER(TIPOSERVICO.S_DCRSERV_TIPSERV)) AS [TIPO SOLICITAÇÃO],
+			TIPOSERVICO.N_TIPSERV_TIPSERV AS [N_TIPO_SERVICO],
+
+
+			
+			
+
+
+			(SELECT TOP 1  (CASE TP1.N_NUM_TELPESSOA WHEN NULL THEN '---' 
+							ELSE('('+ CONVERT(VARCHAR(2),TP1.N_DDD_TELPESSOA)+') '  + CONVERT(VARCHAR(10),TP1.N_NUM_TELPESSOA) 
+						)END)
+			FROM TELEFONEPESSOA TP1
+			WHERE TP1.S_TIP_TELPESSOA = 'E' AND TP1.N_PESSOA_PESSOA = P.N_PESSOA_PESSOA) AS CELULAR,
+
+			(SELECT TOP 1 (CASE TP2.N_NUM_TELPESSOA WHEN NULL THEN '---' 
+							ELSE('('+ CONVERT(VARCHAR(2),TP2.N_DDD_TELPESSOA)+') '  + CONVERT(VARCHAR(10),TP2.N_NUM_TELPESSOA) 
+						)END)
+			FROM TELEFONEPESSOA TP2
+			WHERE TP2.S_TIP_TELPESSOA = 'R' AND TP2.N_PESSOA_PESSOA = P.N_PESSOA_PESSOA) AS RESIDENCIAL,
+
+			(SELECT TOP 1  (CASE TP3.N_NUM_TELPESSOA WHEN NULL THEN '---' 
+							ELSE('('+ CONVERT(VARCHAR(2),TP3.N_DDD_TELPESSOA)+') '  + CONVERT(VARCHAR(10),TP3.N_NUM_TELPESSOA) 
+						)END)
+			FROM TELEFONEPESSOA TP3
+			WHERE TP3.S_TIP_TELPESSOA = 'D' AND TP3.N_PESSOA_PESSOA = P.N_PESSOA_PESSOA) AS RECADO,
+			
+			-- TEXTOS
+			 @ACUMULOCARGO AS ACUMULOCARGO, 
+				(CASE @ACUMULOCARGO  
+			WHEN UPPER('S') THEN 'Acumulo o cargo público, função ou emprego ou recebo proventos(aposentadoria) do serviço público: '
+			ELSE  'Não exerço qualquer outro cargo público e nem estou aposentado(a) pelo serviço público, seja na esfera Federal, Estadual ou Municipal. <br>'
+			END) AS ACUMULOCARGO2, 
+			(CASE @ACUMULOCARGO
+				WHEN UPPER('S') THEN 'Órgão: ' + @ACUMULOCARGOORGAO + ' - '   
+				ELSE ''
+			END) AS ACCargoO,
+				(CASE @ACUMULOCARGO
+				WHEN UPPER('S') THEN 	'Cargo: ' + @ACUMULOCARGOCARGO
+				ELSE ''
+			END) AS ACCargoC,
+			
+			
+			
+			(CASE @ACUMULOBENEFICIOS 
+				when 'S' THEN (CASE SP.N_TIPSERV_TIPSERV 
+
+								--APOSENTADORIA
+								WHEN 9 THEN 'Recebo pensão por morte do Regime Geral de Previdência Social (RGPS-INSS), de Regime Próprio de Previdência Social (RPPS) ou decorrentes de atividades militares:<br>'
+								WHEN 32 THEN 'Recebo pensão por morte do Regime Geral de Previdência Social (RGPS-INSS), de Regime Próprio de Previdência Social (RPPS) ou decorrentes de atividades militares:<br>'
+								WHEN 41 THEN 'Recebo pensão por morte do Regime Geral de Previdência Social (RGPS-INSS), de Regime Próprio de Previdência Social (RPPS) ou decorrentes de atividades militares:<br>'
+								WHEN 42 THEN 'Recebo pensão por morte do Regime Geral de Previdência Social (RGPS-INSS), de Regime Próprio de Previdência Social (RPPS) ou decorrentes de atividades militares:<br>'
+								WHEN 43 THEN 'Recebo pensão por morte do Regime Geral de Previdência Social (RGPS-INSS), de Regime Próprio de Previdência Social (RPPS) ou decorrentes de atividades militares:<br>'
+								WHEN 57 THEN 'Recebo pensão por morte do Regime Geral de Previdência Social (RGPS-INSS), de Regime Próprio de Previdência Social (RPPS) ou decorrentes de atividades militares:<br>'
+								WHEN 66 THEN 'Recebo pensão por morte do Regime Geral de Previdência Social (RGPS-INSS), de Regime Próprio de Previdência Social (RPPS) ou decorrentes de atividades militares:<br>'
+								WHEN 91 THEN 'Recebo pensão por morte do Regime Geral de Previdência Social (RGPS-INSS), de Regime Próprio de Previdência Social (RPPS) ou decorrentes de atividades militares:<br>'
+
+								--PENSÃO POR MORTE
+								WHEN 21 THEN 'Recebo pensão por morte ou aposentadoria do Regime Geral de Previdência Social (RGPS-INSS), de Regime Próprio de Previdência Social (RPPS) ou decorrentes de atividades militares;<br>'	
+								END)
+					--Órgão:_____________________	Valor:________________________<br>Declaro ainda, caso venha a receber pensão por morte de outro Regime de Previdência devo comunicar a este Instituto e que tomei conhecimento do trecho da Emenda Constitucional n.º 103/2019 abaixo transcrito e que estou ciente de que estarei sujeito às penalidades previstas em Lei, caso venha a incorrer em acumulação ilegal de benefícios.'
+					ELSE 'Não recebo pensão por morte do Regime Geral de Previdência Social (RGPS-INSS), de Regime Próprio de Previdência Social (RPPS) ou decorrentes de atividades militares;<br>'
+			
+				END) AS ACBenef,
+				@ACUMULOBENEFICIOS AS ACUMULOBENEF2, 
+				(case SP.N_TIPSERV_TIPSERV 
+				WHEN 9 THEN 'Declaro ainda, caso venha a receber pensão por morte de outro Regime de Previdência devo comunicar a este Instituto e que tomei conhecimento do trecho da Emenda Constitucional n.º 103/2019 abaixo transcrito e que estou ciente de que estarei sujeito às penalidades previstas em Lei, caso venha a incorrer em acumulação ilegal de benefícios.'
+				WHEN 32 THEN 'Declaro ainda, caso venha a receber pensão por morte de outro Regime de Previdência devo comunicar a este Instituto e que tomei conhecimento do trecho da Emenda Constitucional n.º 103/2019 abaixo transcrito e que estou ciente de que estarei sujeito às penalidades previstas em Lei, caso venha a incorrer em acumulação ilegal de benefícios.'
+				WHEN 41 THEN 'Declaro ainda, caso venha a receber pensão por morte de outro Regime de Previdência devo comunicar a este Instituto e que tomei conhecimento do trecho da Emenda Constitucional n.º 103/2019 abaixo transcrito e que estou ciente de que estarei sujeito às penalidades previstas em Lei, caso venha a incorrer em acumulação ilegal de benefícios.'
+				WHEN 42 THEN 'Declaro ainda, caso venha a receber pensão por morte de outro Regime de Previdência devo comunicar a este Instituto e que tomei conhecimento do trecho da Emenda Constitucional n.º 103/2019 abaixo transcrito e que estou ciente de que estarei sujeito às penalidades previstas em Lei, caso venha a incorrer em acumulação ilegal de benefícios.'
+				WHEN 43 THEN 'Declaro ainda, caso venha a receber pensão por morte de outro Regime de Previdência devo comunicar a este Instituto e que tomei conhecimento do trecho da Emenda Constitucional n.º 103/2019 abaixo transcrito e que estou ciente de que estarei sujeito às penalidades previstas em Lei, caso venha a incorrer em acumulação ilegal de benefícios.'
+				WHEN 57 THEN 'Declaro ainda, caso venha a receber pensão por morte de outro Regime de Previdência devo comunicar a este Instituto e que tomei conhecimento do trecho da Emenda Constitucional n.º 103/2019 abaixo transcrito e que estou ciente de que estarei sujeito às penalidades previstas em Lei, caso venha a incorrer em acumulação ilegal de benefícios.'
+				WHEN 66 THEN 'Declaro ainda, caso venha a receber pensão por morte de outro Regime de Previdência devo comunicar a este Instituto e que tomei conhecimento do trecho da Emenda Constitucional n.º 103/2019 abaixo transcrito e que estou ciente de que estarei sujeito às penalidades previstas em Lei, caso venha a incorrer em acumulação ilegal de benefícios.'
+				WHEN 91 THEN 'Declaro ainda, caso venha a receber pensão por morte ou aposentadoria de outro Regime de Previdência devo comunicar a este Instituto e que tomei conhecimento do trecho da Emenda Constitucional n.º 103/2019 abaixo transcrito e que estou ciente de que estarei sujeito às penalidades previstas em Lei, caso venha a incorrer em acumulação ilegal de benefícios.'
+				END) AS TEXTO2,
+				
+					
+			(CASE @ACUMULOBENEFICIOS 
+				when 'S' THEN 'Órgão: ' + @ACUMULOBENEFICIOSORGAO + ' - '
+				ELSE ''
+			END) AS ACBenefO,
+				(CASE @ACUMULOBENEFICIOS 
+				when 'S' THEN 'Valor: R$ ' + @ACUMULOBENEFICIOSVALOR  + ' - '
+				ELSE ''
+			END) AS ACBenefV,
+				(CASE @ACUMULOBENEFICIOS 
+				when 'S' THEN 'Data de início do benefício: ' + @ACUMULOBENEFICIOSDATA
+				ELSE ''
+			END) AS ACBenefD,
+
+
+			
+			UPPER(@TermoAbono) AS TermoAbono,
+			
+			-- EXIGÊNCIA
+			UPPER(@Exigencia) AS Exigencia,
+			@MUsuario AS MATRICULA_USUARIO_IPRESB,
+
+                             (SELECT        dbo.FN_PRIMEIRALETRAMAIUSCULA(LOWER(PESSOA_3.S_NOM_PESSOA))
+
+                               FROM            PESSOA AS PESSOA_3 INNER JOIN
+                                                         ORGANIZACAOPESSOA AS ORGANIZACAOPESSOA_3 ON PESSOA_3.N_PESSOA_PESSOA = ORGANIZACAOPESSOA_3.N_PESSOA_PESSOA INNER JOIN
+                                                         CARGOORGANIZACAOPESSOA AS CARGOORGANIZACAOPESSOA_3 ON ORGANIZACAOPESSOA_3.N_CODORI_ORGPESSOA = CARGOORGANIZACAOPESSOA_3.N_CODORI_ORGPESSOA AND 
+                                                         ORGANIZACAOPESSOA_3.N_ORG_ORG = CARGOORGANIZACAOPESSOA_3.N_ORG_ORG INNER JOIN
+                                                         CARGO AS CARGO_3 ON CARGOORGANIZACAOPESSOA_3.N_ORG_ORG = CARGO_3.N_ORG_ORG AND CARGOORGANIZACAOPESSOA_3.N_CARGO_CARGO = CARGO_3.N_CARGO_CARGO
+                               WHERE        (ORGANIZACAOPESSOA_3.N_ORG_ORG = 4) AND (ORGANIZACAOPESSOA_3.N_CODORI_ORGPESSOA = @MUsuario)) AS USUARIO,
+
+                             (SELECT        dbo.FN_PRIMEIRALETRAMAIUSCULA(LOWER(CARGO_3.S_DCR_CARGO))
+                               FROM            PESSOA AS PESSOA_3 INNER JOIN
+                                                         ORGANIZACAOPESSOA AS ORGANIZACAOPESSOA_3 ON PESSOA_3.N_PESSOA_PESSOA = ORGANIZACAOPESSOA_3.N_PESSOA_PESSOA INNER JOIN
+                                                         CARGOORGANIZACAOPESSOA AS CARGOORGANIZACAOPESSOA_3 ON ORGANIZACAOPESSOA_3.N_CODORI_ORGPESSOA = CARGOORGANIZACAOPESSOA_3.N_CODORI_ORGPESSOA AND 
+                                                         ORGANIZACAOPESSOA_3.N_ORG_ORG = CARGOORGANIZACAOPESSOA_3.N_ORG_ORG INNER JOIN
+                                                         CARGO AS CARGO_3 ON CARGOORGANIZACAOPESSOA_3.N_ORG_ORG = CARGO_3.N_ORG_ORG AND CARGOORGANIZACAOPESSOA_3.N_CARGO_CARGO = CARGO_3.N_CARGO_CARGO
+                               WHERE        (ORGANIZACAOPESSOA_3.N_ORG_ORG = 4) AND (ORGANIZACAOPESSOA_3.N_CODORI_ORGPESSOA = @MUsuario)) AS CARGO_USUARIO,
+                               
+                             
+
+				(CASE UPPER(@Certid) WHEN 'S' THEN 'Certidão de nascimento ou casamento atualizada' ELSE null END) AS CERTIDAO,
+				(CASE UPPER(@Ender) WHEN 'S' THEN 'Comprovante de endereço atual' ELSE null END) AS ENDERECO2,
+				(CASE UPPER(@CTPS) WHEN 'S' THEN 'Carteira de Trabalho com registro de professor' ELSE null END) AS CTPS,
+				(CASE UPPER(@pis) WHEN 'S' THEN 'Inscrição do segurado no PIS/PASEP - cartão ou extrato (original ou cópia autenticada)' ELSE null END) AS PISPASEP,
+				(CASE @InfAdic1 WHEN '' THEN null ELSE @InfAdic1 END) AS InfAdic1,
+				(CASE @InfAdic2 WHEN '' THEN null ELSE @InfAdic2 END) AS InfAdic2,
+				(CASE @InfAdic3 WHEN '' THEN null ELSE @InfAdic3 END) AS InfAdic3
+			
+			
+			
+
+
+
+FROM 
+
+SERVICOPESSOA SP INNER JOIN PESSOA P ON SP.N_PESSOA_PESSOA = P.N_PESSOA_PESSOA 
+INNER JOIN TIPOSERVICO ON SP.N_TIPSERV_TIPSERV = TIPOSERVICO.N_TIPSERV_TIPSERV
+LEFT JOIN HISTORICOENDERECOPESSOA H ON P.N_PESSOA_PESSOA = H.N_PESSOA_PESSOA 
+LEFT JOIN PESSOA P2 ON SP.N_PESSOA_RESP = P2.N_PESSOA_PESSOA
+LEFT JOIN CARGOORGANIZACAOPESSOA COP ON SP.N_CODORI_ORGPESSOA = COP.N_CODORI_ORGPESSOA AND SP.N_ORG_ORG = COP.N_ORG_ORG
+LEFT JOIN ORGANIZACAOPESSOA OP ON SP.N_CODORI_ORGPESSOA = OP.N_CODORI_ORGPESSOA AND SP.N_ORG_ORG = OP.N_ORG_ORG
+LEFT JOIN CARGO ON COP.N_CARGO_CARGO = CARGO.N_CARGO_CARGO AND COP.N_ORG_ORG = CARGO.N_ORG_ORG
+
+WHERE SP.N_NUMPROT_SERVPESSOA = @PROT AND SP.N_ANOREFER_SERVPESSOA = @ANO AND H.DT_FIMVIG_HISTENDPESSOA IS NULL AND
+SP.N_TIPSERV_TIPSERV IN (6,7,8,9,10,21,32,41,42,43,57,58,59,60,64,66,91)]]>
+	</queryString>
+	<field name="NOMEPROT" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NOMEPROT"/>
+		<property name="com.jaspersoft.studio.field.label" value="NOMEPROT"/>
+	</field>
+	<field name="DATA_SOLICITAÇAO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="DATA_SOLICITAÇAO"/>
+		<property name="com.jaspersoft.studio.field.label" value="DATA_SOLICITAÇAO"/>
+	</field>
+	<field name="TIPOSOLICITANTE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="TIPOSOLICITANTE"/>
+		<property name="com.jaspersoft.studio.field.label" value="TIPOSOLICITANTE"/>
+	</field>
+	<field name="NOME SOLICITANTE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NOME SOLICITANTE"/>
+		<property name="com.jaspersoft.studio.field.label" value="NOME SOLICITANTE"/>
+	</field>
+	<field name="SÚMULA" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="SÚMULA"/>
+		<property name="com.jaspersoft.studio.field.label" value="SÚMULA"/>
+	</field>
+	<field name="NOMESERVIDOR" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NOMESERVIDOR"/>
+		<property name="com.jaspersoft.studio.field.label" value="NOMESERVIDOR"/>
+	</field>
+	<field name="RG" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="RG"/>
+		<property name="com.jaspersoft.studio.field.label" value="RG"/>
+	</field>
+	<field name="EMAIL" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="EMAIL"/>
+		<property name="com.jaspersoft.studio.field.label" value="EMAIL"/>
+	</field>
+	<field name="ESTADO CIVIL" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ESTADO CIVIL"/>
+		<property name="com.jaspersoft.studio.field.label" value="ESTADO CIVIL"/>
+	</field>
+	<field name="ENDERECO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ENDERECO"/>
+		<property name="com.jaspersoft.studio.field.label" value="ENDERECO"/>
+	</field>
+	<field name="NASCIMENTO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NASCIMENTO"/>
+		<property name="com.jaspersoft.studio.field.label" value="NASCIMENTO"/>
+	</field>
+	<field name="CPF" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CPF"/>
+		<property name="com.jaspersoft.studio.field.label" value="CPF"/>
+	</field>
+	<field name="NIT" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NIT"/>
+		<property name="com.jaspersoft.studio.field.label" value="NIT"/>
+	</field>
+	<field name="MATRÍCULA" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="MATRÍCULA"/>
+		<property name="com.jaspersoft.studio.field.label" value="MATRÍCULA"/>
+	</field>
+	<field name="CARGO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CARGO"/>
+		<property name="com.jaspersoft.studio.field.label" value="CARGO"/>
+	</field>
+	<field name="DATA DE INGRESSO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="DATA DE INGRESSO"/>
+		<property name="com.jaspersoft.studio.field.label" value="DATA DE INGRESSO"/>
+	</field>
+	<field name="ENTE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ENTE"/>
+		<property name="com.jaspersoft.studio.field.label" value="ENTE"/>
+	</field>
+	<field name="TIPO SOLICITAÇÃO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="TIPO SOLICITAÇÃO"/>
+		<property name="com.jaspersoft.studio.field.label" value="TIPO SOLICITAÇÃO"/>
+	</field>
+	<field name="N_TIPO_SERVICO" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="N_TIPO_SERVICO"/>
+		<property name="com.jaspersoft.studio.field.label" value="N_TIPO_SERVICO"/>
+	</field>
+	<field name="CELULAR" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CELULAR"/>
+		<property name="com.jaspersoft.studio.field.label" value="CELULAR"/>
+	</field>
+	<field name="RESIDENCIAL" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="RESIDENCIAL"/>
+		<property name="com.jaspersoft.studio.field.label" value="RESIDENCIAL"/>
+	</field>
+	<field name="RECADO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="RECADO"/>
+		<property name="com.jaspersoft.studio.field.label" value="RECADO"/>
+	</field>
+	<field name="ACUMULOCARGO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ACUMULOCARGO"/>
+		<property name="com.jaspersoft.studio.field.label" value="ACUMULOCARGO"/>
+	</field>
+	<field name="ACUMULOCARGO2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ACUMULOCARGO2"/>
+		<property name="com.jaspersoft.studio.field.label" value="ACUMULOCARGO2"/>
+	</field>
+	<field name="ACCargoO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ACCargoO"/>
+		<property name="com.jaspersoft.studio.field.label" value="ACCargoO"/>
+	</field>
+	<field name="ACCargoC" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ACCargoC"/>
+		<property name="com.jaspersoft.studio.field.label" value="ACCargoC"/>
+	</field>
+	<field name="ACBenef" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ACBenef"/>
+		<property name="com.jaspersoft.studio.field.label" value="ACBenef"/>
+	</field>
+	<field name="ACUMULOBENEF2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ACUMULOBENEF2"/>
+		<property name="com.jaspersoft.studio.field.label" value="ACUMULOBENEF2"/>
+	</field>
+	<field name="TEXTO2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="TEXTO2"/>
+		<property name="com.jaspersoft.studio.field.label" value="TEXTO2"/>
+	</field>
+	<field name="ACBenefO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ACBenefO"/>
+		<property name="com.jaspersoft.studio.field.label" value="ACBenefO"/>
+	</field>
+	<field name="ACBenefV" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ACBenefV"/>
+		<property name="com.jaspersoft.studio.field.label" value="ACBenefV"/>
+	</field>
+	<field name="ACBenefD" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ACBenefD"/>
+		<property name="com.jaspersoft.studio.field.label" value="ACBenefD"/>
+	</field>
+	<field name="TermoAbono" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="TermoAbono"/>
+		<property name="com.jaspersoft.studio.field.label" value="TermoAbono"/>
+	</field>
+	<field name="Exigencia" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="Exigencia"/>
+		<property name="com.jaspersoft.studio.field.label" value="Exigencia"/>
+	</field>
+	<field name="MATRICULA_USUARIO_IPRESB" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="MATRICULA_USUARIO_IPRESB"/>
+		<property name="com.jaspersoft.studio.field.label" value="MATRICULA_USUARIO_IPRESB"/>
+	</field>
+	<field name="USUARIO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="USUARIO"/>
+		<property name="com.jaspersoft.studio.field.label" value="USUARIO"/>
+	</field>
+	<field name="CARGO_USUARIO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CARGO_USUARIO"/>
+		<property name="com.jaspersoft.studio.field.label" value="CARGO_USUARIO"/>
+	</field>
+	<field name="CERTIDAO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CERTIDAO"/>
+		<property name="com.jaspersoft.studio.field.label" value="CERTIDAO"/>
+	</field>
+	<field name="ENDERECO2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ENDERECO2"/>
+		<property name="com.jaspersoft.studio.field.label" value="ENDERECO2"/>
+	</field>
+	<field name="CTPS" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CTPS"/>
+		<property name="com.jaspersoft.studio.field.label" value="CTPS"/>
+	</field>
+	<field name="PISPASEP" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="PISPASEP"/>
+		<property name="com.jaspersoft.studio.field.label" value="PISPASEP"/>
+	</field>
+	<field name="InfAdic1" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="InfAdic1"/>
+		<property name="com.jaspersoft.studio.field.label" value="InfAdic1"/>
+	</field>
+	<field name="InfAdic2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="InfAdic2"/>
+		<property name="com.jaspersoft.studio.field.label" value="InfAdic2"/>
+	</field>
+	<field name="InfAdic3" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="InfAdic3"/>
+		<property name="com.jaspersoft.studio.field.label" value="InfAdic3"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="77" splitType="Stretch">
+			<componentElement>
+				<reportElement x="-20" y="0" width="530" height="70" uuid="f4174901-f3eb-4680-bbca-d2c628938d0d"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Logo" uuid="8860c172-a91f-4636-a65a-c91118869014">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="70" width="530">
+						<image>
+							<reportElement x="0" y="0" width="520" height="70" uuid="72dd9e0c-3681-48da-80a0-457c506984bf"/>
+							<imageExpression><![CDATA[$F{IMG_IMGFUNDO_IMGORG}]]></imageExpression>
+						</image>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="686">
+			<printWhenExpression><![CDATA[!$F{N_TIPO_SERVICO}.equals(21)]]></printWhenExpression>
+			<staticText>
+				<reportElement x="-41" y="43" width="509" height="20" uuid="4ddf45f7-ad41-4750-898d-810a5f48abb8">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" markup="styled">
+					<font fontName="Arial" size="12" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[<style isBold='true'>DECLARAÇÃO DE ACUMULAÇÃO DE CARGO PÚBLICO</style>]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="-40" y="93" width="509" height="106" uuid="af3a3354-b638-4ce0-9415-c0695bf908e0"/>
+				<textElement textAlignment="Left" markup="html">
+					<font fontName="Arial" size="11"/>
+					<paragraph lineSpacingSize="2.0"/>
+				</textElement>
+				<textFieldExpression><![CDATA["		Eu, " +"<b>"+$F{NOMESERVIDOR}+", RG: "+$F{RG} + ", matrícula: "  + $F{MATRÍCULA} + "</b>"+ ", servidor(a) da " + $F{ENTE} + ", declaro para fins de aposentadoria pelo Instituto de Previdência Social dos Servidores Municipais de Barueri - IPRESB, que: <br><br>"+ $F{ACUMULOCARGO2} +  IF($F{ACUMULOCARGO2}!=null,$F{ACCargoO},"") +"  " + IF($F{ACUMULOCARGO2}!=null,$F{ACCargoC},"")]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="-43" y="245" width="517" height="249" uuid="13bfe459-bd62-4589-872a-63f0abbe4592">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+			</rectangle>
+			<staticText>
+				<reportElement key="" x="-40" y="245" width="509" height="249" isRemoveLineWhenBlank="true" uuid="77b2b281-04dd-469b-bb2b-057bcc03e04d">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Justified" verticalAlignment="Top" markup="html">
+					<font fontName="Arial" size="10"/>
+					<paragraph lineSpacingSize="1.5"/>
+				</textElement>
+				<text><![CDATA[<b>ART. 37 - Constituição Federal /1988</b><br>
+XVI - É vedada a acumulação remunerada de cargos públicos, exceto, quando houver compatibilidade de horários:<br>
+I. a de dois cargos de professor;<br>
+II. a de um cargo de professor com outro técnico ou científico;<br>
+III. a de dois cargos ou empregos privativos de profissionais de saúde, com profissões regulamentadas;<br>
+§ 10 - É vedada a percepção simultânea de proventos de aposentadoria decorrentes do art. 40 ou dos art. 42 e 142 com a remuneração de cargo, emprego ou função
+pública, ressalvados os cargos acumuláveis na forma desta Constituição, os cargos eletivos e os cargos em comissão declarados em lei de livre nomeação e exoneração.
+Parágrafo único: a proibição de acumular se estende a empregos e funções e abrange Autarquias, Empresas Públicas, Sociedade de Economia Mista e Fundações Públicas.<br>
+<b>ART. 115 - Constituição Estadual SP / 1989</b><br>
+XVIII - é vedada a acumulação remunerada de cargos públicos, exceto quando houver compatibilidade de horários:<br>
+a) de dois cargos de professor;<br>
+b) de um cargo de professor com outro técnico ou científico;<br>
+c) a de dois cargos ou empregos privativos de profissionais de saúde, com profissões regulamentadas;<br>
+<b>ART. 129 – Lei Complementar 277 – Estatuto dos Servidores Públicos de Barueri</b><br>
+Ressalvados os casos previstos na Constituição, é vedada a acumulação remunerada de cargos públicos.<br>
+§ 1º. A proibição de acumular estende-se a cargos, empregos e funções na Administração Pública Direta e Indireta da União, do Distrito Federal, dos Estados, dos
+Territórios e dos Municípios.]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="-42" y="577" width="515" height="16" uuid="43450a9d-42c3-43d5-b3f1-37869b18832f"/>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Barueri, " + LOWER(DATEFORMAT(TODAY(),"d 'de' MMMM 'de' yyyy"))+"."]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-40" y="627" width="515" height="30" uuid="e5e3104b-828e-495a-99c7-1dab3027ccdb"/>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<text><![CDATA[________________________________________
+Declarante]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="-39" y="170" width="509" height="59" uuid="ba224eba-106d-4e03-b8c5-3dc3e437df61"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Arial" size="11"/>
+				</textElement>
+				<text><![CDATA[
+"Declaro, ainda, que tomei conhecimento do inteiro teor das normas abaixo transcritas e que estou ciente de que estarei sujeito às penalidades previstas em Lei, caso venha a incorrer em acumulação ilegal, durante o exercício do cargo para o qual fui empossado."]]></text>
+			</staticText>
+		</band>
+		<band height="686">
+			<staticText>
+				<reportElement x="-43" y="27" width="509" height="20" uuid="20e59339-9fd6-4b26-ae10-b878ab0136b3">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" markup="styled">
+					<font fontName="Arial" size="12" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[<style isBold='true'>DECLARAÇÃO DE ACUMULAÇÃO DE BENEFÍCIOS </style>]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="-37" y="63" width="508" height="97" uuid="0dbe5b01-461a-461b-b240-6d2d6d0743ca"/>
+				<textElement textAlignment="Justified" markup="html">
+					<font fontName="Arial" size="11"/>
+					<paragraph lineSpacingSize="1.5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["		Eu, " +"<b>" +$F{NOMESERVIDOR} +", CPF: "+$F{CPF}+", RG: "+$F{RG} +"</b>"+ ", " +"declaro, para fins de obtenção de benefício junto ao Instituto de Previdência Social dos Servidores Municipais de Barueri - IPRESB, que:<br><br>"+ $F{ACBenef} +IF($F{ACUMULOBENEF2}!=null, $F{ACBenefO},"") +IF($F{ACUMULOBENEF2}!=null, $F{ACBenefV},"") +IF($F{ACUMULOBENEF2}!=null, $F{ACBenefD},"")]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="-43" y="216" width="516" height="363" uuid="2a6ac576-4c6b-4e04-bd31-6702eab0ff30">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+			</rectangle>
+			<staticText>
+				<reportElement key="" x="-37" y="220" width="505" height="358" isRemoveLineWhenBlank="true" uuid="3504bfda-3ddb-458d-b1a7-397c2d923907">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Justified" verticalAlignment="Top" markup="html">
+					<font fontName="Arial"/>
+					<paragraph lineSpacingSize="1.5"/>
+				</textElement>
+				<text><![CDATA[Art. 24. É vedada a acumulação de mais de uma pensão por morte deixada por cônjuge ou companheiro, no âmbito do mesmo regime de previdência social, ressalvadas as pensões do mesmo instituidor decorrentes do exercício de cargos acumuláveis na forma do art. 37 da Constituição Federal.<br>
+§ 1º Será admitida, nos termos do § 2º, a acumulação de:<br>
+I - pensão por morte deixada por cônjuge ou companheiro de um regime de previdência social com pensão por morte concedida por outro regime de previdência social ou com pensões decorrentes das atividades militares de que tratam os arts. 42 e 142 da Constituição Federal;<br>
+II - pensão por morte deixada por cônjuge ou companheiro de um regime de previdência social com aposentadoria concedida no âmbito do Regime Geral de Previdência Social ou de regime próprio de previdência social ou com proventos de inatividade decorrentes das atividades militares de que tratam os arts. 42 e 142 da Constituição Federal; <br>
+III - pensões decorrentes das atividades militares de que tratam os arts. 42 e 142 da Constituição Federal com aposentadoria concedida no âmbito do Regime Geral de Previdência Social ou de regime próprio de previdência social.<br>
+§ 2º Nas hipóteses das acumulações previstas no § 1º, é assegurada a percepção do valor integral do benefício mais vantajoso e de uma parte de cada um dos demais benefícios, apurada cumulativamente de acordo com as seguintes faixas:<br>
+I - 60% (sessenta por cento) do valor que exceder 1 (um) salário-mínimo, até o limite de 2 (dois) salários-mínimos;<br>
+II - 40% (quarenta por cento) do valor que exceder 2 (dois) salários-mínimos, até o limite de 3 (três) salários-mínimos;<br>
+III - 20% (vinte por cento) do valor que exceder 3 (três) salários-mínimos, até o limite de 4 (quatro) salários-mínimos; e<br>
+IV - 10% (dez por cento) do valor que exceder 4 (quatro) salários-mínimos.<br>
+§ 3º A aplicação do disposto no § 2º poderá ser revista a qualquer tempo, a pedido do interessado, em razão de alteração de algum dos benefícios.<br>
+§ 4º As restrições previstas neste artigo não serão aplicadas se o direito aos benefícios houver sido adquirido antes da  data de entrada em vigor desta Emenda Constitucional.<br>
+§ 5º As regras sobre acumulação previstas neste artigo e na legislação vigente na data de entrada em vigor desta Emenda Constitucional poderão ser alteradas na forma do § 6º do art. 40 e do § 15 do art. 201 da Constituição Federal.]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="-42" y="621" width="515" height="16" uuid="d1acea48-4878-4c66-98c7-68d8452ec7ed"/>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Barueri, " + LOWER(DATEFORMAT(TODAY(),"d 'de' MMMM 'de' yyyy"))+"."]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-40" y="656" width="515" height="30" uuid="c043dcd5-f603-4535-9ed2-6146fa0ec869"/>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<text><![CDATA[________________________________________
+Declarante]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="-37" y="160" width="508" height="53" uuid="05f757cc-72e3-4fde-ac28-75f6baa2bb71"/>
+				<textElement textAlignment="Justified"/>
+				<text><![CDATA[Declaro ainda, caso venha a receber pensão por morte de outro Regime de Previdência devo comunicar a este Instituto e que tomei conhecimento do trecho da Emenda Constitucional n.º 103/2019 abaixo transcrito e que estou ciente de que estarei sujeito às penalidades previstas em Lei, caso venha a incorrer em acumulação ilegal de benefícios.]]></text>
+			</staticText>
+		</band>
+		<band height="686">
+			<printWhenExpression><![CDATA[$F{TermoAbono}.equals("S")]]></printWhenExpression>
+			<staticText>
+				<reportElement x="-43" y="50" width="509" height="20" uuid="596d29d5-e15b-4b34-8a1b-0e6e2efc2478">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" markup="styled">
+					<font fontName="Arial" size="12" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[<style isBold='true'>TERMO DE DECLARAÇÃO </style>]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="-1" y="331" width="470" height="16" uuid="0bc39245-7f0f-4da4-8a6b-f3569c568544"/>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Barueri, " + LOWER(DATEFORMAT(TODAY(),"d 'de' MMMM 'de' yyyy"))+"."]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-1" y="391" width="470" height="30" uuid="e5f1dd26-1044-47bc-a0b9-d992f0b2174d"/>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<text><![CDATA[________________________________________
+Declarante]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="-1" y="93" width="453" height="206" uuid="0b5ccd72-b6da-4451-b715-5795e77da5f1"/>
+				<textElement textAlignment="Justified" markup="html">
+					<font fontName="Arial" size="12"/>
+					<paragraph lineSpacingSize="1.5" firstLineIndent="56"/>
+				</textElement>
+				<textFieldExpression><![CDATA["                 "+ "Pelo presente termo, "  + "<b>" +$F{NOMESERVIDOR}+"</b>"  +", " + "Matrícula " + $F{MATRÍCULA}+", "+ "servidor(a) efetivo(a) da " + $F{ENTE} +", " + " no cargo de " +$F{CARGO}+", "+ " declara ter ciência de que cumpre os requisitos para aposentadoria por tempo de contribuição e idade pela regra permanente prevista na Constituição Federal, em seu art. 40, §1º, inciso III, alínea “a”*,  fazendo jus, por conseguinte, à percepção do Abono Permanência de que trata o §19* do citado artigo."+ "<br><br>" +
+"                 "+"Outrossim, tendo optado pela aposentadoria em face do desinteresse em continuar em atividade, tem, ainda, ciência de que não será possível a concessão do Abono de Permanência pelo ente ao qual está vinculado, circunstância que obsta a emissão de Certidão para esse fim por parte do Instituto de Previdência Social dos Servidores Municipais de Barueri – IPRESB."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-1" y="557" width="453" height="61" uuid="1a1f04da-6728-45b5-ae9d-7b15a72bde8f"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font fontName="Arial" isItalic="true"/>
+					<paragraph firstLineIndent="28" leftIndent="2" rightIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA["*Norma mantida por força do disposto no §7º do Art. 10 da Emenda Constitucional nº 103, de 12 de novembro de 2019 e conforme previsto nos Artigos 35, 36 e 231 da Lei Complementar nº 434 de 14 de agosto de 2018."]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="686">
+			<printWhenExpression><![CDATA[$F{Exigencia}.equals("S")]]></printWhenExpression>
+			<textField>
+				<reportElement x="-12" y="10" width="442" height="30" uuid="4f9bb96f-9f3a-4893-a72d-468165308dd1"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="styled">
+					<font fontName="Times New Roman" size="12" isBold="false"/>
+					<paragraph lineSpacing="Double"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Barueri, "+LOWER(DATEFORMAT(TODAY(),"d 'de' MMMM 'de' yyyy"))+"."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="120" width="470" height="24" uuid="7312bd1c-ce1d-4fad-95df-09856329a122"/>
+				<textElement verticalAlignment="Middle" markup="styled">
+					<font fontName="Times New Roman" size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<style isBold='true'>Processo: </style>" + $F{NOMEPROT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="72" width="470" height="24" uuid="e35183f1-7153-4c79-b180-5c3608cc643c"/>
+				<textElement verticalAlignment="Middle" markup="styled">
+					<font fontName="Times New Roman" size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<style isBold='true'>Nome: " +"</style>"+$F{NOMESERVIDOR}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="144" width="470" height="24" uuid="8ab87f49-0f37-48f7-be54-75054937683f"/>
+				<textElement verticalAlignment="Middle" markup="styled">
+					<font fontName="Times New Roman" size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<style isBold='true'>Assunto: "+"</style>"+$F{TIPO SOLICITAÇÃO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="174" width="470" height="24" uuid="4eddda9e-69d5-4a17-ad14-9cd414e9cf84"/>
+				<textElement verticalAlignment="Middle" markup="styled">
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Ref.: Cumprimento de exigências"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="219" width="450" height="39" uuid="ed4517a7-15cd-4315-a84e-6f38147aa211"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle" markup="styled">
+					<font fontName="Times New Roman" size="12" isBold="false"/>
+					<paragraph lineSpacing="1_1_2" lineSpacingSize="1.5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Para dar andamento ao processo em referência, conforme Art. 28 da Res. 40 /2019, solicitamos a apresentação dos documentos abaixo:"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="290" width="458" height="360" uuid="3ebe5de9-ed11-49f8-bf40-4ce5cf723c5f">
+					<property name="com.jaspersoft.studio.unit.firstLineIndent" value="cm"/>
+					<property name="com.jaspersoft.studio.unit.spacingBefore" value="cm"/>
+				</reportElement>
+				<box leftPadding="0"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top" markup="styled">
+					<font fontName="Times New Roman" size="12" isBold="false"/>
+					<paragraph lineSpacing="1_1_2" lineSpacingSize="1.6" firstLineIndent="0" leftIndent="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{PISPASEP} !=null ? ("\u2022   " +$F{PISPASEP} + "<br/>"): "")+($F{CERTIDAO} !=null ? ("\u2022   " +$F{CERTIDAO} + "<br/>"): "")+($F{ENDERECO2} !=null ? ("\u2022   " +$F{ENDERECO2} + "<br/>"): "")+($F{CTPS} !=null ? ("\u2022   " +$F{CTPS} + "<br/>"): "")+($F{InfAdic1} !=null ? ("\u2022   " +$F{InfAdic1} + "<br/>"):"")  +($F{InfAdic2} !=null ? ("\u2022   " +$F{InfAdic2} + "<br/>"):"") + ($F{InfAdic3} !=null ? ("\u2022   " +$F{InfAdic3} + "<br/>"):"") +"<br/><br/>Caso os documentos não sejam apresentados no prazo de <style isBold='true' isUnderline='true'>"+"120 dias a contar da presente data" +"</style>"+", o processo será indeferido e arquivado definitivamente conforme o disposto no art. 96 da Resolução nº 40, de 02 de agosto de 2019 (Regulamento do RPPS).<br/><br/>Atenciosamente.<br/><br/><br/><style isBold='true'>"+$F{USUARIO}+"<br/>Matrícula n.º "+$F{MATRICULA_USUARIO_IPRESB}+"</style>"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="40" width="470" height="24" uuid="be8bbfc9-4e08-4139-8e24-c84bf9db629e"/>
+				<textElement verticalAlignment="Middle" markup="styled">
+					<font fontName="Times New Roman" size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Sr.(a) Servidor(a):"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="96" width="470" height="24" uuid="6be7e0f7-85d7-4401-8262-64578df3fd15"/>
+				<textElement verticalAlignment="Middle" markup="styled">
+					<font fontName="Times New Roman" size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<style isBold='true'>Matrícula: "+"</style>"+$F{MATRÍCULA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="245" y="590" width="210" height="20" uuid="554ec03e-5ec0-458b-be02-c79f96956d4c"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Ciência em: _____/_____/_________"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="251" y="620" width="199" height="20" uuid="23ff21c7-6cde-49d5-8dbc-8768ceaf8839"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="Times New Roman" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="65" splitType="Stretch">
+			<componentElement>
+				<reportElement x="-20" y="10" width="490" height="55" uuid="d9e30884-fbee-43cb-b497-3cfa76808906"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Rodape" uuid="c2c96a01-ec05-49c8-bf81-1bbcd92ee3c7">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="55" width="490">
+						<image>
+							<reportElement x="0" y="5" width="490" height="50" uuid="04136a1e-c82c-4a25-9a0d-3a6347f6eb5e"/>
+							<imageExpression><![CDATA[$F{IMG_IMGFUNDO_IMGORG}]]></imageExpression>
+						</image>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+		</band>
+	</pageFooter>
+</jasperReport>

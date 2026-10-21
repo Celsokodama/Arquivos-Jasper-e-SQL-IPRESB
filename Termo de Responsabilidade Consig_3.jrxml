@@ -1,0 +1,466 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.21.2.final using JasperReports Library version 6.21.2-8434a0bd7c3bbc37cbf916f2968d35e4b165821a  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4" pageWidth="595" pageHeight="842" columnWidth="470" leftMargin="85" rightMargin="40" topMargin="14" bottomMargin="0" uuid="d946ebe6-2e92-44c5-aed7-8f7380925278">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ASPPREV"/>
+	<property name="com.jaspersoft.studio.unit." value="cm"/>
+	<subDataset name="Logo" uuid="e9f90e01-6f3f-44b6-9906-95c12f91afd0">
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="IPRESB"/>
+		<queryString language="SQL">
+			<![CDATA[Select  IMG_IMGFUNDO_IMGORG
+ from dbo."IMAGEMORGANIZACAO"  
+ where  "N_ORG_ORG" = 42]]>
+		</queryString>
+		<field name="IMG_IMGFUNDO_IMGORG" class="java.awt.Image"/>
+	</subDataset>
+	<subDataset name="Rodape" uuid="848c67d2-d15a-4bee-a03e-4616d865bbac">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="IPRESB"/>
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<queryString>
+			<![CDATA[Select dbo."IMAGEMORGANIZACAO"."IMG_IMGFUNDO_IMGORG" 
+ from dbo."IMAGEMORGANIZACAO" 
+ where  dbo."IMAGEMORGANIZACAO"."N_ORG_ORG" = 43]]>
+		</queryString>
+		<field name="IMG_IMGFUNDO_IMGORG" class="java.awt.Image"/>
+	</subDataset>
+	<parameter name="Protocolo" class="java.lang.String"/>
+	<parameter name="Ano" class="java.lang.String"/>
+	<parameter name="Banco1" class="java.lang.String"/>
+	<parameter name="Valor1" class="java.lang.String"/>
+	<parameter name="Banco2" class="java.lang.String"/>
+	<parameter name="Valor2" class="java.lang.String"/>
+	<parameter name="Banco3" class="java.lang.String"/>
+	<parameter name="Valor3" class="java.lang.String"/>
+	<parameter name="Banco4" class="java.lang.String"/>
+	<parameter name="Valor4" class="java.lang.String"/>
+	<parameter name="Banco5" class="java.lang.String"/>
+	<parameter name="Valor5" class="java.lang.String"/>
+	<parameter name="Meshol" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[DECLARE @Protoclo as INT
+DECLARE @Ano as INT
+DECLARE @Meshol AS VARCHAR(7)
+
+
+DECLARE @Banco1 as VARCHAR(50)
+DECLARE @Valor1 AS VARCHAR(10)
+DECLARE @Banco2 as VARCHAR(50)
+DECLARE @Valor2 AS VARCHAR(10)
+DECLARE @Banco3 as VARCHAR(50)
+DECLARE @Valor3 AS VARCHAR(10)
+DECLARE @Banco4 as VARCHAR(50)
+DECLARE @Valor4 AS VARCHAR(10)
+DECLARE @Banco5 as VARCHAR(50)
+DECLARE @Valor5 AS VARCHAR(10)
+
+SET @Meshol =  $P{Meshol}
+SET @Protoclo =  $P{Protocolo}
+SET @Ano = $P{Ano}
+SET @Banco1 = $P{Banco1}
+SET @Valor1 = $P{Valor1}
+SET @Banco2 = $P{Banco2}
+SET @Valor2 = $P{Valor2}
+SET @Banco3 = $P{Banco3}
+SET @Valor3 = $P{Valor3}
+SET @Banco4 = $P{Banco4}
+SET @Valor4 = $P{Valor4}
+SET @Banco5 = $P{Banco5}
+SET @Valor5 = $P{Valor5}
+
+
+
+SELECT 
+
+P.S_NOM_PESSOA AS NOME,
+	LEFT(P.S_CPF_PESSOA,3)+'.'+SUBSTRING(P.S_CPF_PESSOA,4,3)+'.'+SUBSTRING(P.S_CPF_PESSOA,7,3)+'-'+SUBSTRING(P.S_CPF_PESSOA,10,2) AS CPF,
+@Meshol AS MESHOLERITE,
+
+
+@Banco1 AS BANCO1,
+@Valor1 AS VALOR1,
+@Banco2 AS BANCO2,
+@Valor2 AS VALOR2,
+@Banco3 AS BANCO3,
+@Valor3 AS VALOR3,
+@Banco4 AS BANCO4,
+@Valor4 AS VALOR4,
+@Banco5 AS BANCO5,
+@Valor5 AS VALOR5
+
+
+
+
+FROM SERVICOPESSOA S INNER JOIN PESSOA P ON S.N_PESSOA_PESSOA = P.N_PESSOA_PESSOA
+
+WHERE S.N_NUMPROT_SERVPESSOA = @Protoclo AND S.N_ANOREFER_SERVPESSOA = @Ano]]>
+	</queryString>
+	<field name="NOME" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NOME"/>
+		<property name="com.jaspersoft.studio.field.label" value="NOME"/>
+	</field>
+	<field name="CPF" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CPF"/>
+		<property name="com.jaspersoft.studio.field.label" value="CPF"/>
+	</field>
+	<field name="MESHOLERITE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="MESHOLERITE"/>
+		<property name="com.jaspersoft.studio.field.label" value="MESHOLERITE"/>
+	</field>
+	<field name="BANCO1" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="BANCO1"/>
+		<property name="com.jaspersoft.studio.field.label" value="BANCO1"/>
+	</field>
+	<field name="VALOR1" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="VALOR1"/>
+		<property name="com.jaspersoft.studio.field.label" value="VALOR1"/>
+	</field>
+	<field name="BANCO2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="BANCO2"/>
+		<property name="com.jaspersoft.studio.field.label" value="BANCO2"/>
+	</field>
+	<field name="VALOR2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="VALOR2"/>
+		<property name="com.jaspersoft.studio.field.label" value="VALOR2"/>
+	</field>
+	<field name="BANCO3" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="BANCO3"/>
+		<property name="com.jaspersoft.studio.field.label" value="BANCO3"/>
+	</field>
+	<field name="VALOR3" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="VALOR3"/>
+		<property name="com.jaspersoft.studio.field.label" value="VALOR3"/>
+	</field>
+	<field name="BANCO4" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="BANCO4"/>
+		<property name="com.jaspersoft.studio.field.label" value="BANCO4"/>
+	</field>
+	<field name="VALOR4" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="VALOR4"/>
+		<property name="com.jaspersoft.studio.field.label" value="VALOR4"/>
+	</field>
+	<field name="BANCO5" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="BANCO5"/>
+		<property name="com.jaspersoft.studio.field.label" value="BANCO5"/>
+	</field>
+	<field name="VALOR5" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="VALOR5"/>
+		<property name="com.jaspersoft.studio.field.label" value="VALOR5"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="360" splitType="Stretch">
+			<componentElement>
+				<reportElement x="-20" y="0" width="530" height="70" uuid="f4174901-f3eb-4680-bbca-d2c628938d0d"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Logo" uuid="8860c172-a91f-4636-a65a-c91118869014">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="70" width="530">
+						<image>
+							<reportElement x="0" y="0" width="520" height="70" uuid="72dd9e0c-3681-48da-80a0-457c506984bf"/>
+							<imageExpression><![CDATA[$F{IMG_IMGFUNDO_IMGORG}]]></imageExpression>
+						</image>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<staticText>
+				<reportElement x="-32" y="101" width="501" height="20" uuid="208a2f4f-dcd6-4e3e-9474-8a04ef6c1624">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" markup="styled">
+					<font fontName="Arial" size="12" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[<style isBold='true'>TERMO DE RESPONSABILIDADE / COMPROMISSO</style>]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="-21" y="149" width="490" height="161" uuid="c5a95138-581f-44fa-8440-1f41d90c89c4"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top" markup="html">
+					<font fontName="Segoe UI" size="12"/>
+					<paragraph leftIndent="5" rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pelo presente Termo de Responsabilidade, eu, " + $F{NOME}  +", portador(a) do CPF nº " + $F{CPF} +" , declaro e me comprometo ao que segue: <br><br> Reconheço que, atualmente, na condição de servidor(a) ativo, mantenho empréstimos consignados junto as instituições financeiras abaixo listadas, e, após a concessão da aposentadoria, entendo que é minha responsabilidade procurar cada um dos bancos onde estes empréstimos foram contraídos para negociar a forma de pagamento das parcelas que não foram quitadas, a fim de evitar qualquer complicação futura em relação aos descontos na minha aposentadoria:"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-4" y="336" width="34" height="24" uuid="451e6935-4504-4cc7-8d20-9fcf79037d8a"/>
+				<box padding="0">
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[ITEM]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="336" width="320" height="24" uuid="834e1789-e863-486a-985b-207267b2dc7c"/>
+				<box padding="0">
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[INSTITUIÇÃO FINANCEIRA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="350" y="336" width="108" height="24" uuid="a5c4231c-69e1-4f25-9c86-0170c3e3dea3"/>
+				<box padding="0">
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[VALOR (R$)]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="-21" y="310" width="490" height="26" uuid="6fdff234-f4f7-4901-ae2d-842ce1bd2321"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom" markup="html">
+					<font fontName="SansSerif" size="11" isBold="true"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Referência: Demonstrativo de pagamento (holerite) do mês: " +$F{MESHOLERITE}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band/>
+	</columnHeader>
+	<detail>
+		<band height="388" splitType="Stretch">
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="30" y="20" width="320" height="20" isRemoveLineWhenBlank="true" uuid="76b1ff4b-8775-45a9-aaa6-5844e489c05a">
+					<printWhenExpression><![CDATA[!($F{BANCO2} == null || $F{BANCO2}.trim().isEmpty())]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{BANCO2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="30" y="0" width="320" height="20" isRemoveLineWhenBlank="true" uuid="70553bdc-e6de-484a-a4af-f8ff2b126a00">
+					<printWhenExpression><![CDATA[!($F{BANCO1} == null || $F{BANCO1}.trim().isEmpty())]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{BANCO1}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="-4" y="20" width="34" height="20" isRemoveLineWhenBlank="true" uuid="70502b6b-903d-4166-8273-0f1e44c44d5a">
+					<printWhenExpression><![CDATA[!($F{BANCO2}== null || $F{BANCO2}.trim().isEmpty())]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="-21" y="310" width="490" height="30" uuid="a0c16e56-b961-46dd-b522-91e1968ccef8"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font fontName="Segoe UI" size="12"/>
+				</textElement>
+				<text><![CDATA[Barueri, ____ de _____________ de ________.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="-4" y="0" width="34" height="20" isRemoveLineWhenBlank="true" uuid="8cca61a0-d0d8-4f34-9732-e875af553d84">
+					<printWhenExpression><![CDATA[!($F{BANCO1}== null || $F{BANCO1}.trim().isEmpty())]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[1]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="350" y="0" width="108" height="20" isRemoveLineWhenBlank="true" uuid="1846a49a-16a3-4726-a36a-ddb573eb8a3a">
+					<printWhenExpression><![CDATA[!($F{BANCO1} == null || $F{BANCO1}.trim().isEmpty())]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{VALOR1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="350" y="20" width="108" height="20" isRemoveLineWhenBlank="true" uuid="c0933b72-40b4-4c23-b4ec-a1479ab17b31">
+					<printWhenExpression><![CDATA[!($F{BANCO2} == null || $F{BANCO2}.trim().isEmpty())]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{VALOR2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-19" y="109" width="489" height="196" uuid="5b6f83db-d0ae-4068-857c-faba8539cc98"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top" markup="html">
+					<font fontName="Segoe UI" size="12"/>
+					<paragraph leftIndent="5" rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Tenho ciência de que, caso não tome as devidas providências e não entre em contato com as instituições financeiras, os descontos referentes aos empréstimos consignados acima listados poderão ser automaticamente migrados para minha aposentadoria, conforme as cláusulas dos contratos vigentes.<br><br>Declaro que, após a assinatura deste termo, não poderei alegar desconhecimento sobre as implicações da ausência de negociação dos referidos empréstimos junto aos bancos. <br><br>Este termo entra em vigor na data da assinatura e perdurará enquanto houver pendências relacionadas aos empréstimos consignados citados."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="30" y="60" width="320" height="21" isRemoveLineWhenBlank="true" uuid="4760f6a1-86d9-4103-a6cd-e1b2ffa1010d">
+					<printWhenExpression><![CDATA[!($F{BANCO4} == null || $F{BANCO4}.trim().isEmpty())]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{BANCO4}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="30" y="40" width="320" height="20" isRemoveLineWhenBlank="true" uuid="85b2f8d2-b399-4b7a-bfee-9b2439c46467">
+					<printWhenExpression><![CDATA[!($F{BANCO3} == null || $F{BANCO3}.trim().isEmpty())]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{BANCO3}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="-4" y="60" width="34" height="21" isRemoveLineWhenBlank="true" uuid="557371ad-23d6-4182-901f-f4828ff9b704">
+					<printWhenExpression><![CDATA[!($F{BANCO4} == null || $F{BANCO4}.trim().isEmpty())]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[4]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="-4" y="40" width="34" height="20" isRemoveLineWhenBlank="true" uuid="97dd2e93-4f43-4fb2-9513-54d94cf6efaf">
+					<printWhenExpression><![CDATA[!($F{BANCO3} == null || $F{BANCO3}.trim().isEmpty())]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[3]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="350" y="40" width="108" height="20" isRemoveLineWhenBlank="true" uuid="a329d7e5-4fe7-45a5-8431-0aa7deba1dc6">
+					<printWhenExpression><![CDATA[!($F{BANCO3} == null || $F{BANCO3}.trim().isEmpty())]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{VALOR3}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="350" y="60" width="108" height="21" isRemoveLineWhenBlank="true" uuid="86b903eb-b935-480b-99be-ad8c67f72d4c">
+					<printWhenExpression><![CDATA[!($F{BANCO4} == null || $F{BANCO4}.trim().isEmpty())]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{VALOR4}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="30" y="81" width="320" height="20" isRemoveLineWhenBlank="true" uuid="36be3694-63ef-4ec9-a4da-8e7efd771f82">
+					<printWhenExpression><![CDATA[!($F{BANCO5} == null || $F{BANCO5}.trim().isEmpty())]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{BANCO5}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="-4" y="81" width="34" height="20" isRemoveLineWhenBlank="true" uuid="f382e62b-1640-425a-8ca9-497166ecf3cd">
+					<printWhenExpression><![CDATA[!($F{BANCO5} == null || $F{BANCO5}.trim().isEmpty())]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="html"/>
+				<text><![CDATA[5]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="350" y="81" width="108" height="20" isRemoveLineWhenBlank="true" uuid="e99a4c7e-ebc4-4387-b3d7-9db0f70237da">
+					<printWhenExpression><![CDATA[!($F{BANCO5} == null || $F{BANCO5}.trim().isEmpty())]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{VALOR5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-20" y="357" width="490" height="27" uuid="488d4f98-a874-4074-8b47-ccd254dfb0c4"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom" markup="html"/>
+				<textFieldExpression><![CDATA["____________________________________________<br>" + $F{NOME}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="65" splitType="Stretch">
+			<componentElement>
+				<reportElement x="-20" y="10" width="490" height="55" uuid="d9e30884-fbee-43cb-b497-3cfa76808906"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Rodape" uuid="c2c96a01-ec05-49c8-bf81-1bbcd92ee3c7">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="55" width="490">
+						<image>
+							<reportElement x="0" y="5" width="490" height="50" uuid="04136a1e-c82c-4a25-9a0d-3a6347f6eb5e"/>
+							<imageExpression><![CDATA[$F{IMG_IMGFUNDO_IMGORG}]]></imageExpression>
+						</image>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+		</band>
+	</pageFooter>
+</jasperReport>

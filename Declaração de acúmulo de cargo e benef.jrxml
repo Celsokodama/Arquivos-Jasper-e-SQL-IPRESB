@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.19.0.final using JasperReports Library version 6.19.0-646c68931cebf1a58bc65c4359d1f0ca223c5e94  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4" pageWidth="595" pageHeight="842" columnWidth="470" leftMargin="85" rightMargin="40" topMargin="14" bottomMargin="0" uuid="d946ebe6-2e92-44c5-aed7-8f7380925278">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ipresb"/>
+	<property name="com.jaspersoft.studio.unit." value="cm"/>
+	<subDataset name="Logo" uuid="e9f90e01-6f3f-44b6-9906-95c12f91afd0">
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="IPRESB"/>
+		<queryString language="SQL">
+			<![CDATA[Select  IMG_IMGFUNDO_IMGORG
+ from dbo."IMAGEMORGANIZACAO"  
+ where  "N_ORG_ORG" = 4]]>
+		</queryString>
+		<field name="IMG_IMGFUNDO_IMGORG" class="java.awt.Image"/>
+	</subDataset>
+	<subDataset name="Rodape" uuid="848c67d2-d15a-4bee-a03e-4616d865bbac">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="IPRESB"/>
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<queryString>
+			<![CDATA[Select dbo."IMAGEMORGANIZACAO"."IMG_IMGFUNDO_IMGORG" 
+ from dbo."IMAGEMORGANIZACAO" 
+ where  dbo."IMAGEMORGANIZACAO"."N_ORG_ORG" = 43]]>
+		</queryString>
+		<field name="IMG_IMGFUNDO_IMGORG" class="java.awt.Image"/>
+	</subDataset>
+	<parameter name="Matr" class="java.lang.String"/>
+	<parameter name="Ente" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT TOP 1 
+	dbo.FN_PRIMEIRALETRAMAIUSCULA(LOWER(PESSOA.S_NOM_PESSOA)) AS NOME,
+	LEFT(PESSOA.S_CPF_PESSOA,3)+'.'+SUBSTRING(PESSOA.S_CPF_PESSOA,4,3)+'.'+SUBSTRING(PESSOA.S_CPF_PESSOA,7,3)+'-'+SUBSTRING(PESSOA.S_CPF_PESSOA,10,2) AS CPF,
+	PESSOA.S_SEXO_PESSOA AS SEXO,
+	PESSOA.S_RG_PESSOA AS RG,
+	PESSOA.N_PESSOA_PESSOA AS PESSOA,
+	ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA AS MATRÍCULA,
+	(CASE 
+	WHEN ORGANIZACAOPESSOA.N_ORG_ORG = 1 THEN 'Prefeitura Municipal de Barueri'
+	WHEN ORGANIZACAOPESSOA.N_ORG_ORG = 2 THEN 'Câmara Municipal de Barueri'
+	WHEN ORGANIZACAOPESSOA.N_ORG_ORG = 3 THEN 'FIEB'
+	WHEN ORGANIZACAOPESSOA.N_ORG_ORG = 4 THEN 'IPRESB'
+	 END) AS ENTE,
+	CARGO.S_DCR_CARGO  AS CARGO
+
+
+
+
+FROM PESSOA INNER JOIN ORGANIZACAOPESSOA ON PESSOA.N_PESSOA_PESSOA = ORGANIZACAOPESSOA.N_PESSOA_PESSOA INNER JOIN  CARGOORGANIZACAOPESSOA ON PESSOA.N_PESSOA_PESSOA = CARGOORGANIZACAOPESSOA.N_PESSOA_PESSOA INNER JOIN
+CARGO ON CARGO.N_ORG_ORG = CARGOORGANIZACAOPESSOA.N_ORG_ORG AND CARGO.N_CARGO_CARGO = CARGOORGANIZACAOPESSOA.N_CARGO_CARGO
+
+
+
+WHERE        (ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA = $P{Matr} AND ORGANIZACAOPESSOA.N_ORG_ORG =  $P{Ente} and  CARGOORGANIZACAOPESSOA.N_CODORI_ORGPESSOA = $P{Matr})]]>
+	</queryString>
+	<field name="NOME" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NOME"/>
+		<property name="com.jaspersoft.studio.field.label" value="NOME"/>
+	</field>
+	<field name="CPF" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CPF"/>
+		<property name="com.jaspersoft.studio.field.label" value="CPF"/>
+	</field>
+	<field name="SEXO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="SEXO"/>
+		<property name="com.jaspersoft.studio.field.label" value="SEXO"/>
+	</field>
+	<field name="RG" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="RG"/>
+		<property name="com.jaspersoft.studio.field.label" value="RG"/>
+	</field>
+	<field name="PESSOA" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="PESSOA"/>
+		<property name="com.jaspersoft.studio.field.label" value="PESSOA"/>
+	</field>
+	<field name="MATRÍCULA" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="MATRÍCULA"/>
+		<property name="com.jaspersoft.studio.field.label" value="MATRÍCULA"/>
+	</field>
+	<field name="ENTE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ENTE"/>
+		<property name="com.jaspersoft.studio.field.label" value="ENTE"/>
+	</field>
+	<field name="CARGO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CARGO"/>
+		<property name="com.jaspersoft.studio.field.label" value="CARGO"/>
+	</field>
+	<pageHeader>
+		<band/>
+	</pageHeader>
+	<columnHeader>
+		<band/>
+	</columnHeader>
+	<detail>
+		<band height="828" splitType="Stretch">
+			<componentElement>
+				<reportElement x="62" y="7" width="150" height="80" uuid="39dc0e48-0e5a-4929-8e1d-e034d4a4ac01"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Logo" uuid="6485615f-3a7a-4b83-870e-46ba8eeecce4">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="80" width="150">
+						<image>
+							<reportElement x="0" y="0" width="140" height="70" uuid="1983ea29-ce0e-460b-ba29-ccacffd636da"/>
+							<imageExpression><![CDATA[$F{IMG_IMGFUNDO_IMGORG}]]></imageExpression>
+						</image>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<staticText>
+				<reportElement x="180" y="27" width="205" height="40" uuid="cc3fd917-c33a-4f2c-bf75-430943b0a1fe"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true"/>
+					<paragraph lineSpacing="1_1_2"/>
+				</textElement>
+				<text><![CDATA[INSTITUTO DE PREVIDÊNCIA SOCIAL DOS SERVIDORES MUNICIPAIS DE BARUERI]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="-41" y="90" width="509" height="20" uuid="a9e11b15-0826-4ae7-9520-48a566dcda34">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" markup="styled">
+					<font fontName="Arial" size="12" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[<style isBold='true'>DECLARAÇÃO DE ACUMULAÇÃO DE CARGO PÚBLICO</style>]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="-40" y="116" width="508" height="263" uuid="9803beb0-23ef-4898-92c5-69b9e541db6f"/>
+				<textElement textAlignment="Justified" markup="html">
+					<font fontName="Arial" size="11"/>
+					<paragraph lineSpacingSize="2.0"/>
+				</textElement>
+				<textFieldExpression><![CDATA["		Eu, " +"<b>"+$F{NOME}+", RG: "+$F{RG} + ", matrícula: "  + $F{MATRÍCULA} + "</b>"+ ", servidor(a) da " + $F{ENTE} + ", declaro para fins de aposentadoria pelo Instituto de Previdência Social dos Servidores Municipais de Barueri - IPRESB, que: <br><br>"+ "(  ) Não exerço qualquer outro cargo público (função ou emprego em Entidades Federais, Estaduais ou Municipais), bem como Autarquias, Empresas Públicas ou de Economia Mista e em Fundações Públicas.<br>" +
+"(  ) Acumulo o cargo público, função ou emprego abaixo: <br>" + 
+"Cargo:_____________________________________________________<br>Orgão:_____________________________________________________<br>"+ 
+"(  ) Sou aposentado(a) da administração pública federal, estadual ou municipal, autarquia, empresa pública, sociedade de economia mista ou fundação pública. <br>" +
+"Cargo:_____________________________________________________<br>Órgão:_____________________________________________________ <br><br>" +
+"Declaro, ainda, que tomei conhecimento do inteiro teor das normas abaixo transcritas e que estou ciente de que estarei sujeito às penalidades previstas em Lei, caso venha a incorrer em acumulação ilegal, durante o exercício do cargo para o qual fui empossado."]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="-43" y="360" width="517" height="249" uuid="2bc7beed-6f2a-4ef8-beb3-55c064e5e5f8">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+			</rectangle>
+			<staticText>
+				<reportElement key="" x="-40" y="360" width="509" height="249" isRemoveLineWhenBlank="true" uuid="68359a4c-2f17-436c-b03a-070bc50a151f">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Justified" verticalAlignment="Top" markup="html">
+					<font fontName="Arial" size="10"/>
+					<paragraph lineSpacingSize="1.5"/>
+				</textElement>
+				<text><![CDATA[<b>ART. 37 - Constituição Federal /1988</b><br>
+XVI - É vedada a acumulação remunerada de cargos públicos, exceto, quando houver compatibilidade de horários:<br>
+I. a de dois cargos de professor;<br>
+II. a de um cargo de professor com outro técnico ou científico;<br>
+III. a de dois cargos ou empregos privativos de profissionais de saúde, com profissões regulamentadas;<br>
+§ 10 - É vedada a percepção simultânea de proventos de aposentadoria decorrentes do art. 40 ou dos art. 42 e 142 com a remuneração de cargo, emprego ou função
+pública, ressalvados os cargos acumuláveis na forma desta Constituição, os cargos eletivos e os cargos em comissão declarados em lei de livre nomeação e exoneração.
+Parágrafo único: a proibição de acumular se estende a empregos e funções e abrange Autarquias, Empresas Públicas, Sociedade de Economia Mista e Fundações Públicas.<br>
+<b>ART. 115 - Constituição Estadual SP / 1989</b><br>
+XVIII - é vedada a acumulação remunerada de cargos públicos, exceto quando houver compatibilidade de horários:<br>
+a) de dois cargos de professor;<br>
+b) de um cargo de professor com outro técnico ou científico;<br>
+c) a de dois cargos ou empregos privativos de profissionais de saúde, com profissões regulamentadas;<br>
+<b>ART. 129 – Lei Complementar 277 – Estatuto dos Servidores Públicos de Barueri</b><br>
+Ressalvados os casos previstos na Constituição, é vedada a acumulação remunerada de cargos públicos.<br>
+§ 1º. A proibição de acumular estende-se a cargos, empregos e funções na Administração Pública Direta e Indireta da União, do Distrito Federal, dos Estados, dos
+Territórios e dos Municípios.]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="-42" y="664" width="515" height="16" uuid="1cad49e5-92da-456b-97f0-06134cb6d1d3"/>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Barueri, " + LOWER(DATEFORMAT(TODAY(),"d 'de' MMMM 'de' yyyy"))+"."]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-40" y="709" width="515" height="30" uuid="e9ddf0e2-7a98-4f23-a1fb-09ed29b2f583"/>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<text><![CDATA[________________________________________
+Declarante]]></text>
+			</staticText>
+			<componentElement>
+				<reportElement x="-33" y="750" width="490" height="55" uuid="fc2b4eb8-e82e-4a73-ba2c-fe572b5222c5"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Rodape" uuid="17fc140f-3eaa-4084-9409-436b7e5f31e0">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="55" width="490">
+						<image>
+							<reportElement x="0" y="5" width="490" height="50" uuid="13db9de4-b23c-44e9-aba4-bc30a1775c8f"/>
+							<imageExpression><![CDATA[$F{IMG_IMGFUNDO_IMGORG}]]></imageExpression>
+						</image>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+		</band>
+		<band height="828">
+			<componentElement>
+				<reportElement x="62" y="0" width="150" height="80" uuid="3b373ad7-cdd3-4d6b-b969-8c8136e4e92d"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Logo" uuid="ddd23979-c535-4e9b-9087-3984940ac025">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="80" width="150">
+						<image>
+							<reportElement x="0" y="0" width="140" height="70" uuid="31ae029b-7468-4ad4-a4a3-1757322f8ebd"/>
+							<imageExpression><![CDATA[$F{IMG_IMGFUNDO_IMGORG}]]></imageExpression>
+						</image>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<staticText>
+				<reportElement x="180" y="20" width="205" height="40" uuid="c3f2f49c-2d01-44dd-92a7-d5c5d3eb6bea"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true"/>
+					<paragraph lineSpacing="1_1_2"/>
+				</textElement>
+				<text><![CDATA[INSTITUTO DE PREVIDÊNCIA SOCIAL DOS SERVIDORES MUNICIPAIS DE BARUERI]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="-43" y="100" width="509" height="20" uuid="e2d81cc7-53e6-4639-8661-f946f228cc84">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" markup="styled">
+					<font fontName="Arial" size="12" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[<style isBold='true'>DECLARAÇÃO DE ACUMULAÇÃO DE BENEFÍCIOS </style>]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="-37" y="138" width="508" height="181" uuid="d5f35361-45d0-4f76-a229-df83bcb638c0"/>
+				<textElement textAlignment="Justified" markup="html">
+					<font fontName="Arial" size="11"/>
+					<paragraph lineSpacingSize="1.5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["		Eu, " +"<b>" +$F{NOME} +", CPF: "+$F{CPF}+", RG: "+$F{RG} +"</b>"+ ", " +"declaro, para fins de obtenção de benefício junto ao Instituto de Previdência Social dos Servidores Municipais de Barueri - IPRESB, que:<br><br>(  ) Não recebo pensão por morte do Regime Geral de Previdência Social (RGPS-INSS), de Regime Próprio 	de Previdência Social (RPPS) ou decorrentes de atividades militares;<br>( ) Recebo pensão por morte do Regime Geral de Previdência Social (RGPS-INSS), de Regime Próprio de Previdência Social (RPPS) ou decorrentes de atividades militares;<br>	Órgão:_______________________<br>	Valor:________________________<br>Declaro ainda, caso venha a receber pensão por morte de outro Regime de Previdência devo comunicar a este Instituto e que tomei conhecimento do trecho da Emenda Constitucional n.º 103/2019 abaixo transcrito e que estou ciente de que estarei sujeito às penalidades previstas em Lei, caso venha a incorrer em acumulação ilegal de benefícios."]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="-43" y="316" width="517" height="355" uuid="8be58fce-bdbd-4cc0-b789-33e403b4f393">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+			</rectangle>
+			<staticText>
+				<reportElement key="" x="-40" y="316" width="509" height="355" isRemoveLineWhenBlank="true" uuid="09aad3b1-a264-492f-9739-3f196c9ef505">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Justified" verticalAlignment="Top" markup="html">
+					<font fontName="Arial"/>
+					<paragraph lineSpacingSize="1.5"/>
+				</textElement>
+				<text><![CDATA[Art. 24. É vedada a acumulação de mais de uma pensão por morte deixada por cônjuge ou companheiro, no âmbito do mesmo regime de previdência social, ressalvadas as pensões do mesmo instituidor decorrentes do exercício de cargos acumuláveis na forma do art. 37 da Constituição Federal.<br>
+§ 1º Será admitida, nos termos do § 2º, a acumulação de:<br>
+I - pensão por morte deixada por cônjuge ou companheiro de um regime de previdência social com pensão por morte concedida por outro regime de previdência social ou com pensões decorrentes das atividades militares de que tratam os arts. 42 e 142 da Constituição Federal;<br>
+II - pensão por morte deixada por cônjuge ou companheiro de um regime de previdência social com aposentadoria concedida no âmbito do Regime Geral de Previdência Social ou de regime próprio de previdência social ou com proventos de inatividade decorrentes das atividades militares de que tratam os arts. 42 e 142 da Constituição Federal; <br>
+III - pensões decorrentes das atividades militares de que tratam os arts. 42 e 142 da Constituição Federal com aposentadoria concedida no âmbito do Regime Geral de Previdência Social ou de regime próprio de previdência social.<br>
+§ 2º Nas hipóteses das acumulações previstas no § 1º, é assegurada a percepção do valor integral do benefício mais vantajoso e de uma parte de cada um dos demais benefícios, apurada cumulativamente de acordo com as seguintes faixas:<br>
+I - 60% (sessenta por cento) do valor que exceder 1 (um) salário-mínimo, até o limite de 2 (dois) salários-mínimos;<br>
+II - 40% (quarenta por cento) do valor que exceder 2 (dois) salários-mínimos, até o limite de 3 (três) salários-mínimos;<br>
+III - 20% (vinte por cento) do valor que exceder 3 (três) salários-mínimos, até o limite de 4 (quatro) salários-mínimos; e<br>
+IV - 10% (dez por cento) do valor que exceder 4 (quatro) salários-mínimos.<br>
+§ 3º A aplicação do disposto no § 2º poderá ser revista a qualquer tempo, a pedido do interessado, em razão de alteração de algum dos benefícios.<br>
+§ 4º As restrições previstas neste artigo não serão aplicadas se o direito aos benefícios houver sido adquirido antes da  data de entrada em vigor desta Emenda Constitucional.<br>
+§ 5º As regras sobre acumulação previstas neste artigo e na legislação vigente na data de entrada em vigor desta Emenda Constitucional poderão ser alteradas na forma do § 6º do art. 40 e do § 15 do art. 201 da Constituição Federal.]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="-42" y="690" width="515" height="16" uuid="1fc6d8c2-1343-4f51-8b9c-ead3a2b8231c"/>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Barueri, " + LOWER(DATEFORMAT(TODAY(),"d 'de' MMMM 'de' yyyy"))+"."]]></textFieldExpression>
+			</textField>
+			<componentElement>
+				<reportElement x="-37" y="770" width="490" height="55" uuid="0e21151f-e877-483f-988a-34ddda0de232"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Rodape" uuid="d6afbb6a-ccc8-4838-815c-9fbe1c17735f">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="55" width="490">
+						<image>
+							<reportElement x="0" y="5" width="490" height="50" uuid="ed252d1d-54ce-4079-ac28-394dff144f21"/>
+							<imageExpression><![CDATA[$F{IMG_IMGFUNDO_IMGORG}]]></imageExpression>
+						</image>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<staticText>
+				<reportElement x="-40" y="720" width="515" height="30" uuid="22df208d-3ed3-49d7-98ec-7f436fc1cf43"/>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<text><![CDATA[________________________________________
+Declarante]]></text>
+			</staticText>
+		</band>
+	</detail>
+</jasperReport>

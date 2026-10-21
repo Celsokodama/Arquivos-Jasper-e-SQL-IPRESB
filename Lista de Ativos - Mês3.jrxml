@@ -1,0 +1,489 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="teste3" pageWidth="1684" pageHeight="1191" orientation="Landscape" columnWidth="1684" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="10e901fa-5e86-47b7-b42c-c525b163fcad">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="IPRESB"/>
+	<property name="net.sf.jasperreports.print.create.bookmarks" value="false"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="com.jaspersoft.studio.report.description" value=""/>
+	<parameter name="AnoAtual" class="java.lang.String"/>
+	<parameter name="MesAtual" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[USE aspprev2_baruerisp_prd
+
+--MÊS ATUAL
+DECLARE @ANOATUAL INT
+--SET @ANOATUAL = YEAR(GETDATE())
+SET @ANOATUAL = $P{AnoAtual}
+
+DECLARE @MESATUAL INT
+--SET @MESATUAL = MONTH(GETDATE())
+SET @MESATUAL = $P{MesAtual}
+
+DECLARE @DIAATUAL INT
+SET @DIAATUAL = DAY(GETDATE())
+
+DECLARE @REFATUAL INT
+SET @REFATUAL = (CASE WHEN @MESATUAL <=9 
+				THEN CONCAT(@ANOATUAL,0,@MESATUAL) 
+				ELSE CONCAT(@ANOATUAL,@MESATUAL) END)
+
+DECLARE @DATAATUAL VARCHAR(10)
+SET @DATAATUAL = DATEFROMPARTS(@ANOATUAL,@MESATUAL,@DIAATUAL)
+
+
+Select DISTINCT --TOP 50
+
+  --CONCAT(o.N_ORG_ORG,op.N_CODORI_ORGPESSOA) AS [NUMERO UNICO],
+  --o.S_CNPJ_ORG As [CNPJ_ColE],
+  o.S_DCR_ORG AS [ENTE],
+
+  op.N_CODORI_ORGPESSOA As [MATRÍCULA],
+  
+  p.S_CPF_PESSOA As [CPF],
+  
+  p.S_NOM_PESSOA as [NOME],
+  
+  Convert(VARCHAR,p.DT_NASC_PESSOA,103) As [NASCIMENTO],
+  
+	--  TIPO DE VÍNCULO
+	--1 - Servidor Efetivo
+	--2 - Servido Efetivo Ocupante de Cargo em Comissão
+	--3 - Estável
+	--4 - Outros
+  --Case When cop.N_VINC_CARGOORGPESSOA = 2 Then 1 When cop.N_VINC_CARGOORGPESSOA = 4 Then 2 Else 4 End As [TIPO VÍNCULO],
+	
+	Convert(VARCHAR,op.DT_ADM_ORGPESSOA,103) As [INGRESSO NO ENTE],
+
+	--Convert(VARCHAR,op.DT_ADM_ORGPESSOA,103) As [INGRESSO NA CARREIRA],
+
+	--Convert(VARCHAR,cop.DT_INIVIG_CARGOORGPESSOA,103) As [DATA INÍCIO CARGO ATUAL],
+	c.S_DCR_CARGO As [CARGO ATUAL],
+   
+   vbc.BaseContribuicao as [BASE CONTRIBUIÇÃO],
+  ((IsNull((Select Sum(HS.N_VLR_HISTSAL)  
+				From HISTORICOSALARIO As HS
+				Where (HS.N_PESSOA_PESSOA = cop.N_PESSOA_PESSOA) And
+				(HS.N_SEQ_CARGOORGPESSOA = cop.N_SEQ_CARGOORGPESSOA) And
+				(HS.N_ORG_VERBAORG = cop.N_ORG_ORG) And 
+				(HS.S_VERBA_VERBAORG In (Select	VERBAORGANIZACAO.S_VERBA_VERBAORG From VERBAORGANIZACAO  
+											Where (VERBAORGANIZACAO.N_ORG_ORG = cop.N_ORG_ORG) 
+											And  (VERBAORGANIZACAO.N_TIP_VERBAORG = 1))) 
+											And (HS.S_MRC13SAL_HISTSAL = 'N')
+											And (HS.N_ANOMESREFER_HISTSAL = @REFATUAL)), 0)))  As [CONTRIBUIÇÃO MENSAL],
+											
+	  ((IsNull((Select Sum(HS.N_VLR_HISTSAL)  
+				From HISTORICOSALARIO As HS
+				Where (HS.N_PESSOA_PESSOA = cop.N_PESSOA_PESSOA) And
+				(HS.N_SEQ_CARGOORGPESSOA = cop.N_SEQ_CARGOORGPESSOA) And
+				(HS.N_ORG_VERBAORG = cop.N_ORG_ORG) And 
+				(HS.S_VERBA_VERBAORG In (Select	VERBAORGANIZACAO.S_VERBA_VERBAORG From VERBAORGANIZACAO  
+											Where (VERBAORGANIZACAO.N_ORG_ORG = cop.N_ORG_ORG) 
+											And  (VERBAORGANIZACAO.N_TIP_VERBAORG = 2))) 
+											And (HS.S_MRC13SAL_HISTSAL = 'N')
+											And (HS.N_ANOMESREFER_HISTSAL = @REFATUAL)), 0)))  As [CONTRIBUIÇÃO PATRONAL]
+
+
+	--Vbca.BaseContribuicaoAnt as [BASE CONTRIBUIÇÃO ANTERIOR],
+
+ -- ((IsNull((Select Sum(HS.N_VLR_HISTSAL)  
+	--			From HISTORICOSALARIO As HS
+	--			Where (HS.N_PESSOA_PESSOA = cop.N_PESSOA_PESSOA) And
+	--			(HS.N_SEQ_CARGOORGPESSOA = cop.N_SEQ_CARGOORGPESSOA) And
+	--			(HS.N_ORG_VERBAORG = cop.N_ORG_ORG) And 
+	--			(HS.S_VERBA_VERBAORG In (Select	VERBAORGANIZACAO.S_VERBA_VERBAORG From VERBAORGANIZACAO  
+	--										Where (VERBAORGANIZACAO.N_ORG_ORG = cop.N_ORG_ORG) 
+	--										And  (VERBAORGANIZACAO.N_TIP_VERBAORG = 1))) 
+	--										And (HS.S_MRC13SAL_HISTSAL = 'N')
+	--										And (HS.N_ANOMESREFER_HISTSAL = @REFANT)), 0)))  As [CONTRIBUIÇÃO MENSAL ANTERIOR]
+  
+
+From PESSOA p
+Inner Join ORGANIZACAOPESSOA op On p.N_PESSOA_PESSOA = op.N_PESSOA_PESSOA
+Inner Join ORGANIZACAO o On o.N_ORG_ORG = op.N_ORG_ORG
+Inner Join CARGOORGANIZACAOPESSOA cop On (cop.N_PESSOA_PESSOA = p.N_PESSOA_PESSOA) 
+	And (cop.N_ORG_ORG = op.N_ORG_ORG) And (cop.N_CODORI_ORGPESSOA =  op.N_CODORI_ORGPESSOA) 
+	And (cop.DT_INIVIG_CARGOORGPESSOA <= @DATAATUAL) 
+	And (IsNull(cop.DT_FIMVIG_CARGOORGPESSOA, Convert(DATETIME,@DATAATUAL,102)) >=  Convert(DATETIME,@DATAATUAL,102))
+Inner Join CARGO c On (c.N_ORG_ORG = cop.N_ORG_ORG) And (c.N_CARGO_CARGO = cop.N_CARGO_CARGO)
+Left Join CARREIRA car On car.N_COD_CARREIRA = c.N_COD_CARREIRA
+Inner Join PLANOORGANIZACAOPESSOA pop On (pop.N_ORG_ORG = op.N_ORG_ORG) And (pop.N_CODORI_ORGPESSOA = op.N_CODORI_ORGPESSOA)
+Inner Join PLANO On PLANO.N_PLN_PLN = pop.N_PLN_PLN
+
+
+--OUTER APPLY (SELECT
+--					MIN(CCC.DT_INIVIG_CARGOORGPESSOA)
+--				FROM CARGOORGANIZACAOPESSOA AS CCC
+--				WHERE CCC.N_ORG_ORG = OP.N_ORG_ORG
+--				AND CCC.N_CODORI_ORGPESSOA = OP.N_CODORI_ORGPESSOA ) IngCarr (IngressoCarreiraMatricula)
+
+OUTER APPLY (SELECT ((IsNull((Select Sum(Case When vo.S_NAT_VERBAORG = 'P' Then HS.N_VLR_HISTSAL Else HS.N_VLR_HISTSAL * -1 End)
+									 From HISTORICOSALARIO As HS 
+									 Inner Join VERBAORGANIZACAO vo
+										On (HS.N_ORG_VERBAORG = vo.N_ORG_ORG) 
+										And (HS.S_VERBA_VERBAORG = vo.S_VERBA_VERBAORG)
+									Where (HS.N_PESSOA_PESSOA = cop.N_PESSOA_PESSOA) And
+										(HS.N_SEQ_CARGOORGPESSOA = cop.N_SEQ_CARGOORGPESSOA) And
+										(HS.N_ORG_VERBAORG = cop.N_ORG_ORG) And 
+										(vo.N_TIP_VERBAORG = 3 or cast(vo.S_VERBA_VERBAORG as numeric(10,0)) = 30000) And
+										(HS.S_MRC13SAL_HISTSAL = 'N') 
+										And (HS.N_ANOMESREFER_HISTSAL = @REFATUAL)), 0)))) Vbc (BaseContribuicao)
+
+--OUTER APPLY (SELECT ((IsNull((Select Sum(Case When vo.S_NAT_VERBAORG = 'P' Then HS.N_VLR_HISTSAL Else HS.N_VLR_HISTSAL * -1 End)
+--									 From HISTORICOSALARIO As HS 
+--									 Inner Join VERBAORGANIZACAO vo
+--										On (HS.N_ORG_VERBAORG = vo.N_ORG_ORG) 
+--										And (HS.S_VERBA_VERBAORG = vo.S_VERBA_VERBAORG)
+--									Where (HS.N_PESSOA_PESSOA = cop.N_PESSOA_PESSOA) And
+--										(HS.N_SEQ_CARGOORGPESSOA = cop.N_SEQ_CARGOORGPESSOA) And
+--										(HS.N_ORG_VERBAORG = cop.N_ORG_ORG) And 
+--										(vo.N_TIP_VERBAORG = 3 or cast(vo.S_VERBA_VERBAORG as numeric(10,0)) = 30000) And
+--										(HS.S_MRC13SAL_HISTSAL = 'N') 
+--										And (HS.N_ANOMESREFER_HISTSAL = @REFANT)), 0)))) Vbca (BaseContribuicaoAnt)
+
+Where  (PLANO.S_TIP_PLN In ('P', 'F')) And  (pop.DT_INIVIG_PLNORGPESSOA <= @DATAATUAL) 
+  And (pop.DT_FIMVIG_PLNORGPESSOA >= @DATAATUAL Or pop.DT_FIMVIG_PLNORGPESSOA Is Null) 
+  And (op.DT_DSL_ORGPESSOA Is Null Or op.DT_DSL_ORGPESSOA >= @DATAATUAL) 
+  And (p.DT_FALEC_PESSOA Is Null Or p.DT_FALEC_PESSOA >= @DATAATUAL)
+
+
+Order By 4]]>
+	</queryString>
+	<field name="ENTE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="ENTE"/>
+	</field>
+	<field name="MATRÍCULA" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="MATRÍCULA"/>
+	</field>
+	<field name="CPF" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CPF"/>
+	</field>
+	<field name="NOME" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="NOME"/>
+	</field>
+	<field name="NASCIMENTO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="NASCIMENTO"/>
+	</field>
+	<field name="INGRESSO NO ENTE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="INGRESSO NO ENTE"/>
+	</field>
+	<field name="CARGO ATUAL" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CARGO ATUAL"/>
+	</field>
+	<field name="BASE CONTRIBUIÇÃO" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="BASE CONTRIBUIÇÃO"/>
+	</field>
+	<field name="CONTRIBUIÇÃO MENSAL" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="CONTRIBUIÇÃO MENSAL"/>
+	</field>
+	<field name="CONTRIBUIÇÃO PATRONAL" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="CONTRIBUIÇÃO PATRONAL"/>
+	</field>
+	<background>
+		<band/>
+	</background>
+	<columnHeader>
+		<band height="39">
+			<staticText>
+				<reportElement mode="Opaque" x="384" y="0" width="80" height="39" forecolor="#006699" backcolor="#E6E6E6" uuid="21854ac7-02b0-4ae8-8862-30d77aba2e77">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4058f1d-2bcc-49b6-8de2-3a1e4f62f649"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MATRÍCULA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="384" height="39" forecolor="#006699" backcolor="#E6E6E6" uuid="2de7651b-3c98-4325-9abe-90f00b02243e">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="32bb3ea0-7607-4dc0-8785-1b0138b45b72"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ENTE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="574" y="0" width="350" height="39" forecolor="#006699" backcolor="#E6E6E6" uuid="af7d8c7b-1e8d-429a-84ed-4e1f78c2bfc5">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4058f1d-2bcc-49b6-8de2-3a1e4f62f649"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOME]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="464" y="0" width="110" height="39" forecolor="#006699" backcolor="#E6E6E6" uuid="1908fb1b-f450-4fbd-9c23-4a54a1d56177">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4058f1d-2bcc-49b6-8de2-3a1e4f62f649"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CPF]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="924" y="0" width="86" height="39" forecolor="#006699" backcolor="#E6E6E6" uuid="31d73b2c-042a-4337-acf1-39ab7abdf10a">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4058f1d-2bcc-49b6-8de2-3a1e4f62f649"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NASCIMENTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="1010" y="0" width="86" height="39" forecolor="#006699" backcolor="#E6E6E6" uuid="9d693c91-fb98-4b5c-a231-a4956d473db3">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4058f1d-2bcc-49b6-8de2-3a1e4f62f649"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[INGRESSO NO ENTE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="1096" y="0" width="320" height="39" forecolor="#006699" backcolor="#E6E6E6" uuid="a02c9ff7-210f-4174-9751-c8ac162a9ae4">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4058f1d-2bcc-49b6-8de2-3a1e4f62f649"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CARGO ATUAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="1416" y="0" width="96" height="39" forecolor="#006699" backcolor="#E6E6E6" uuid="845d1df5-e9cb-4057-9915-cd1da087aa8a">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4058f1d-2bcc-49b6-8de2-3a1e4f62f649"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[BASE CONTRIBUIÇÃO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="1512" y="0" width="86" height="39" forecolor="#006699" backcolor="#E6E6E6" uuid="9ad32fb3-0e9d-498f-bac8-5b4e9e7842e3">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4058f1d-2bcc-49b6-8de2-3a1e4f62f649"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CONTRIBUIÇÃO MENSAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="1598" y="0" width="86" height="39" forecolor="#006699" backcolor="#E6E6E6" uuid="e3f7709a-517d-4c9d-af88-f127d3e25393">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e4058f1d-2bcc-49b6-8de2-3a1e4f62f649"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CONTRIBUIÇÃO PATRONAL]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="45">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<property name="com.jaspersoft.studio.layout"/>
+			<textField>
+				<reportElement x="0" y="0" width="384" height="45" uuid="1986d44c-9ebe-49a7-8256-07037c4b44b3"/>
+				<box>
+					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{ENTE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="384" y="0" width="80" height="45" uuid="2f070d3c-e686-47fe-8180-7141207f6eea"/>
+				<box>
+					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{MATRÍCULA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="574" y="0" width="350" height="45" uuid="2fa4f92e-1c09-417f-8195-cb625d775b3d"/>
+				<box>
+					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{NOME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="464" y="0" width="110" height="45" uuid="714e12f8-d424-4c91-bce5-ad5ed5cce665"/>
+				<box>
+					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{CPF}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="924" y="0" width="86" height="45" uuid="93d35840-1865-4a8d-a383-615572868375"/>
+				<box>
+					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{NASCIMENTO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1010" y="0" width="86" height="45" uuid="d481434f-f54c-4f85-8ada-6dd364b9190a"/>
+				<box>
+					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{INGRESSO NO ENTE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1096" y="0" width="320" height="45" uuid="07cede35-613b-4e3c-8f9e-143204867d89"/>
+				<box>
+					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{CARGO ATUAL}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1416" y="0" width="96" height="45" uuid="dad5748d-36d9-4fa8-a5bc-bf0557911c2e"/>
+				<box>
+					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{BASE CONTRIBUIÇÃO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1512" y="0" width="86" height="45" uuid="abc7d8cd-d7cb-4034-b088-5fd6b7d078fb"/>
+				<box>
+					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{CONTRIBUIÇÃO MENSAL}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1598" y="0" width="86" height="45" uuid="28d9ce5e-c0d2-43ee-8050-0e1d21af1981"/>
+				<box>
+					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{CONTRIBUIÇÃO PATRONAL}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band/>
+	</columnFooter>
+	<summary>
+		<band/>
+	</summary>
+</jasperReport>

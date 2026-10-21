@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4" pageWidth="595" pageHeight="842" columnWidth="454" leftMargin="85" rightMargin="56" topMargin="14" bottomMargin="0" isFloatColumnFooter="true" isIgnorePagination="true" uuid="d946ebe6-2e92-44c5-aed7-8f7380925278">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="IPRESB"/>
+	<property name="com.jaspersoft.studio.unit." value="cm"/>
+	<subDataset name="Logo" uuid="e9f90e01-6f3f-44b6-9906-95c12f91afd0">
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="IPRESB"/>
+		<queryString language="SQL">
+			<![CDATA[Select  IMG_IMGFUNDO_IMGORG
+ from dbo."IMAGEMORGANIZACAO"  
+ where  "N_ORG_ORG" = 42]]>
+		</queryString>
+		<field name="IMG_IMGFUNDO_IMGORG" class="java.awt.Image"/>
+	</subDataset>
+	<subDataset name="Rodape" uuid="6faeb3da-4b82-4ebb-bf15-6b631cf2c980">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="IPRESB"/>
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<queryString>
+			<![CDATA[Select dbo."IMAGEMORGANIZACAO"."IMG_IMGFUNDO_IMGORG" 
+ from dbo."IMAGEMORGANIZACAO" 
+ where  dbo."IMAGEMORGANIZACAO"."N_ORG_ORG" = 43]]>
+		</queryString>
+		<field name="IMG_IMGFUNDO_IMGORG" class="java.awt.Image"/>
+	</subDataset>
+	<parameter name="AposPens" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[SET LANGUAGE PORTUGUÊS
+			  
+SELECT 	(CASE WHEN $P{AposPens} = UPPER('A') THEN 'aposentado(a)' ELSE 'pensionista' END) AS AposPens]]>
+	</queryString>
+	<field name="AposPens" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="AposPens"/>
+	</field>
+	<detail>
+		<band height="827" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="111" width="454" height="30" uuid="d95e8383-9820-4837-8baa-109eec176f5d"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Barueri, "+LOWER(DATEFORMAT(TODAY(),"d 'de' MMMM 'de' yyyy")+".")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="213" width="454" height="182" uuid="b998975e-d92b-499f-ac13-bab6e1080608"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top" markup="html">
+					<font fontName="Arial" size="14" isBold="false"/>
+					<paragraph lineSpacing="Proportional" lineSpacingSize="2.5" firstLineIndent="50"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Eu, ________________________________________________, portador(a) do RG nº_______________ e CPF nº__________________, "+$F{AposPens}+" do IPRESB, solicito o cadastramento de um usuário e de uma senha de acesso ao sistema de consignados (E-CONSIG), para que eu possa acompanhar as operações realizadas em meu nome."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="0" y="395" width="454" height="111" uuid="88435560-d8b7-42a6-8216-a608d4043de2"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top" markup="html">
+					<font fontName="Arial" size="14" isBold="false"/>
+					<paragraph lineSpacing="Proportional" lineSpacingSize="2.5" firstLineIndent="50"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Estou ciente que a senha de acesso ao E-CONSIG é pessoal e intransferível e somente eu terei conhecimento da mesma, e que, para minha própria segurança, não devo informá-la a terceiros."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="0" y="506" width="454" height="80" uuid="5e077fa2-765e-44e7-89b7-74dc31d97e2b"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top" markup="html">
+					<font fontName="Arial" size="14" isBold="false"/>
+					<paragraph lineSpacing="Proportional" lineSpacingSize="2.5" firstLineIndent="50"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Assim sendo, assumo total responsabilidade quanto as movimentações realizadas através de meu usuário e senha."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="200" y="670" width="254" height="40" uuid="a5eb0d13-79fe-49c2-8b4b-08e8ee416645"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="html">
+					<font fontName="Arial" size="14" isBold="false"/>
+					<paragraph lineSpacing="Proportional" lineSpacingSize="2.5" firstLineIndent="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Assinatura"]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

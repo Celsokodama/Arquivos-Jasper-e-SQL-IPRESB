@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.21.2.final using JasperReports Library version 6.21.2-8434a0bd7c3bbc37cbf916f2968d35e4b165821a  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4" pageWidth="595" pageHeight="842" columnWidth="454" leftMargin="85" rightMargin="56" topMargin="14" bottomMargin="0" isFloatColumnFooter="true" uuid="d946ebe6-2e92-44c5-aed7-8f7380925278">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ASPPREV"/>
+	<property name="com.jaspersoft.studio.unit." value="cm"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="289"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="706"/>
+	<subDataset name="Logo" uuid="e9f90e01-6f3f-44b6-9906-95c12f91afd0">
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="IPRESB"/>
+		<queryString language="SQL">
+			<![CDATA[Select  IMG_IMGFUNDO_IMGORG
+ from dbo."IMAGEMORGANIZACAO"  
+ where  "N_ORG_ORG" = 42]]>
+		</queryString>
+		<field name="IMG_IMGFUNDO_IMGORG" class="java.awt.Image"/>
+	</subDataset>
+	<subDataset name="Rodape" uuid="6faeb3da-4b82-4ebb-bf15-6b631cf2c980">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="IPRESB"/>
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<queryString>
+			<![CDATA[Select dbo."IMAGEMORGANIZACAO"."IMG_IMGFUNDO_IMGORG" 
+ from dbo."IMAGEMORGANIZACAO" 
+ where  dbo."IMAGEMORGANIZACAO"."N_ORG_ORG" = 43]]>
+		</queryString>
+		<field name="IMG_IMGFUNDO_IMGORG" class="java.awt.Image"/>
+	</subDataset>
+	<parameter name="Matr" class="java.lang.String"/>
+	<parameter name="Ente" class="java.lang.String"/>
+	<parameter name="Assunto" class="java.lang.String"/>
+	<parameter name="Hinicial" class="java.lang.String"/>
+	<parameter name="Hfinal" class="java.lang.String"/>
+	<parameter name="MUsuario" class="java.lang.String"/>
+	<parameter name="Assunto2" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[--Matrícula servidor
+DECLARE @Matr as VARCHAR(30)
+SET @Matr = $P{Matr}
+
+--Ente servidor
+DECLARE @Ente as VARCHAR(30)
+SET @Ente = $P{Ente}
+
+--Horário Inicial
+DECLARE @Hinicial as VARCHAR(30)
+SET @Hinicial = $P{Hinicial}
+
+--Horário Final
+DECLARE @Hfinal as VARCHAR(30)
+SET @Hfinal = $P{Hfinal}
+
+--Assunto
+DECLARE @Assunto as VARCHAR(30)
+SET @Assunto = $P{Assunto}
+
+--Assunto2
+DECLARE @Assunto2 as VARCHAR(1000)
+SET @Assunto2 = $P{Assunto2}
+
+--Usuario IPRESB
+DECLARE @MUsuario INT
+SET @MUsuario = $P{MUsuario}
+
+SELECT 
+
+P.S_NOM_PESSOA AS NOME,
+P.S_RG_PESSOA AS RG,
+	--CPF
+				RTRIM(SUBSTRING(P.S_CPF_PESSOA,1,3)
+				+'.'
+				+SUBSTRING(P.S_CPF_PESSOA,4,3)
+				+'.'
+				+SUBSTRING(P.S_CPF_PESSOA,7,3)
+				+'-'
+				+SUBSTRING(P.S_CPF_PESSOA,10,2)) AS CPF,
+
+
+(CASE P.S_SEXO_PESSOA
+WHEN 'M' THEN 'o senhor '
+WHEN 'F' THEN 'a senhora '
+END) AS [GENERO],
+
+(CASE @Assunto
+WHEN '1' THEN 'para tratar de sua aposentadoria.'
+WHEN '2' THEN 'para realizar a perícia médica.'
+WHEN '3' THEN 'para tratar sobre pensão por morte.'
+WHEN '4' THEN ' '
+END) AS [ASSUNTO],
+
+
+
+@MUsuario AS MATRICULAIPRESB,
+@HInicial AS [Hinicial],
+@HFinal AS [Hfinal],
+@Assunto2 AS [Assunto2],
+
+  (SELECT        PESSOA_3.S_NOM_PESSOA AS USUARIO
+                               FROM            PESSOA AS PESSOA_3 INNER JOIN
+                                                         ORGANIZACAOPESSOA AS ORGANIZACAOPESSOA_3 ON PESSOA_3.N_PESSOA_PESSOA = ORGANIZACAOPESSOA_3.N_PESSOA_PESSOA INNER JOIN
+                                                         CARGOORGANIZACAOPESSOA AS CARGOORGANIZACAOPESSOA_3 ON ORGANIZACAOPESSOA_3.N_CODORI_ORGPESSOA = CARGOORGANIZACAOPESSOA_3.N_CODORI_ORGPESSOA AND 
+                                                         ORGANIZACAOPESSOA_3.N_ORG_ORG = CARGOORGANIZACAOPESSOA_3.N_ORG_ORG INNER JOIN
+                                                         CARGO AS CARGO_3 ON CARGOORGANIZACAOPESSOA_3.N_ORG_ORG = CARGO_3.N_ORG_ORG AND CARGOORGANIZACAOPESSOA_3.N_CARGO_CARGO = CARGO_3.N_CARGO_CARGO
+                               WHERE        (ORGANIZACAOPESSOA_3.N_ORG_ORG = 4) AND (ORGANIZACAOPESSOA_3.N_CODORI_ORGPESSOA = @MUsuario)) AS USUARIO,
+                             (SELECT       CARGO_3.S_DCR_CARGO AS [CARGO USUARIO]
+                               FROM            PESSOA AS PESSOA_3 INNER JOIN
+                                                         ORGANIZACAOPESSOA AS ORGANIZACAOPESSOA_3 ON PESSOA_3.N_PESSOA_PESSOA = ORGANIZACAOPESSOA_3.N_PESSOA_PESSOA INNER JOIN
+                                                         CARGOORGANIZACAOPESSOA AS CARGOORGANIZACAOPESSOA_3 ON ORGANIZACAOPESSOA_3.N_CODORI_ORGPESSOA = CARGOORGANIZACAOPESSOA_3.N_CODORI_ORGPESSOA AND 
+                                                         ORGANIZACAOPESSOA_3.N_ORG_ORG = CARGOORGANIZACAOPESSOA_3.N_ORG_ORG INNER JOIN
+                                                         CARGO AS CARGO_3 ON CARGOORGANIZACAOPESSOA_3.N_ORG_ORG = CARGO_3.N_ORG_ORG AND CARGOORGANIZACAOPESSOA_3.N_CARGO_CARGO = CARGO_3.N_CARGO_CARGO
+                               WHERE        (ORGANIZACAOPESSOA_3.N_ORG_ORG = 4) AND (ORGANIZACAOPESSOA_3.N_CODORI_ORGPESSOA = @MUsuario)) AS CARGO_USUARIO
+
+
+
+
+FROM 
+PESSOA AS P
+INNER JOIN ORGANIZACAOPESSOA ON P.N_PESSOA_PESSOA = ORGANIZACAOPESSOA.N_PESSOA_PESSOA
+
+WHERE 
+ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA = @Matr 
+AND ORGANIZACAOPESSOA.N_ORG_ORG = @Ente]]>
+	</queryString>
+	<field name="NOME" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NOME"/>
+		<property name="com.jaspersoft.studio.field.label" value="NOME"/>
+	</field>
+	<field name="RG" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="RG"/>
+		<property name="com.jaspersoft.studio.field.label" value="RG"/>
+	</field>
+	<field name="CPF" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CPF"/>
+		<property name="com.jaspersoft.studio.field.label" value="CPF"/>
+	</field>
+	<field name="GENERO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="GENERO"/>
+		<property name="com.jaspersoft.studio.field.label" value="GENERO"/>
+	</field>
+	<field name="ASSUNTO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ASSUNTO"/>
+		<property name="com.jaspersoft.studio.field.label" value="ASSUNTO"/>
+	</field>
+	<field name="MATRICULAIPRESB" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="MATRICULAIPRESB"/>
+		<property name="com.jaspersoft.studio.field.label" value="MATRICULAIPRESB"/>
+	</field>
+	<field name="Hinicial" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="Hinicial"/>
+		<property name="com.jaspersoft.studio.field.label" value="Hinicial"/>
+	</field>
+	<field name="Hfinal" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="Hfinal"/>
+		<property name="com.jaspersoft.studio.field.label" value="Hfinal"/>
+	</field>
+	<field name="Assunto2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="Assunto2"/>
+		<property name="com.jaspersoft.studio.field.label" value="Assunto2"/>
+	</field>
+	<field name="USUARIO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="USUARIO"/>
+		<property name="com.jaspersoft.studio.field.label" value="USUARIO"/>
+	</field>
+	<field name="CARGO_USUARIO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CARGO_USUARIO"/>
+		<property name="com.jaspersoft.studio.field.label" value="CARGO_USUARIO"/>
+	</field>
+	<pageHeader>
+		<band height="79" splitType="Stretch">
+			<componentElement>
+				<reportElement x="-20" y="0" width="530" height="70" uuid="cc52b66d-a63d-4318-b3ea-71f74a236b9e"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Logo" uuid="c67ef43c-b5ee-46d6-81e7-14fc2ce97490">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="70" width="530">
+						<image>
+							<reportElement x="0" y="0" width="520" height="70" uuid="a89bc311-ed75-48e0-8462-39e98da43de4"/>
+							<imageExpression><![CDATA[$F{IMG_IMGFUNDO_IMGORG}]]></imageExpression>
+						</image>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="400">
+			<textField>
+				<reportElement x="-6" y="84" width="454" height="20" uuid="8228a22b-9467-4eea-9bb4-126a64aeeb06"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Assunto: Declaração de comparecimento"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-6" y="7" width="452" height="20" uuid="0da0edad-cdb1-43da-928a-95b26f124fce"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Barueri, "+LOWER(DATEFORMAT(TODAY(),"d 'de' MMMM 'de' yyyy")+".")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-6" y="148" width="454" height="81" uuid="5a1c0d09-f656-4ce0-ace5-c8cdec449a56">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="cm"/>
+				</reportElement>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12" isBold="false"/>
+					<paragraph firstLineIndent="85"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Declaro para os devidos fins que " + $F{GENERO} + $F{NOME} +", CPF: "+$F{CPF}  + ", compareceu ao IPRESB das " + $F{Hinicial} + " às " + $F{Hfinal}+" " + $F{ASSUNTO} +  $F{Assunto2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-6" y="63" width="454" height="20" uuid="07678fd2-d957-4a8f-9736-6f812a92d96e"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Interessado(a): "+$F{NOME}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-6" y="229" width="451" height="30" uuid="fbb607c6-c864-47a5-8586-f95d45999a88"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12"/>
+					<paragraph firstLineIndent="85"/>
+				</textElement>
+				<text><![CDATA[Colocamo-nos à disposição para mais informações.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="-2" y="280" width="451" height="30" uuid="b6f38208-45fa-4038-af63-3e65ecea3653"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12"/>
+					<paragraph firstLineIndent="14"/>
+				</textElement>
+				<text><![CDATA[Atenciosamente,]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="111" y="350" width="220" height="50" uuid="dd790bbb-55b3-4522-8ddf-8058afbf4f4d"/>
+				<textElement textAlignment="Center" verticalAlignment="Top" markup="html">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{USUARIO}+ "<br> Matrícula: "+ $F{MATRICULAIPRESB}+ "<br>"+"IPRESB"]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="57" splitType="Stretch">
+			<componentElement>
+				<reportElement x="-21" y="1" width="490" height="55" uuid="c43c2739-7688-4e79-9ce6-e24cf5343f7f"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Rodape" uuid="a9951ccb-0f72-4209-ae27-ddac87839b56">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="55" width="490">
+						<image>
+							<reportElement x="0" y="5" width="490" height="50" uuid="7869b72f-3ee9-4e57-8e1a-cd7d425c0643"/>
+							<imageExpression><![CDATA[$F{IMG_IMGFUNDO_IMGORG}]]></imageExpression>
+						</image>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+		</band>
+	</pageFooter>
+</jasperReport>

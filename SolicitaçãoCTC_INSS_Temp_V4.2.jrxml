@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.21.2.final using JasperReports Library version 6.21.2-8434a0bd7c3bbc37cbf916f2968d35e4b165821a  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4" pageWidth="595" pageHeight="842" columnWidth="470" leftMargin="85" rightMargin="40" topMargin="14" bottomMargin="0" uuid="d946ebe6-2e92-44c5-aed7-8f7380925278">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.unit." value="cm"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ipresb"/>
+	<subDataset name="Logo" uuid="e9f90e01-6f3f-44b6-9906-95c12f91afd0">
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="IPRESB"/>
+		<queryString language="SQL">
+			<![CDATA[Select  IMG_IMGFUNDO_IMGORG
+ from dbo."IMAGEMORGANIZACAO"  
+ where  "N_ORG_ORG" = 42]]>
+		</queryString>
+		<field name="IMG_IMGFUNDO_IMGORG" class="java.awt.Image"/>
+	</subDataset>
+	<subDataset name="Rodape" uuid="848c67d2-d15a-4bee-a03e-4616d865bbac">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="IPRESB"/>
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<queryString>
+			<![CDATA[Select dbo."IMAGEMORGANIZACAO"."IMG_IMGFUNDO_IMGORG" 
+ from dbo."IMAGEMORGANIZACAO" 
+ where  dbo."IMAGEMORGANIZACAO"."N_ORG_ORG" = 43]]>
+		</queryString>
+		<field name="IMG_IMGFUNDO_IMGORG" class="java.awt.Image"/>
+	</subDataset>
+	<parameter name="Matricula" class="java.lang.String"/>
+	<parameter name="Organiz" class="java.lang.String"/>
+	<parameter name="ipresb" class="java.lang.String"/>
+	<parameter name="admEnte" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT        
+
+						PESSOA.S_NOM_PESSOA AS NOME,
+						ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA AS MATRICULA, 
+						C.S_DCR_CARGO AS CARGO, 
+						PESSOA.S_RG_PESSOA AS RG, 
+						RTRIM(SUBSTRING(PESSOA.S_CPF_PESSOA,1,3)+'.'+SUBSTRING(PESSOA.S_CPF_PESSOA,4,3)+'.'+SUBSTRING(PESSOA.S_CPF_PESSOA,7,3)+'-'+SUBSTRING(PESSOA.S_CPF_PESSOA,10,2)) AS CPF, 
+                        RTRIM(SUBSTRING(PESSOA.S_PISPASEP_PESSOA,1,3)+'.'+SUBSTRING(PESSOA.S_PISPASEP_PESSOA,4,5)+'.'+SUBSTRING(PESSOA.S_PISPASEP_PESSOA,9,2)+'-'+SUBSTRING(PESSOA.S_PISPASEP_PESSOA,11,1)) AS NIT , 
+                        CONVERT(VARCHAR(11), PESSOA.DT_NASC_PESSOA, 103) AS NASCIMENTO, 
+                       	RTRIM(PESSOA.S_NOMMAE_PESSOA) AS [NOME MAE], 
+                        CONVERT(VARCHAR(11),COP.DT_INIVIG_CARGOORGPESSOA, 103) AS ADMISSAO, 
+                        ORGANIZACAO.S_DCR_ORG AS ENTE, 
+                        $P{admEnte} AS [ADMISSAO ENTE], 
+                        $P{ipresb} AS [INICIO IPRESB]
+                         
+FROM            PESSOA INNER JOIN
+                         ORGANIZACAOPESSOA ON PESSOA.N_PESSOA_PESSOA = ORGANIZACAOPESSOA.N_PESSOA_PESSOA INNER JOIN
+                         CARGOORGANIZACAOPESSOA AS COP ON COP.N_PESSOA_PESSOA = ORGANIZACAOPESSOA.N_PESSOA_PESSOA AND COP.N_CODORI_ORGPESSOA = ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA AND 
+                         COP.N_ORG_ORG = ORGANIZACAOPESSOA.N_ORG_ORG INNER JOIN
+                         CARGO AS C ON C.N_ORG_ORG = COP.N_ORG_ORG AND C.N_CARGO_CARGO = COP.N_CARGO_CARGO INNER JOIN
+                         ORGANIZACAO ON ORGANIZACAOPESSOA.N_ORG_ORG = ORGANIZACAO.N_ORG_ORG
+                         
+                         
+WHERE        (ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA = $P{Matricula}) AND 
+					(ORGANIZACAOPESSOA.N_ORG_ORG = $P{Organiz}) AND 
+					(COP.N_VINC_CARGOORGPESSOA = 2) AND 
+					(COP.DT_FIMVIG_CARGOORGPESSOA IS NULL) AND 
+                         (COP.N_SEQ_CARGOORGPESSOA =
+                             (SELECT        MAX(N_SEQ_CARGOORGPESSOA) AS Expr1
+                               FROM            CARGOORGANIZACAOPESSOA AS COP2
+                               WHERE        (N_PESSOA_PESSOA = COP.N_PESSOA_PESSOA) AND (N_VINC_CARGOORGPESSOA = 2) AND (DT_FIMVIG_CARGOORGPESSOA IS NULL)))]]>
+	</queryString>
+	<field name="NOME" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NOME"/>
+		<property name="com.jaspersoft.studio.field.label" value="NOME"/>
+	</field>
+	<field name="MATRICULA" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="MATRICULA"/>
+		<property name="com.jaspersoft.studio.field.label" value="MATRICULA"/>
+	</field>
+	<field name="CARGO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CARGO"/>
+		<property name="com.jaspersoft.studio.field.label" value="CARGO"/>
+	</field>
+	<field name="RG" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="RG"/>
+		<property name="com.jaspersoft.studio.field.label" value="RG"/>
+	</field>
+	<field name="CPF" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CPF"/>
+		<property name="com.jaspersoft.studio.field.label" value="CPF"/>
+	</field>
+	<field name="NIT" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NIT"/>
+		<property name="com.jaspersoft.studio.field.label" value="NIT"/>
+	</field>
+	<field name="NASCIMENTO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NASCIMENTO"/>
+		<property name="com.jaspersoft.studio.field.label" value="NASCIMENTO"/>
+	</field>
+	<field name="NOME MAE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NOME MAE"/>
+		<property name="com.jaspersoft.studio.field.label" value="NOME MAE"/>
+	</field>
+	<field name="ADMISSAO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ADMISSAO"/>
+		<property name="com.jaspersoft.studio.field.label" value="ADMISSAO"/>
+	</field>
+	<field name="ENTE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ENTE"/>
+		<property name="com.jaspersoft.studio.field.label" value="ENTE"/>
+	</field>
+	<field name="ADMISSAO ENTE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ADMISSAO ENTE"/>
+		<property name="com.jaspersoft.studio.field.label" value="ADMISSAO ENTE"/>
+	</field>
+	<field name="INICIO IPRESB" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="INICIO IPRESB"/>
+		<property name="com.jaspersoft.studio.field.label" value="INICIO IPRESB"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="77" splitType="Stretch">
+			<componentElement>
+				<reportElement x="-20" y="0" width="530" height="70" uuid="f4174901-f3eb-4680-bbca-d2c628938d0d"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Logo" uuid="8860c172-a91f-4636-a65a-c91118869014">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="70" width="530">
+						<image>
+							<reportElement x="0" y="0" width="520" height="70" uuid="72dd9e0c-3681-48da-80a0-457c506984bf"/>
+							<imageExpression><![CDATA[$F{IMG_IMGFUNDO_IMGORG}]]></imageExpression>
+						</image>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="649" splitType="Stretch">
+			<textField>
+				<reportElement x="-12" y="10" width="482" height="30" uuid="b8bcd072-e914-4d61-aece-41f7fcd0ccf8"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="12" isBold="false"/>
+					<paragraph lineSpacing="Double"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Barueri, "+LOWER(DATEFORMAT(TODAY(),"d 'de' MMMM 'de' yyyy"))+"."]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-12" y="80" width="482" height="41" uuid="45c3b5a3-72f4-423f-b748-25c2bc1f12a1"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+					<paragraph lineSpacing="1_1_2"/>
+				</textElement>
+				<text><![CDATA[Ao
+Instituto Nacional do Seguro Social]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="-12" y="170" width="482" height="410" uuid="434db025-9c65-4f33-9df7-1df8d43b4078"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top" markup="styled">
+					<font fontName="Arial" size="12" isBold="false"/>
+					<paragraph lineSpacing="Double" firstLineIndent="0" leftIndent="14" rightIndent="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["                    Solicitamos, a pedido do(a) servidor(a), <style isBold='true'>"+"a Certidão de Tempo de Contribuição com os respectivos salários de contribuição "+"</style>"+"de <style isBold='true'>"+$F{NOME}+"</style>"+", filho(a) de "+ $F{NOME MAE} +", nascido(a) em "+$F{NASCIMENTO}+", servidor(a) da "+$F{ENTE}+" desde "+$F{ADMISSAO ENTE}+", CPF: "+ $F{CPF} + " e N.I.T: "+ $F{NIT}+", cargo efetivo "+$F{CARGO}+" e matrícula funcional "+$F{MATRICULA}+", para fins de averbação junto ao IPRESB - Instituto de Previdência Social dos Servidores Municipais de Barueri, CNPJ: 08.434.600/0001-70, localizado na Alameda Wagih Salles Nemer, nº 85 - Centro, Barueri - SP, CEP: 06401-134."+"<style isBold='true'> <br/><br/>Obs: "+"</style>"+"Filiou-se ao IPRESB a partir de "+$F{INICIO IPRESB}+"."+"<br/><br/><br/>	Atenciosamente."]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="65" splitType="Stretch">
+			<componentElement>
+				<reportElement x="-20" y="10" width="490" height="55" uuid="d9e30884-fbee-43cb-b497-3cfa76808906"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Rodape" uuid="c2c96a01-ec05-49c8-bf81-1bbcd92ee3c7">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="55" width="490">
+						<image>
+							<reportElement x="0" y="5" width="490" height="50" uuid="04136a1e-c82c-4a25-9a0d-3a6347f6eb5e"/>
+							<imageExpression><![CDATA[$F{IMG_IMGFUNDO_IMGORG}]]></imageExpression>
+						</image>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+		</band>
+	</pageFooter>
+</jasperReport>

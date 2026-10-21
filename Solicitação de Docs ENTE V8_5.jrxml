@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.21.2.final using JasperReports Library version 6.21.2-8434a0bd7c3bbc37cbf916f2968d35e4b165821a  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4" pageWidth="595" pageHeight="842" columnWidth="470" leftMargin="85" rightMargin="40" topMargin="14" bottomMargin="0" uuid="d946ebe6-2e92-44c5-aed7-8f7380925278">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.unit." value="cm"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ipresb"/>
+	<subDataset name="Logo" uuid="e9f90e01-6f3f-44b6-9906-95c12f91afd0">
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="IPRESB"/>
+		<queryString language="SQL">
+			<![CDATA[Select  IMG_IMGFUNDO_IMGORG
+ from dbo."IMAGEMORGANIZACAO"  
+ where  "N_ORG_ORG" = 42]]>
+		</queryString>
+		<field name="IMG_IMGFUNDO_IMGORG" class="java.awt.Image"/>
+	</subDataset>
+	<subDataset name="Rodape" uuid="848c67d2-d15a-4bee-a03e-4616d865bbac">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="IPRESB"/>
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<queryString>
+			<![CDATA[Select dbo."IMAGEMORGANIZACAO"."IMG_IMGFUNDO_IMGORG" 
+ from dbo."IMAGEMORGANIZACAO" 
+ where  dbo."IMAGEMORGANIZACAO"."N_ORG_ORG" = 43]]>
+		</queryString>
+		<field name="IMG_IMGFUNDO_IMGORG" class="java.awt.Image"/>
+	</subDataset>
+	<parameter name="NumProt" class="java.lang.String"/>
+	<parameter name="AnoProt" class="java.lang.String"/>
+	<parameter name="MUsuario" class="java.lang.String"/>
+	<parameter name="Salario" class="java.lang.String"/>
+	<parameter name="Sind" class="java.lang.String"/>
+	<parameter name="Comiss" class="java.lang.String"/>
+	<parameter name="QH" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[USE aspprev2_baruerisp_prd
+
+DECLARE @numprot INT
+SET @numprot = $P{NumProt}
+
+DECLARE @anoprot INT
+SET @anoprot = $P{AnoProt}
+
+DECLARE @MUsuario INT
+SET @MUsuario = $P{MUsuario}
+
+DECLARE @Salario AS VARCHAR(1)
+SET @Salario = $P{Salario}
+
+DECLARE @Sind AS VARCHAR(50)
+SET @Sind = $P{Sind}
+
+DECLARE @Comiss AS VARCHAR(1)
+SET @Comiss = $P{Comiss}
+
+DECLARE @QH AS VARCHAR(1000)
+SET @QH = $P{QH}
+
+DECLARE @Texto_Lei AS VARCHAR(1000)
+SET @Texto_Lei = 'o Art. 174 da LC nº 277/2011'
+
+
+
+SELECT    TOP 1	 @numprot AS NUMPROT
+
+				,@anoprot AS ANOPROT
+
+				,FORMAT(SERVICOPESSOA.DT_SLCT_SERVPESSOA,'dd/MM/yyyy') AS DATA_SOLICITAÇAO
+
+				,dbo.FN_PRIMEIRALETRAMAIUSCULA(LOWER(TIPOSERVICO.S_DCRSERV_TIPSERV)) AS BENEFICIO
+
+				,TIPOBENEFICIO.S_DCR_TIPBNF AS [BENEFICIO DETALHADO]
+
+				,(CASE	WHEN @QH = '' THEN 
+						(CASE	WHEN TIPOSERVICO.N_TIPSERV_TIPSERV IN (8,9,32,41,42,43,57,66) THEN 'Aposentadoria'
+								WHEN TIPOSERVICO.N_TIPSERV_TIPSERV IN (6) THEN 'Abono de Permanência'
+								WHEN TIPOSERVICO.N_TIPSERV_TIPSERV IN (7,58) THEN 'Emissão de CTC'
+								WHEN TIPOSERVICO.N_TIPSERV_TIPSERV IN (21,88) THEN 'Pensão por Morte'
+								WHEN TIPOSERVICO.N_TIPSERV_TIPSERV IN (10) THEN 'Averbação de CTC'
+								WHEN TIPOSERVICO.N_TIPSERV_TIPSERV IN (64) THEN 'Contribuição Facultativa'
+								ELSE 'DESCREVER O BENEFÍCIO'
+						END)
+						ELSE 'Quadro da Carga Horária'
+				END) AS [DESCRIÇÃO BENEFÍCIO COM QH]
+				
+				,(CASE	WHEN TIPOSERVICO.N_TIPSERV_TIPSERV IN (8,9,32,41,42,43,57,66) THEN 'Aposentadoria'
+						WHEN TIPOSERVICO.N_TIPSERV_TIPSERV IN (6) THEN 'Abono de Permanência'
+						WHEN TIPOSERVICO.N_TIPSERV_TIPSERV IN (7,58) THEN 'Emissão de CTC'
+						WHEN TIPOSERVICO.N_TIPSERV_TIPSERV IN (21,88) THEN 'Pensão por Morte'
+						WHEN TIPOSERVICO.N_TIPSERV_TIPSERV IN (10) THEN 'Averbação de CTC'
+						WHEN TIPOSERVICO.N_TIPSERV_TIPSERV IN (64) THEN 'Contribuição Facultativa'
+						ELSE 'DESCREVER O BENEFÍCIO'
+				END) AS [DESCRIÇÃO BENEFÍCIO]
+				
+				,SERVICOPESSOA.N_PESSOA_PESSOA AS PESSOA
+
+				,ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA AS MATRICULA
+
+				,PESSOA.S_NOM_PESSOA AS NOME
+				
+				,dbo.[FN_PRIMEIRALETRAMAIUSCULA](UPPER(CARGOORGANIZACAOPESSOA.S_DCRCARGO_CARGOORGPESSOA)) AS [CARGO]
+
+				,@MUsuario AS MATRICULA_USUARIO_IPRESB
+
+				,USUARIO_IPRESB.Nome AS USUARIO
+
+				,USUARIO_IPRESB.Cargo AS CARGO_USUARIO
+
+				,(CASE	WHEN @Salario = 'S'  THEN 
+							(CASE WHEN ORGANIZACAOPESSOA.N_ORG_ORG = 1 THEN 'Secretaria de Administração / Div. Tec. Afast. E Controle de Inativo'
+							 WHEN ORGANIZACAOPESSOA.N_ORG_ORG = 2 THEN 'Câmara Municipal de Barueri / Departamento de Recursos Humanos'
+							 WHEN ORGANIZACAOPESSOA.N_ORG_ORG = 3 THEN 'FIEB / Departamento de Recursos Humanos'
+							 WHEN ORGANIZACAOPESSOA.N_ORG_ORG = 4 THEN 'IPRESB / Unidade de Gestão de Administração' END)
+
+						WHEN @Comiss = 'S' THEN
+							(CASE WHEN ORGANIZACAOPESSOA.N_ORG_ORG = 1 THEN 'Secretaria de Administração / Depto. Téc. Normas e Legislação'
+							 WHEN ORGANIZACAOPESSOA.N_ORG_ORG = 2 THEN 'Câmara Municipal de Barueri / Departamento de Recursos Humanos'
+							 WHEN ORGANIZACAOPESSOA.N_ORG_ORG = 3 THEN 'FIEB / Departamento de Recursos Humanos'
+							 WHEN ORGANIZACAOPESSOA.N_ORG_ORG = 4 THEN 'IPRESB / Unidade de Gestão de Administração' END)
+						
+						
+						WHEN LEN(@Sind) > 0 THEN
+							(CASE WHEN ORGANIZACAOPESSOA.N_ORG_ORG = 1 THEN (CASE @Sind	WHEN 'SS'	THEN 'Secretaria de Saúde - SS' 
+																						WHEN 'SADS' THEN 'Secretaria de Assistência e Desenvolvimento Social - SADS'
+																						WHEN 'SED'	THEN 'Secretaria de Educação - SED'
+																						WHEN 'SUPRI' THEN 'Secretaria de Suprimentos - SUPRI'
+																						WHEN 'SDPD' THEN 'Secretaria dos Direitos da Pessoa com Deficiência - SDPD'
+																						WHEN 'SSMU' THEN 'Secretaria de Segurança e Mobilidade Urbana  - SSMU'
+																						WHEN 'SNJ' THEN 'Secretaria dos Negócios Jurídicos - SNJ'
+																						WHEN 'SF' THEN 'Secretaria de Finanças - SF'
+																						WHEN 'SEMA' THEN 'Secretaria de Recursos Naturais e Meio Ambiente - SEMA'
+																						WHEN 'SEFAM' THEN 'Secretaria da Família - SEFAM'
+																						WHEN 'SRI' THEN 'Secretaria de Relações Institucionais - SRI'
+																						WHEN 'SECOM' THEN 'Secretaria de Comunicação - SECOM'
+																						WHEN 'SECULT' THEN 'Secretaria de Cultura e Turismo - SECULT'
+																						WHEN 'SICT' THEN 'Secretaria de Indústria, Comércio e Trabalho - SICT'
+																						WHEN 'SEGOV' THEN 'Secretaria de Governo - SEGOV'
+																						WHEN 'CIT' THEN 'Centro de Inovação e Tecnologia - CIT'
+																						WHEN 'SEHAB' THEN 'Secretaria da Habitação - SEHAB'
+																						WHEN 'SM' THEN 'Secretaria da Mulher - SM'
+																						WHEN 'SO' THEN 'Secretaria de Obras - SO'
+																						WHEN 'SEURB' THEN 'Secretaria de Planejamento e Urbanismo - SEURB'
+																						WHEN 'SSM' THEN 'Secretaria de Serviços Municipais - SSM'
+																						WHEN 'SADM' THEN 'Secretaria de Administração - SADM'
+																						WHEN 'GT' THEN 'Ganha Tempo Municipal - GT'
+																						WHEN 'SESP' THEN 'Secretaria de Esportes - SESP'
+																						WHEN 'CIT' THEN 'Centro de Inovação e Tecnologia - CIT'
+																						WHEN 'SSUDS' THEN 'Secretaria de Segurança Urbana e Defesa Social-SSUDS'
+																						WHEN 'SEMURB' THEN 'Secretaria de Mobilidade Urbana - SEMURB'
+																						ELSE 'A DEFINIR'
+																						END)
+							 WHEN ORGANIZACAOPESSOA.N_ORG_ORG = 2 THEN 'Câmara Municipal de Barueri / Departamento de Recursos Humanos'
+							 WHEN ORGANIZACAOPESSOA.N_ORG_ORG = 3 THEN 'FIEB / Departamento de Recursos Humanos'
+							 WHEN ORGANIZACAOPESSOA.N_ORG_ORG = 4 THEN 'IPRESB / Unidade de Gestão de Administração' END)
+
+						WHEN @QH ='S' THEN
+							(CASE WHEN  ORGANIZACAOPESSOA.N_ORG_ORG = 1 THEN 
+										(CASE	WHEN CARGO.N_CARGO_CARGO IN (2,3)  THEN 'Secretaria de Educação / Departamento Técnico de Gestão de Pessoal'
+												WHEN CARGO.N_CARGO_CARGO IN (900,601,1096,262,1100,531,1054,437,1110,1055,549,
+																			1056,550,1057,1061,512,436,1226,1058,445,1059,
+																			999987,503,1060,553,1082,444,111111,1062,1515,1063,
+																			1130,434,1227,1064,1083,999985,1065,452,1084,
+																			999999,438,1066,561,1067,1024,1068,442,1324,
+																			999989,564,1069,565,1070,1071,433,1608,565,
+																			1140,1228,1072,449,1085,1080,1086,1122,1073,
+																			450,130,1074,443,1087,999993,1088,567,1075,451,
+																			999996,1135,1089,446,1076,1077,99,1078,486,1046,
+																			454,302,1009) THEN 'Secretaria de Saúde / Coordenadoria Administrativa'
+										END)
+							 WHEN ORGANIZACAOPESSOA.N_ORG_ORG = 2 THEN 'Câmara Municipal de Barueri / Departamento de Recursos Humanos'
+							 WHEN ORGANIZACAOPESSOA.N_ORG_ORG = 3 THEN 'FIEB / Departamento de Recursos Humanos'
+							 WHEN ORGANIZACAOPESSOA.N_ORG_ORG = 4 THEN 'IPRESB / Unidade de Gestão de Administração' END)
+
+				END) AS [DESTINATÁRIO]
+
+				,@Texto_Lei AS [TEXTO LEI]
+
+				,(CASE	WHEN @Salario = 'S' 
+						THEN 'Salário de Contribuição do Cargo Efetivo' 
+						ELSE null 
+						END) AS [SALARIO]
+
+				,(CASE	WHEN @Sind = ''
+						THEN null
+						ELSE 'Se o(a) servidor(a) está respondendo sindicância, tendo em vista o Art. 174 da LC nº 277/2011'
+						END) AS [SINDICANCIA]
+						
+				,(CASE	WHEN @Comiss = 'S'
+						THEN 'Se o(a) servidor(a) está respondendo sindicância ou processo disciplinar, tendo em vista o Art. 174 da LC nº 277/2011'
+						ELSE null 
+						END) AS [COMISSÃO PROCESSANTE]
+
+				
+				,(CASE	WHEN @QH = '' THEN null
+						WHEN @QH = 'S' 
+							THEN	FORMAT(DATEFROMPARTS(DATEPART(YEAR,DATEADD(MONTH,-120,SERVICOPESSOA.DT_SLCT_SERVPESSOA)),DATEPART(MONTH,DATEADD(MONTH,-120,SERVICOPESSOA.DT_SLCT_SERVPESSOA)),1),'MM/yyyy')+
+									' a '+
+									FORMAT(DATEFROMPARTS(DATEPART(YEAR,DATEADD(MONTH,-1,SERVICOPESSOA.DT_SLCT_SERVPESSOA)),DATEPART(MONTH,DATEADD(MONTH,-1,SERVICOPESSOA.DT_SLCT_SERVPESSOA)),1),'MM/yyyy')
+						ELSE	@QH
+						END) AS [QUADRO DE HORAS]
+
+FROM            
+
+				SERVICOPESSOA 
+                INNER JOIN TIPOSERVICO ON SERVICOPESSOA.N_TIPSERV_TIPSERV = TIPOSERVICO.N_TIPSERV_TIPSERV 
+				INNER JOIN ORGANIZACAOPESSOA ON SERVICOPESSOA.N_CODORI_ORGPESSOA = ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA 
+				AND SERVICOPESSOA.N_ORG_ORG = ORGANIZACAOPESSOA.N_ORG_ORG 
+				INNER JOIN PESSOA ON ORGANIZACAOPESSOA.N_PESSOA_PESSOA = PESSOA.N_PESSOA_PESSOA
+				INNER JOIN CARGOORGANIZACAOPESSOA ON PESSOA.N_PESSOA_PESSOA = CARGOORGANIZACAOPESSOA.N_PESSOA_PESSOA AND ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA = CARGOORGANIZACAOPESSOA.N_CODORI_ORGPESSOA AND ORGANIZACAOPESSOA.N_ORG_ORG = CARGOORGANIZACAOPESSOA.N_ORG_ORG
+				INNER JOIN CARGO ON CARGOORGANIZACAOPESSOA.N_CARGO_CARGO = CARGO.N_CARGO_CARGO AND ORGANIZACAOPESSOA.N_ORG_ORG = CARGO.N_ORG_ORG
+				FULL OUTER JOIN TIPOBENEFICIO ON SERVICOPESSOA.N_TIPBNF_TIPBNF = TIPOBENEFICIO.N_TIPBNF_TIPBNF
+
+
+--CONSULTA PARALELA PARA PUXAR DADOS DO USUÁRIO IPRESB
+OUTER APPLY
+
+				(SELECT        
+
+								dbo.FN_PRIMEIRALETRAMAIUSCULA(LOWER(PESSOA_3.S_NOM_PESSOA))
+								,dbo.FN_PRIMEIRALETRAMAIUSCULA(LOWER(CARGO_3.S_DCR_CARGO))
+
+				FROM           
+								PESSOA AS PESSOA_3
+								INNER JOIN ORGANIZACAOPESSOA AS ORGANIZACAOPESSOA_3 ON PESSOA_3.N_PESSOA_PESSOA = ORGANIZACAOPESSOA_3.N_PESSOA_PESSOA 
+								INNER JOIN CARGOORGANIZACAOPESSOA AS CARGOORGANIZACAOPESSOA_3 ON ORGANIZACAOPESSOA_3.N_CODORI_ORGPESSOA = CARGOORGANIZACAOPESSOA_3.N_CODORI_ORGPESSOA
+								AND ORGANIZACAOPESSOA_3.N_ORG_ORG = CARGOORGANIZACAOPESSOA_3.N_ORG_ORG
+								INNER JOIN CARGO AS CARGO_3 ON CARGOORGANIZACAOPESSOA_3.N_ORG_ORG = CARGO_3.N_ORG_ORG AND CARGOORGANIZACAOPESSOA_3.N_CARGO_CARGO = CARGO_3.N_CARGO_CARGO
+
+				WHERE        
+
+								(ORGANIZACAOPESSOA_3.N_ORG_ORG = 4) AND (ORGANIZACAOPESSOA_3.N_CODORI_ORGPESSOA = @MUsuario))
+				
+								USUARIO_IPRESB(Nome,Cargo)
+
+
+WHERE 
+
+SERVICOPESSOA.N_NUMPROT_SERVPESSOA = @numprot 
+AND SERVICOPESSOA.N_ANOREFER_SERVPESSOA = @anoprot
+AND TIPOSERVICO.N_TIPSERV_TIPSERV NOT IN (6)]]>
+	</queryString>
+	<field name="NUMPROT" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="NUMPROT"/>
+	</field>
+	<field name="ANOPROT" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="ANOPROT"/>
+	</field>
+	<field name="DATA_SOLICITAÇAO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="DATA_SOLICITAÇAO"/>
+	</field>
+	<field name="BENEFICIO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="BENEFICIO"/>
+	</field>
+	<field name="BENEFICIO DETALHADO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="BENEFICIO DETALHADO"/>
+	</field>
+	<field name="DESCRIÇÃO BENEFÍCIO COM QH" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="DESCRIÇÃO BENEFÍCIO COM QH"/>
+	</field>
+	<field name="DESCRIÇÃO BENEFÍCIO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="DESCRIÇÃO BENEFÍCIO"/>
+	</field>
+	<field name="PESSOA" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="PESSOA"/>
+	</field>
+	<field name="MATRICULA" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="MATRICULA"/>
+	</field>
+	<field name="NOME" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="NOME"/>
+	</field>
+	<field name="CARGO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CARGO"/>
+	</field>
+	<field name="MATRICULA_USUARIO_IPRESB" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="MATRICULA_USUARIO_IPRESB"/>
+	</field>
+	<field name="USUARIO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="USUARIO"/>
+	</field>
+	<field name="CARGO_USUARIO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CARGO_USUARIO"/>
+	</field>
+	<field name="DESTINATÁRIO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="DESTINATÁRIO"/>
+	</field>
+	<field name="TEXTO LEI" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="TEXTO LEI"/>
+	</field>
+	<field name="SALARIO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="SALARIO"/>
+	</field>
+	<field name="SINDICANCIA" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="SINDICANCIA"/>
+	</field>
+	<field name="COMISSÃO PROCESSANTE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="COMISSÃO PROCESSANTE"/>
+	</field>
+	<field name="QUADRO DE HORAS" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="QUADRO DE HORAS"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="77" splitType="Stretch">
+			<componentElement>
+				<reportElement x="-20" y="0" width="530" height="70" uuid="f4174901-f3eb-4680-bbca-d2c628938d0d"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Logo" uuid="8860c172-a91f-4636-a65a-c91118869014">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="70" width="530">
+						<image>
+							<reportElement x="0" y="0" width="520" height="70" uuid="72dd9e0c-3681-48da-80a0-457c506984bf"/>
+							<imageExpression><![CDATA[$F{IMG_IMGFUNDO_IMGORG}]]></imageExpression>
+						</image>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="686" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="440" height="20" uuid="b8bcd072-e914-4d61-aece-41f7fcd0ccf8"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="styled">
+					<font fontName="Times New Roman" size="12" isBold="false"/>
+					<paragraph lineSpacing="Double"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Barueri, "+LOWER(DATEFORMAT(TODAY(),"d 'de' MMMM 'de' yyyy"))+"."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="64" width="459" height="116" uuid="bda60040-5264-44d9-a9ac-f085530c4745"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top" markup="styled">
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+					<paragraph lineSpacing="1_1_2"/>
+				</textElement>
+				<textFieldExpression><![CDATA["De: IPRESB – Instituto de Previdência Social dos Servidores Municipais de Barueri"+"<br/>Unidade de Gestão de Benefícios Previdenciários"+"<br/><br/>Para: "+$F{DESTINATÁRIO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="180" width="459" height="506" uuid="b66aaa8a-cb7f-46fd-bb6c-79b518441900"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top" markup="styled">
+					<font fontName="Times New Roman" size="12" isBold="false"/>
+					<paragraph lineSpacing="1_1_2" lineSpacingSize="1.5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<style isBold='true'>Ref.: Solicitação de informações - "+ $F{DESCRIÇÃO BENEFÍCIO}+"</style><br/><br/>	Solicitamos as informações abaixo para darmos prosseguimento ao processo de <style isBold='true'>"+UPPER($F{DESCRIÇÃO BENEFÍCIO})+ "</style> do(a) servidor(a) <style isBold='true'>"+$F{NOME}+"</style>, matrícula <style isBold='true'>"+$F{MATRICULA}+"</style>.<br/><br/>"
+
++($F{SALARIO} !=null ? ("\u2022   " +$F{SALARIO} + "<br/>"): "")
++($F{SINDICANCIA} !=null ? ("\u2022   " +$F{SINDICANCIA} + "<br/>"): "")
++($F{COMISSÃO PROCESSANTE} !=null ? ("\u2022   " +$F{COMISSÃO PROCESSANTE} + "<br/>"): "")
++($F{QUADRO DE HORAS} !=null ? ("\u2022   Quadro com carga horária dos últimos 120 meses (" +$F{QUADRO DE HORAS} +")<br/>"): "")+"<br/><br/>Atenciosamente,<br/><br/><style isBold='true'>"+$F{USUARIO}+"<br/>Matrícula "+$F{MATRICULA_USUARIO_IPRESB}+"</style>"]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="65" splitType="Stretch">
+			<componentElement>
+				<reportElement x="-20" y="10" width="490" height="55" uuid="d9e30884-fbee-43cb-b497-3cfa76808906"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Rodape" uuid="c2c96a01-ec05-49c8-bf81-1bbcd92ee3c7">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="55" width="490">
+						<image>
+							<reportElement x="0" y="5" width="490" height="50" uuid="04136a1e-c82c-4a25-9a0d-3a6347f6eb5e"/>
+							<imageExpression><![CDATA[$F{IMG_IMGFUNDO_IMGORG}]]></imageExpression>
+						</image>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+		</band>
+	</pageFooter>
+</jasperReport>

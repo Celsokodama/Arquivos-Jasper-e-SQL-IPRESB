@@ -1,0 +1,766 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.21.2.final using JasperReports Library version 6.21.2-8434a0bd7c3bbc37cbf916f2968d35e4b165821a  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4" pageWidth="595" pageHeight="842" columnWidth="470" leftMargin="85" rightMargin="40" topMargin="14" bottomMargin="0" uuid="d946ebe6-2e92-44c5-aed7-8f7380925278">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.unit." value="cm"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ASPPREV"/>
+	<subDataset name="Logo" uuid="e9f90e01-6f3f-44b6-9906-95c12f91afd0">
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="IPRESB"/>
+		<queryString language="SQL">
+			<![CDATA[Select  IMG_IMGFUNDO_IMGORG
+ from dbo."IMAGEMORGANIZACAO"  
+ where  "N_ORG_ORG" = 42]]>
+		</queryString>
+		<field name="IMG_IMGFUNDO_IMGORG" class="java.awt.Image"/>
+	</subDataset>
+	<subDataset name="Rodape" uuid="848c67d2-d15a-4bee-a03e-4616d865bbac">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="IPRESB"/>
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<queryString>
+			<![CDATA[Select dbo."IMAGEMORGANIZACAO"."IMG_IMGFUNDO_IMGORG" 
+ from dbo."IMAGEMORGANIZACAO" 
+ where  dbo."IMAGEMORGANIZACAO"."N_ORG_ORG" = 43]]>
+		</queryString>
+		<field name="IMG_IMGFUNDO_IMGORG" class="java.awt.Image"/>
+	</subDataset>
+	<parameter name="Portaria" class="java.lang.String"/>
+	<parameter name="Ano" class="java.lang.String"/>
+	<parameter name="DInt" class="java.lang.String"/>
+	<parameter name="Orgao" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[set language portuguese
+
+
+DECLARE @Portaria  INT
+SET @Portaria = $P{Portaria}
+
+DECLARE @Ano  INT
+SET @Ano =  $P{Ano}
+
+DECLARE @DInt as VARCHAR(30)
+SET @DInt = $P{DInt}
+
+DECLARE @Orgao as VARCHAR(500)
+SET @Orgao = $P{Orgao}
+
+
+SELECT 
+
+		P.S_NOM_PESSOA AS [NOME],
+		BP.N_CODORI_ORGPESSOA AS [Matricula],			
+		
+				RTRIM(SUBSTRING(P.S_CPF_PESSOA,1,3)
+				+'.'
+				+SUBSTRING(P.S_CPF_PESSOA,4,3)
+				+'.'
+				+SUBSTRING(P.S_CPF_PESSOA,7,3)
+				+'-'
+				+SUBSTRING(P.S_CPF_PESSOA,10,2)) AS CPF,
+				
+				(CASE BP.N_TIPBNF_TIPBNF
+				WHEN 1 THEN 'Aposentadoria'
+				WHEN 2  THEN 'Aposentadoria'
+				WHEN 3  THEN 'Aposentadoria'
+				WHEN 4  THEN 'Aposentadoria'
+				WHEN 5  THEN 'Aposentadoria'
+				WHEN 6  THEN 'Aposentadoria'
+				WHEN 14  THEN 'Aposentadoria'
+				WHEN 17 THEN 'Aposentadoria'
+				WHEN 107  THEN 'Aposentadoria'
+				End) AS [Tipo Benefício],
+		CONVERT(VARCHAR,BP.DT_DIB_BNFPESSOA,103) AS [DIB],
+		
+		CONVERT(VARCHAR,BP.DT_REQTO_BNFPESSOA,103) AS [DATA PORTARIA],
+
+		'R$ '+ REPLACE(REPLACE(REPLACE(CONVERT(varchar, CAST(BP.N_VLRINIBNF_BNFPESSOA AS money), 1),',', '_'), '.', ','), '_', '.') AS PROVENTO,
+		
+		(CASE WHEN upper(@Orgao) = 'INSS' THEN 'Instituto Nacional do Seguro Social - INSS' 
+		WHEN upper(@Orgao) = 'SPPREV' THEN 'SPPREV - São Paulo Previdência'
+		WHEN upper(@Orgao) = 'ESTADO DE SÃO PAULO' THEN 'SPPREV - São Paulo Previdência'
+		WHEN upper(@Orgao) = 'ESTADO DE SP' THEN 'SPPREV - São Paulo Previdência'
+		WHEN upper(@Orgao) = 'IPREM' THEN 'Instituto de Previdência Municipal São Paulo - IPREM'
+		WHEN upper(@Orgao) = 'PREFEITURA DE SÃO PAULO' THEN 'Instituto de Previdência Municipal São Paulo - IPREM'
+		WHEN upper(@Orgao) = 'IPMO' THEN 'Instituto de Previdência do Município de Osasco - IPMO'
+		WHEN upper(@Orgao) = 'OSASCO' THEN 'Instituto de Previdência do Município de Osasco - IPMO'
+		WHEN upper(@Orgao) = 'PREFEITURA DE OSASCO' THEN 'Instituto de Previdência do Município de Osasco - IPMO'
+		WHEN upper(@Orgao) = 'ITAPEVIPREV' THEN 'Fundo de Previdência do Município de Itapevi – ITAPEVIPREV'
+		WHEN upper(@Orgao) = 'ITAPEVI' THEN 'Fundo de Previdência do Município de Itapevi – ITAPEVIPREV'
+		WHEN upper(@Orgao) = 'PREFEITURA DE ITAPEVI' THEN 'Fundo de Previdência do Município de Itapevi – ITAPEVIPREV'
+		WHEN upper(@Orgao) = 'IPREJAN' THEN 'Previdência Social de Jandira - IPREJAN'
+		WHEN upper(@Orgao) = 'JANDIRA' THEN 'Previdência Social de Jandira - IPREJAN'
+		WHEN upper(@Orgao) = 'PREFEITURA DE JANDIRA' THEN 'Previdência Social de Jandira - IPREJAN'
+		WHEN upper(@Orgao) = 'SANTANA DE PARNAÍBA' THEN 'Caixa de Previdência e Assistência dos Servidores Municipais de Santana de Parnaíba'
+		ELSE @Orgao
+		END) AS ORGAO,
+
+		(CASE WHEN upper(@DInt)='S' then GESTOR_INTERINO.Nome
+		ELSE GESTOR_TITULAR.Nome END) AS NOMEGESTOR,
+		
+		(CASE WHEN upper(@DInt)='S' then 'Gestor Interino de Benefícios Previdenciários'
+		ELSE 'Gestor de Benefícios Previdenciários' END) AS CARGOGESTOR	,
+
+
+		(CASE WHEN BP.N_TIPBNF_TIPBNF IN (1,2,3,4,5,6,14,17,107) THEN ''
+		WHEN BP.N_TIPBNF_TIPBNF IN (19,20) THEN ', na qualidade de cônjuge/companheiro(a)' END) AS TEXTO1
+				
+
+
+
+FROM
+	
+			
+			PESSOA P
+			INNER JOIN BENEFICIOPESSOA  BP ON P.N_PESSOA_PESSOA = BP.N_PESSOA_PESSOA
+			INNER JOIN ASSENTAMENTOANEXOCONCESSAO A ON A.N_PROT_BNFPESSOA = BP.N_PROT_BNFPESSOA
+			INNER JOIN ASSENTAMENTOANEXOCONCESSAO A2 ON A.N_PROT_BNFPESSOA = BP.N_PROT_BNFPESSOA
+			
+	OUTER APPLY
+				(SELECT 
+			
+								COUNT(*),
+								(CASE	WHEN COUNT(*) = 1
+										THEN ''
+										WHEN COUNT(*) = 2
+										THEN ' e '
+										WHEN COUNT(*) = 3
+										THEN ', '
+										WHEN COUNT(*) = 4
+										THEN ', '
+								END) [DIVISOR 2],
+
+								(CASE	WHEN COUNT(*) = 1
+										THEN ''
+										WHEN COUNT(*) = 2
+										THEN ''
+										WHEN COUNT(*) = 3
+										THEN ' e '
+										WHEN COUNT(*) = 4
+										THEN ', '
+								END) [DIVISOR 3],
+
+								(CASE	WHEN COUNT(*) = 1
+										THEN ''
+										WHEN COUNT(*) = 2
+										THEN ''
+										WHEN COUNT(*) = 3
+										THEN ''
+										WHEN COUNT(*) = 4
+										THEN ' e '
+								END) [DIVISOR 4]
+
+				FROM			
+
+								RELACAOPESSOA
+								INNER JOIN ESPECIFICACAOPESSOA ON RELACAOPESSOA.N_PESSOARELAC_PESSOA = ESPECIFICACAOPESSOA.N_PESSOA_PESSOA
+								INNER JOIN GRAUDEPARENTESCO ON RELACAOPESSOA.N_GRAUPARENT_GRAUPARENT = GRAUDEPARENTESCO.N_GRAUPARENT_GRAUPARENT
+								INNER JOIN PESSOA P_DEPENDENTE ON P_DEPENDENTE.N_PESSOA_PESSOA = RELACAOPESSOA.N_PESSOARELAC_PESSOA
+								INNER JOIN GRUPOFAMILIAR ON RELACAOPESSOA.N_PESSOARELAC_PESSOA = GRUPOFAMILIAR.N_PESSOARELAC_PESSOA
+				
+
+				WHERE			
+
+								RELACAOPESSOA.N_PESSOA_PESSOA = P.N_PESSOA_PESSOA
+								AND RELACAOPESSOA.N_TIPPESSOARELAC_TIPPESSOA NOT IN (5)
+								AND ESPECIFICACAOPESSOA.N_TIPPESSOA_TIPPESSOA = 3
+								AND RELACAOPESSOA.N_GRAUPARENT_GRAUPARENT IN (0,1,2,3,4,5,6,7,8,9,10,11)
+								--AND (GRUPOFAMILIAR.DT_FIMVIG_GRPFAM IS NULL OR GRUPOFAMILIAR.DT_FIMVIG_GRPFAM >= GETDATE())
+								) N_DEPENDENTES (Total_Dep,DIVISOR_2,DIVISOR_3,DIVISOR_4)
+
+
+OUTER APPLY
+
+			--DADOS DO GESTOR TITULAR
+			(SELECT
+						dbo.[FN_PRIMEIRALETRAMAIUSCULA](LOWER(PESSOA.S_NOM_PESSOA)) AS [NOME]
+						
+						,dbo.[FN_PRIMEIRALETRAMAIUSCULA](LOWER(CARGO.S_DCR_CARGO)) AS [CARGO EFETIVO]
+
+						,ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA AS [MATRÍCULA]
+
+						,(CASE	WHEN PESSOA.S_SEXO_PESSOA = 'M' 
+									THEN 'designado' 
+									ELSE 'designada' 
+									END) AS [GÊNERO]
+
+						,dbo.[FN_PRIMEIRALETRAMAIUSCULA](LOWER(AUTORIDADECOMPETENTE.S_DCRCARGO_AUTDCOMPTT)) AS [NOMENCLATURA CARGO DIREÇÃO]
+
+						,PESSOA.S_RG_PESSOA AS [RG]
+
+						,RTRIM(SUBSTRING(PESSOA.S_CPF_PESSOA,1,3)
+						+'.'
+						+SUBSTRING(PESSOA.S_CPF_PESSOA,4,3)
+						+'.'
+						+SUBSTRING(PESSOA.S_CPF_PESSOA,7,3)
+						+'-'
+						+SUBSTRING(PESSOA.S_CPF_PESSOA,10,2)) AS [CPF]
+
+						,FORMAT(PESSOA.DT_NASC_PESSOA,'dd/MM/yyyy') AS [DATA NASCIMENTO]
+
+						,PESSOA.S_EMAIL_PESSOA AS [EMAIL]
+
+						,(CASE	HISTORICOENDERECOPESSOA.N_TIPLOGRAD_HISTENDPESSOA	WHEN 4 THEN 'Alameda'  
+																					WHEN 8 THEN 'Av.' 
+																					WHEN 31 THEN 'Estrada' 
+																					WHEN 65 THEN 'Praça' 
+																					WHEN 77 THEN 'Quadra' 
+																					WHEN 81 THEN 'Rua' 
+																					WHEN 90 THEN 'Rodovia' 
+																					WHEN 100 THEN 'Travessa' 
+																					WHEN 104 THEN 'Vila' 
+																					ELSE '' 
+																					END) 
+						+' '
+						+ dbo.FN_PRIMEIRALETRAMAIUSCULA(LOWER(RTRIM(ISNULL(HISTORICOENDERECOPESSOA.S_DCRRUA_HISTENDPESSOA, '')
+						+ CASE	WHEN HISTORICOENDERECOPESSOA.S_NUMLOGRAD_HISTENDPESSOA IS NULL 
+								THEN ''  
+								ELSE ', '+RTRIM(HISTORICOENDERECOPESSOA.S_NUMLOGRAD_HISTENDPESSOA) 
+								END
+						+ CASE	WHEN HISTORICOENDERECOPESSOA.S_DCRBAIRRO_HISTENDPESSOA IS NULL 
+								THEN '' 
+								ELSE +', '+RTRIM(HISTORICOENDERECOPESSOA.S_DCRBAIRRO_HISTENDPESSOA) 
+								END
+						+ CASE	WHEN HISTORICOENDERECOPESSOA.S_DCRCOMPL_HISTENDPESSOA IS NULL 
+								THEN '' 
+								ELSE ', '+RTRIM(HISTORICOENDERECOPESSOA.S_DCRCOMPL_HISTENDPESSOA) 
+								END
+						+ CASE	WHEN HISTORICOENDERECOPESSOA.S_DCRMUN_HISTENDPESSOA IS NULL 
+								THEN '' 
+								ELSE ', '+RTRIM(S_DCRMUN_HISTENDPESSOA) 
+								END))
+						+', '+RTRIM(ISNULL(S_DCRUF_HISTENDPESSOA, '')))
+						+', CEP: '+RTRIM(ISNULL(substring(S_CEP_HISTENDPESSOA, 1,2) + '.' + substring(S_CEP_HISTENDPESSOA,3,3) + '-' + substring(S_CEP_HISTENDPESSOA, 6, 9), '')) AS [ENDEREÇO]
+
+			FROM
+
+						PESSOA 
+						INNER JOIN	ORGANIZACAOPESSOA ON PESSOA.N_PESSOA_PESSOA = ORGANIZACAOPESSOA.N_PESSOA_PESSOA 
+						INNER JOIN	CARGOORGANIZACAOPESSOA ON CARGOORGANIZACAOPESSOA.N_PESSOA_PESSOA = ORGANIZACAOPESSOA.N_PESSOA_PESSOA
+								AND	CARGOORGANIZACAOPESSOA.N_CODORI_ORGPESSOA = ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA 
+								AND CARGOORGANIZACAOPESSOA.N_ORG_ORG = ORGANIZACAOPESSOA.N_ORG_ORG 
+						INNER JOIN	CARGO ON CARGO.N_ORG_ORG = CARGOORGANIZACAOPESSOA.N_ORG_ORG 
+								AND CARGO.N_CARGO_CARGO = CARGOORGANIZACAOPESSOA.N_CARGO_CARGO 
+						INNER JOIN	AUTORIDADECOMPETENTE ON PESSOA.N_PESSOA_PESSOA = AUTORIDADECOMPETENTE.N_PESSOA_PESSOA 
+								AND ORGANIZACAOPESSOA.N_ORG_ORG = AUTORIDADECOMPETENTE.N_ORG_ORG 
+								AND ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA = AUTORIDADECOMPETENTE.N_CODORI_ORGPESSOA
+						INNER JOIN	HISTORICOENDERECOPESSOA ON PESSOA.N_PESSOA_PESSOA = HISTORICOENDERECOPESSOA.N_PESSOA_PESSOA
+
+			WHERE		AUTORIDADECOMPETENTE.N_SEQ_AUTDCOMPTT = 2 AND HISTORICOENDERECOPESSOA.DT_FIMVIG_HISTENDPESSOA IS NULL)
+
+			GESTOR_TITULAR(Nome,Cargo_Efetivo,Matrícula,Gênero,Nomenclatura_Cargo,RG,CPF,Nascimento,Email,Endereço)
+
+OUTER APPLY
+
+			--DADOS DO GESTOR INTERINO
+			(SELECT
+						dbo.[FN_PRIMEIRALETRAMAIUSCULA](LOWER(PESSOA.S_NOM_PESSOA)) AS [NOME]
+						
+						,dbo.[FN_PRIMEIRALETRAMAIUSCULA](LOWER(CARGO.S_DCR_CARGO)) AS [CARGO EFETIVO]
+
+						,ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA AS [MATRÍCULA]
+
+						,(CASE	WHEN PESSOA.S_SEXO_PESSOA = 'M' 
+									THEN 'designado' 
+									ELSE 'designada' 
+									END) AS [GÊNERO]
+
+						,dbo.[FN_PRIMEIRALETRAMAIUSCULA](LOWER(AUTORIDADECOMPETENTE.S_DCRCARGO_AUTDCOMPTT)) AS [NOMENCLATURA CARGO DIREÇÃO]
+
+						,PESSOA.S_RG_PESSOA AS [RG]
+
+						,RTRIM(SUBSTRING(PESSOA.S_CPF_PESSOA,1,3)
+						+'.'
+						+SUBSTRING(PESSOA.S_CPF_PESSOA,4,3)
+						+'.'
+						+SUBSTRING(PESSOA.S_CPF_PESSOA,7,3)
+						+'-'
+						+SUBSTRING(PESSOA.S_CPF_PESSOA,10,2)) AS [CPF]
+
+						,FORMAT(PESSOA.DT_NASC_PESSOA,'dd/MM/yyyy') AS [DATA NASCIMENTO]
+
+						,PESSOA.S_EMAIL_PESSOA AS [EMAIL]
+
+						,(CASE	HISTORICOENDERECOPESSOA.N_TIPLOGRAD_HISTENDPESSOA	WHEN 4 THEN 'Alameda'  
+																					WHEN 8 THEN 'Av.' 
+																					WHEN 31 THEN 'Estrada' 
+																					WHEN 65 THEN 'Praça' 
+																					WHEN 77 THEN 'Quadra' 
+																					WHEN 81 THEN 'Rua' 
+																					WHEN 90 THEN 'Rodovia' 
+																					WHEN 100 THEN 'Travessa' 
+																					WHEN 104 THEN 'Vila' 
+																					ELSE '' 
+																					END) 
+						+' '
+						+ dbo.FN_PRIMEIRALETRAMAIUSCULA(LOWER(RTRIM(ISNULL(HISTORICOENDERECOPESSOA.S_DCRRUA_HISTENDPESSOA, '')
+						+ CASE	WHEN HISTORICOENDERECOPESSOA.S_NUMLOGRAD_HISTENDPESSOA IS NULL 
+								THEN ''  
+								ELSE ', '+RTRIM(HISTORICOENDERECOPESSOA.S_NUMLOGRAD_HISTENDPESSOA) 
+								END
+						+ CASE	WHEN HISTORICOENDERECOPESSOA.S_DCRBAIRRO_HISTENDPESSOA IS NULL 
+								THEN '' 
+								ELSE +', '+RTRIM(HISTORICOENDERECOPESSOA.S_DCRBAIRRO_HISTENDPESSOA) 
+								END
+						+ CASE	WHEN HISTORICOENDERECOPESSOA.S_DCRCOMPL_HISTENDPESSOA IS NULL 
+								THEN '' 
+								ELSE ', '+RTRIM(HISTORICOENDERECOPESSOA.S_DCRCOMPL_HISTENDPESSOA) 
+								END
+						+ CASE	WHEN HISTORICOENDERECOPESSOA.S_DCRMUN_HISTENDPESSOA IS NULL 
+								THEN '' 
+								ELSE ', '+RTRIM(S_DCRMUN_HISTENDPESSOA) 
+								END))
+						+', '+RTRIM(ISNULL(S_DCRUF_HISTENDPESSOA, '')))
+						+', CEP: '+RTRIM(ISNULL(substring(S_CEP_HISTENDPESSOA, 1,2) + '.' + substring(S_CEP_HISTENDPESSOA,3,3) + '-' + substring(S_CEP_HISTENDPESSOA, 6, 9), '')) AS [ENDEREÇO]
+
+			FROM
+
+						PESSOA 
+						INNER JOIN	ORGANIZACAOPESSOA ON PESSOA.N_PESSOA_PESSOA = ORGANIZACAOPESSOA.N_PESSOA_PESSOA 
+						INNER JOIN	CARGOORGANIZACAOPESSOA ON CARGOORGANIZACAOPESSOA.N_PESSOA_PESSOA = ORGANIZACAOPESSOA.N_PESSOA_PESSOA
+								AND	CARGOORGANIZACAOPESSOA.N_CODORI_ORGPESSOA = ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA 
+								AND CARGOORGANIZACAOPESSOA.N_ORG_ORG = ORGANIZACAOPESSOA.N_ORG_ORG 
+						INNER JOIN	CARGO ON CARGO.N_ORG_ORG = CARGOORGANIZACAOPESSOA.N_ORG_ORG 
+								AND CARGO.N_CARGO_CARGO = CARGOORGANIZACAOPESSOA.N_CARGO_CARGO 
+						INNER JOIN	AUTORIDADECOMPETENTE ON PESSOA.N_PESSOA_PESSOA = AUTORIDADECOMPETENTE.N_PESSOA_PESSOA 
+								AND ORGANIZACAOPESSOA.N_ORG_ORG = AUTORIDADECOMPETENTE.N_ORG_ORG 
+								AND ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA = AUTORIDADECOMPETENTE.N_CODORI_ORGPESSOA
+						INNER JOIN	HISTORICOENDERECOPESSOA ON PESSOA.N_PESSOA_PESSOA = HISTORICOENDERECOPESSOA.N_PESSOA_PESSOA
+
+			WHERE		AUTORIDADECOMPETENTE.N_SEQ_AUTDCOMPTT = 5 AND HISTORICOENDERECOPESSOA.DT_FIMVIG_HISTENDPESSOA IS NULL)
+
+			GESTOR_INTERINO(Nome,Cargo_Efetivo,Matrícula,Gênero,Nomenclatura_Cargo,RG,CPF,Nascimento,Email,Endereço)
+
+
+WHERE
+
+		BP.N_TIPBNF_TIPBNF IN (1,2,3,4,5,6,14,17,107) AND
+		BP.S_SITPGTO_BNFPESSOA = 1 
+		  AND (A.N_ATO_ASSENTANEXOCONCES = @PORTARIA)
+		  AND A2.N_TIPATO_TIPATO IN (30,34) AND
+		  A.N_ANOREF_ASSENTANEXOCONCES = @Ano
+
+
+
+UNION   
+
+
+
+
+
+select 
+
+				P2.S_NOM_PESSOA AS [NOME],
+				BP.N_CODORI_ORGPESSOA AS [Matricula],
+				
+				RTRIM(SUBSTRING(P2.S_CPF_PESSOA,1,3)
+				+'.'
+				+SUBSTRING(P2.S_CPF_PESSOA,4,3)
+				+'.'
+				+SUBSTRING(P2.S_CPF_PESSOA,7,3)
+				+'-'
+				+SUBSTRING(P2.S_CPF_PESSOA,10,2)) AS CPF,
+				
+				(CASE BP.N_TIPBNF_TIPBNF
+				WHEN 19 THEN 'Pensão por Morte'
+				WHEN 20 THEN 'Pensão por Morte'
+				End) AS [Tipo Benefício],
+				
+				CONVERT(VARCHAR,BP.DT_DIB_BNFPESSOA,103) AS [DIB],
+		
+				CONVERT(VARCHAR,BP.DT_REQTO_BNFPESSOA,103) AS [DATA PORTARIA],
+
+		'R$ '+ REPLACE(REPLACE(REPLACE(CONVERT(varchar, CAST(BP.N_VLRINIBNF_BNFPESSOA/N_DEPENDENTES.Total_Dep AS money), 1),',', '_'), '.', ','), '_', '.') AS PROVENTO,
+		
+			(CASE WHEN upper(@Orgao) = 'INSS' THEN 'Instituto Nacional do Seguro Social - INSS' 
+		WHEN upper(@Orgao) = 'SPPREV' THEN 'SPPREV - São Paulo Previdência'
+		WHEN upper(@Orgao) = 'ESTADO DE SÃO PAULO' THEN 'SPPREV - São Paulo Previdência'
+		WHEN upper(@Orgao) = 'ESTADO DE SP' THEN 'SPPREV - São Paulo Previdência'
+		WHEN upper(@Orgao) = 'IPREM' THEN 'Instituto de Previdência Municipal São Paulo - IPREM'
+		WHEN upper(@Orgao) = 'PREFEITURA DE SÃO PAULO' THEN 'Instituto de Previdência Municipal São Paulo - IPREM'
+		WHEN upper(@Orgao) = 'IPMO' THEN 'Instituto de Previdência do Município de Osasco - IPMO'
+		WHEN upper(@Orgao) = 'OSASCO' THEN 'Instituto de Previdência do Município de Osasco - IPMO'
+		WHEN upper(@Orgao) = 'PREFEITURA DE OSASCO' THEN 'Instituto de Previdência do Município de Osasco - IPMO'
+		WHEN upper(@Orgao) = 'ITAPEVIPREV' THEN 'Fundo de Previdência do Município de Itapevi – ITAPEVIPREV'
+		WHEN upper(@Orgao) = 'ITAPEVI' THEN 'Fundo de Previdência do Município de Itapevi – ITAPEVIPREV'
+		WHEN upper(@Orgao) = 'PREFEITURA DE ITAPEVI' THEN 'Fundo de Previdência do Município de Itapevi – ITAPEVIPREV'
+		WHEN upper(@Orgao) = 'IPREJAN' THEN 'Previdência Social de Jandira - IPREJAN'
+		WHEN upper(@Orgao) = 'JANDIRA' THEN 'Previdência Social de Jandira - IPREJAN'
+		WHEN upper(@Orgao) = 'PREFEITURA DE JANDIRA' THEN 'Previdência Social de Jandira - IPREJAN'
+		WHEN upper(@Orgao) = 'SANTANA DE PARNAÍBA' THEN 'Caixa de Previdência e Assistência dos Servidores Municipais de Santana de Parnaíba'
+		ELSE @Orgao
+		END) AS ORGAO,
+
+		(CASE WHEN upper(@DInt)='S' then GESTOR_INTERINO.Nome
+		ELSE GESTOR_TITULAR.Nome END) AS NOMEGESTOR,
+		
+		(CASE WHEN upper(@DInt)='S' then 'Gestor Interino de Benefícios Previdenciários'
+		ELSE 'Gestor de Benefícios Previdenciários' END) AS CARGOGESTOR		,
+
+		
+		(CASE WHEN BP.N_TIPBNF_TIPBNF IN (1,2,3,4,5,6,14,17,107) THEN ''
+		WHEN BP.N_TIPBNF_TIPBNF IN (19,20) THEN ', na qualidade de cônjuge/companheiro(a)' END) AS TEXTO1
+				
+				
+				
+
+
+
+from beneficiopessoa BP INNER JOIN PESSOA P ON P.N_PESSOA_PESSOA = BP.N_PESSOA_PESSOA
+INNER JOIN ASSENTAMENTOANEXOCONCESSAO A ON A.N_PROT_BNFPESSOA = BP.N_PROT_BNFPESSOA
+INNER JOIN ASSENTAMENTOANEXOCONCESSAO A2 ON A.N_PROT_BNFPESSOA = BP.N_PROT_BNFPESSOA
+INNER JOIN RELACAOPESSOA RP ON P.N_PESSOA_PESSOA = RP.N_PESSOA_PESSOA
+INNER JOIN PESSOA P2 ON P2.N_PESSOA_PESSOA = RP.N_PESSOARELAC_PESSOA
+
+	OUTER APPLY
+				(SELECT 
+			
+								COUNT(*),
+								(CASE	WHEN COUNT(*) = 1
+										THEN ''
+										WHEN COUNT(*) = 2
+										THEN ' e '
+										WHEN COUNT(*) = 3
+										THEN ', '
+										WHEN COUNT(*) = 4
+										THEN ', '
+								END) [DIVISOR 2],
+
+								(CASE	WHEN COUNT(*) = 1
+										THEN ''
+										WHEN COUNT(*) = 2
+										THEN ''
+										WHEN COUNT(*) = 3
+										THEN ' e '
+										WHEN COUNT(*) = 4
+										THEN ', '
+								END) [DIVISOR 3],
+
+								(CASE	WHEN COUNT(*) = 1
+										THEN ''
+										WHEN COUNT(*) = 2
+										THEN ''
+										WHEN COUNT(*) = 3
+										THEN ''
+										WHEN COUNT(*) = 4
+										THEN ' e '
+								END) [DIVISOR 4]
+
+				FROM			
+
+								RELACAOPESSOA
+								INNER JOIN ESPECIFICACAOPESSOA ON RELACAOPESSOA.N_PESSOARELAC_PESSOA = ESPECIFICACAOPESSOA.N_PESSOA_PESSOA
+								INNER JOIN GRAUDEPARENTESCO ON RELACAOPESSOA.N_GRAUPARENT_GRAUPARENT = GRAUDEPARENTESCO.N_GRAUPARENT_GRAUPARENT
+								INNER JOIN PESSOA P_DEPENDENTE ON P_DEPENDENTE.N_PESSOA_PESSOA = RELACAOPESSOA.N_PESSOARELAC_PESSOA
+								INNER JOIN GRUPOFAMILIAR ON RELACAOPESSOA.N_PESSOARELAC_PESSOA = GRUPOFAMILIAR.N_PESSOARELAC_PESSOA
+				
+
+				WHERE			
+
+								RELACAOPESSOA.N_PESSOA_PESSOA = P.N_PESSOA_PESSOA
+								AND RELACAOPESSOA.N_TIPPESSOARELAC_TIPPESSOA NOT IN (5)
+								AND ESPECIFICACAOPESSOA.N_TIPPESSOA_TIPPESSOA = 3
+								AND RELACAOPESSOA.N_GRAUPARENT_GRAUPARENT IN (0,1,2,3,4,5,6,7,8,9,10,11)
+								--AND (GRUPOFAMILIAR.DT_FIMVIG_GRPFAM IS NULL OR GRUPOFAMILIAR.DT_FIMVIG_GRPFAM >= GETDATE())
+								) N_DEPENDENTES (Total_Dep,DIVISOR_2,DIVISOR_3,DIVISOR_4)
+
+
+OUTER APPLY
+
+			--DADOS DO GESTOR TITULAR
+			(SELECT
+						dbo.[FN_PRIMEIRALETRAMAIUSCULA](LOWER(PESSOA.S_NOM_PESSOA)) AS [NOME]
+						
+						,dbo.[FN_PRIMEIRALETRAMAIUSCULA](LOWER(CARGO.S_DCR_CARGO)) AS [CARGO EFETIVO]
+
+						,ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA AS [MATRÍCULA]
+
+						,(CASE	WHEN PESSOA.S_SEXO_PESSOA = 'M' 
+									THEN 'designado' 
+									ELSE 'designada' 
+									END) AS [GÊNERO]
+
+						,dbo.[FN_PRIMEIRALETRAMAIUSCULA](LOWER(AUTORIDADECOMPETENTE.S_DCRCARGO_AUTDCOMPTT)) AS [NOMENCLATURA CARGO DIREÇÃO]
+
+						,PESSOA.S_RG_PESSOA AS [RG]
+
+						,RTRIM(SUBSTRING(PESSOA.S_CPF_PESSOA,1,3)
+						+'.'
+						+SUBSTRING(PESSOA.S_CPF_PESSOA,4,3)
+						+'.'
+						+SUBSTRING(PESSOA.S_CPF_PESSOA,7,3)
+						+'-'
+						+SUBSTRING(PESSOA.S_CPF_PESSOA,10,2)) AS [CPF]
+
+						,FORMAT(PESSOA.DT_NASC_PESSOA,'dd/MM/yyyy') AS [DATA NASCIMENTO]
+
+						,PESSOA.S_EMAIL_PESSOA AS [EMAIL]
+
+						,(CASE	HISTORICOENDERECOPESSOA.N_TIPLOGRAD_HISTENDPESSOA	WHEN 4 THEN 'Alameda'  
+																					WHEN 8 THEN 'Av.' 
+																					WHEN 31 THEN 'Estrada' 
+																					WHEN 65 THEN 'Praça' 
+																					WHEN 77 THEN 'Quadra' 
+																					WHEN 81 THEN 'Rua' 
+																					WHEN 90 THEN 'Rodovia' 
+																					WHEN 100 THEN 'Travessa' 
+																					WHEN 104 THEN 'Vila' 
+																					ELSE '' 
+																					END) 
+						+' '
+						+ dbo.FN_PRIMEIRALETRAMAIUSCULA(LOWER(RTRIM(ISNULL(HISTORICOENDERECOPESSOA.S_DCRRUA_HISTENDPESSOA, '')
+						+ CASE	WHEN HISTORICOENDERECOPESSOA.S_NUMLOGRAD_HISTENDPESSOA IS NULL 
+								THEN ''  
+								ELSE ', '+RTRIM(HISTORICOENDERECOPESSOA.S_NUMLOGRAD_HISTENDPESSOA) 
+								END
+						+ CASE	WHEN HISTORICOENDERECOPESSOA.S_DCRBAIRRO_HISTENDPESSOA IS NULL 
+								THEN '' 
+								ELSE +', '+RTRIM(HISTORICOENDERECOPESSOA.S_DCRBAIRRO_HISTENDPESSOA) 
+								END
+						+ CASE	WHEN HISTORICOENDERECOPESSOA.S_DCRCOMPL_HISTENDPESSOA IS NULL 
+								THEN '' 
+								ELSE ', '+RTRIM(HISTORICOENDERECOPESSOA.S_DCRCOMPL_HISTENDPESSOA) 
+								END
+						+ CASE	WHEN HISTORICOENDERECOPESSOA.S_DCRMUN_HISTENDPESSOA IS NULL 
+								THEN '' 
+								ELSE ', '+RTRIM(S_DCRMUN_HISTENDPESSOA) 
+								END))
+						+', '+RTRIM(ISNULL(S_DCRUF_HISTENDPESSOA, '')))
+						+', CEP: '+RTRIM(ISNULL(substring(S_CEP_HISTENDPESSOA, 1,2) + '.' + substring(S_CEP_HISTENDPESSOA,3,3) + '-' + substring(S_CEP_HISTENDPESSOA, 6, 9), '')) AS [ENDEREÇO]
+
+			FROM
+
+						PESSOA 
+						INNER JOIN	ORGANIZACAOPESSOA ON PESSOA.N_PESSOA_PESSOA = ORGANIZACAOPESSOA.N_PESSOA_PESSOA 
+						INNER JOIN	CARGOORGANIZACAOPESSOA ON CARGOORGANIZACAOPESSOA.N_PESSOA_PESSOA = ORGANIZACAOPESSOA.N_PESSOA_PESSOA
+								AND	CARGOORGANIZACAOPESSOA.N_CODORI_ORGPESSOA = ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA 
+								AND CARGOORGANIZACAOPESSOA.N_ORG_ORG = ORGANIZACAOPESSOA.N_ORG_ORG 
+						INNER JOIN	CARGO ON CARGO.N_ORG_ORG = CARGOORGANIZACAOPESSOA.N_ORG_ORG 
+								AND CARGO.N_CARGO_CARGO = CARGOORGANIZACAOPESSOA.N_CARGO_CARGO 
+						INNER JOIN	AUTORIDADECOMPETENTE ON PESSOA.N_PESSOA_PESSOA = AUTORIDADECOMPETENTE.N_PESSOA_PESSOA 
+								AND ORGANIZACAOPESSOA.N_ORG_ORG = AUTORIDADECOMPETENTE.N_ORG_ORG 
+								AND ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA = AUTORIDADECOMPETENTE.N_CODORI_ORGPESSOA
+						INNER JOIN	HISTORICOENDERECOPESSOA ON PESSOA.N_PESSOA_PESSOA = HISTORICOENDERECOPESSOA.N_PESSOA_PESSOA
+
+			WHERE		AUTORIDADECOMPETENTE.N_SEQ_AUTDCOMPTT = 2 AND HISTORICOENDERECOPESSOA.DT_FIMVIG_HISTENDPESSOA IS NULL)
+
+			GESTOR_TITULAR(Nome,Cargo_Efetivo,Matrícula,Gênero,Nomenclatura_Cargo,RG,CPF,Nascimento,Email,Endereço)
+
+OUTER APPLY
+
+			--DADOS DO GESTOR INTERINO
+			(SELECT
+						dbo.[FN_PRIMEIRALETRAMAIUSCULA](LOWER(PESSOA.S_NOM_PESSOA)) AS [NOME]
+						
+						,dbo.[FN_PRIMEIRALETRAMAIUSCULA](LOWER(CARGO.S_DCR_CARGO)) AS [CARGO EFETIVO]
+
+						,ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA AS [MATRÍCULA]
+
+						,(CASE	WHEN PESSOA.S_SEXO_PESSOA = 'M' 
+									THEN 'designado' 
+									ELSE 'designada' 
+									END) AS [GÊNERO]
+
+						,dbo.[FN_PRIMEIRALETRAMAIUSCULA](LOWER(AUTORIDADECOMPETENTE.S_DCRCARGO_AUTDCOMPTT)) AS [NOMENCLATURA CARGO DIREÇÃO]
+
+						,PESSOA.S_RG_PESSOA AS [RG]
+
+						,RTRIM(SUBSTRING(PESSOA.S_CPF_PESSOA,1,3)
+						+'.'
+						+SUBSTRING(PESSOA.S_CPF_PESSOA,4,3)
+						+'.'
+						+SUBSTRING(PESSOA.S_CPF_PESSOA,7,3)
+						+'-'
+						+SUBSTRING(PESSOA.S_CPF_PESSOA,10,2)) AS [CPF]
+
+						,FORMAT(PESSOA.DT_NASC_PESSOA,'dd/MM/yyyy') AS [DATA NASCIMENTO]
+
+						,PESSOA.S_EMAIL_PESSOA AS [EMAIL]
+
+						,(CASE	HISTORICOENDERECOPESSOA.N_TIPLOGRAD_HISTENDPESSOA	WHEN 4 THEN 'Alameda'  
+																					WHEN 8 THEN 'Av.' 
+																					WHEN 31 THEN 'Estrada' 
+																					WHEN 65 THEN 'Praça' 
+																					WHEN 77 THEN 'Quadra' 
+																					WHEN 81 THEN 'Rua' 
+																					WHEN 90 THEN 'Rodovia' 
+																					WHEN 100 THEN 'Travessa' 
+																					WHEN 104 THEN 'Vila' 
+																					ELSE '' 
+																					END) 
+						+' '
+						+ dbo.FN_PRIMEIRALETRAMAIUSCULA(LOWER(RTRIM(ISNULL(HISTORICOENDERECOPESSOA.S_DCRRUA_HISTENDPESSOA, '')
+						+ CASE	WHEN HISTORICOENDERECOPESSOA.S_NUMLOGRAD_HISTENDPESSOA IS NULL 
+								THEN ''  
+								ELSE ', '+RTRIM(HISTORICOENDERECOPESSOA.S_NUMLOGRAD_HISTENDPESSOA) 
+								END
+						+ CASE	WHEN HISTORICOENDERECOPESSOA.S_DCRBAIRRO_HISTENDPESSOA IS NULL 
+								THEN '' 
+								ELSE +', '+RTRIM(HISTORICOENDERECOPESSOA.S_DCRBAIRRO_HISTENDPESSOA) 
+								END
+						+ CASE	WHEN HISTORICOENDERECOPESSOA.S_DCRCOMPL_HISTENDPESSOA IS NULL 
+								THEN '' 
+								ELSE ', '+RTRIM(HISTORICOENDERECOPESSOA.S_DCRCOMPL_HISTENDPESSOA) 
+								END
+						+ CASE	WHEN HISTORICOENDERECOPESSOA.S_DCRMUN_HISTENDPESSOA IS NULL 
+								THEN '' 
+								ELSE ', '+RTRIM(S_DCRMUN_HISTENDPESSOA) 
+								END))
+						+', '+RTRIM(ISNULL(S_DCRUF_HISTENDPESSOA, '')))
+						+', CEP: '+RTRIM(ISNULL(substring(S_CEP_HISTENDPESSOA, 1,2) + '.' + substring(S_CEP_HISTENDPESSOA,3,3) + '-' + substring(S_CEP_HISTENDPESSOA, 6, 9), '')) AS [ENDEREÇO]
+
+			FROM
+
+						PESSOA 
+						INNER JOIN	ORGANIZACAOPESSOA ON PESSOA.N_PESSOA_PESSOA = ORGANIZACAOPESSOA.N_PESSOA_PESSOA 
+						INNER JOIN	CARGOORGANIZACAOPESSOA ON CARGOORGANIZACAOPESSOA.N_PESSOA_PESSOA = ORGANIZACAOPESSOA.N_PESSOA_PESSOA
+								AND	CARGOORGANIZACAOPESSOA.N_CODORI_ORGPESSOA = ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA 
+								AND CARGOORGANIZACAOPESSOA.N_ORG_ORG = ORGANIZACAOPESSOA.N_ORG_ORG 
+						INNER JOIN	CARGO ON CARGO.N_ORG_ORG = CARGOORGANIZACAOPESSOA.N_ORG_ORG 
+								AND CARGO.N_CARGO_CARGO = CARGOORGANIZACAOPESSOA.N_CARGO_CARGO 
+						INNER JOIN	AUTORIDADECOMPETENTE ON PESSOA.N_PESSOA_PESSOA = AUTORIDADECOMPETENTE.N_PESSOA_PESSOA 
+								AND ORGANIZACAOPESSOA.N_ORG_ORG = AUTORIDADECOMPETENTE.N_ORG_ORG 
+								AND ORGANIZACAOPESSOA.N_CODORI_ORGPESSOA = AUTORIDADECOMPETENTE.N_CODORI_ORGPESSOA
+						INNER JOIN	HISTORICOENDERECOPESSOA ON PESSOA.N_PESSOA_PESSOA = HISTORICOENDERECOPESSOA.N_PESSOA_PESSOA
+
+			WHERE		AUTORIDADECOMPETENTE.N_SEQ_AUTDCOMPTT = 5 AND HISTORICOENDERECOPESSOA.DT_FIMVIG_HISTENDPESSOA IS NULL)
+
+			GESTOR_INTERINO(Nome,Cargo_Efetivo,Matrícula,Gênero,Nomenclatura_Cargo,RG,CPF,Nascimento,Email,Endereço)
+
+
+where BP.N_TIPBNF_TIPBNF IN (19,20) AND BP.S_SITPGTO_BNFPESSOA = 1  
+		  AND (A.N_ATO_ASSENTANEXOCONCES = @PORTARIA)
+		   AND A2.N_TIPATO_TIPATO IN (30,34) AND
+		  A.N_ANOREF_ASSENTANEXOCONCES = @Ano AND RP.N_GRAUPARENT_GRAUPARENT IN (1,2)
+
+
+--ORDER BY  [Tipo Benefício],	BP.DT_REQTO_BNFPESSOA, P.S_NOM_PESSOA]]>
+	</queryString>
+	<field name="NOME" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NOME"/>
+		<property name="com.jaspersoft.studio.field.label" value="NOME"/>
+	</field>
+	<field name="Matricula" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="Matricula"/>
+		<property name="com.jaspersoft.studio.field.label" value="Matricula"/>
+	</field>
+	<field name="CPF" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CPF"/>
+		<property name="com.jaspersoft.studio.field.label" value="CPF"/>
+	</field>
+	<field name="Tipo Benefício" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="Tipo Benefício"/>
+		<property name="com.jaspersoft.studio.field.label" value="Tipo Benefício"/>
+	</field>
+	<field name="DIB" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="DIB"/>
+		<property name="com.jaspersoft.studio.field.label" value="DIB"/>
+	</field>
+	<field name="DATA PORTARIA" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="DATA PORTARIA"/>
+		<property name="com.jaspersoft.studio.field.label" value="DATA PORTARIA"/>
+	</field>
+	<field name="PROVENTO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="PROVENTO"/>
+		<property name="com.jaspersoft.studio.field.label" value="PROVENTO"/>
+	</field>
+	<field name="ORGAO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ORGAO"/>
+		<property name="com.jaspersoft.studio.field.label" value="ORGAO"/>
+	</field>
+	<field name="NOMEGESTOR" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NOMEGESTOR"/>
+		<property name="com.jaspersoft.studio.field.label" value="NOMEGESTOR"/>
+	</field>
+	<field name="CARGOGESTOR" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CARGOGESTOR"/>
+		<property name="com.jaspersoft.studio.field.label" value="CARGOGESTOR"/>
+	</field>
+	<field name="TEXTO1" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="TEXTO1"/>
+		<property name="com.jaspersoft.studio.field.label" value="TEXTO1"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="77" splitType="Stretch">
+			<componentElement>
+				<reportElement x="-20" y="0" width="530" height="70" uuid="f4174901-f3eb-4680-bbca-d2c628938d0d"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Logo" uuid="8860c172-a91f-4636-a65a-c91118869014">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="70" width="530">
+						<image>
+							<reportElement x="0" y="0" width="520" height="70" uuid="72dd9e0c-3681-48da-80a0-457c506984bf"/>
+							<imageExpression><![CDATA[$F{IMG_IMGFUNDO_IMGORG}]]></imageExpression>
+						</image>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="649" splitType="Stretch">
+			<textField>
+				<reportElement x="-12" y="10" width="482" height="30" uuid="b8bcd072-e914-4d61-aece-41f7fcd0ccf8"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="styled">
+					<font fontName="Arial" size="12" isBold="false"/>
+					<paragraph lineSpacing="Double"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Barueri, "+LOWER(DATEFORMAT(TODAY(),"d 'de' MMMM 'de' yyyy"))+"."]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-12" y="140" width="482" height="41" uuid="45c3b5a3-72f4-423f-b748-25c2bc1f12a1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="14" isBold="true"/>
+					<paragraph lineSpacing="1_1_2"/>
+				</textElement>
+				<text><![CDATA[Assunto: Acúmulo de benefícios Previdenciários - EC nº 103/2019]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="-12" y="210" width="482" height="320" uuid="434db025-9c65-4f33-9df7-1df8d43b4078"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top" markup="html">
+					<font fontName="Arial" size="12" isBold="false"/>
+					<paragraph lineSpacing="Double" firstLineIndent="56" leftIndent="14" rightIndent="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Considerando o disposto no Art. 24 da Emenda Constitucional nº 103/2019, comunicamos que foi concedido o benefício da " + $F{Tipo Benefício}+ " com data de início em " + $F{DIB} + ", ao beneficiário: "+"<b>"+ $F{NOME}+"</b>" + " - CPF: " + $F{CPF}+ $F{TEXTO1}+", com valor inicial de " + $F{PROVENTO} + "." + "<br><br><br> Colocamo-nos à disposição em caso de dúvidas.<br><br>Atenciosamente,"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="100" width="470" height="30" uuid="127a9a5e-881f-45dd-ac19-6eebcac47901"/>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Ao " + $F{ORGAO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="540" width="470" height="30" uuid="bdecc77e-fa0b-46c6-bdba-c953c1033dee"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[ASSINADO DIGITALMENTE POR]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="563" width="470" height="51" uuid="761e842b-fe3c-4f84-b95f-d0574dc47367"/>
+				<textElement textAlignment="Center" markup="html"/>
+				<textFieldExpression><![CDATA[$F{NOMEGESTOR} + "<BR>" + $F{CARGOGESTOR}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="65" splitType="Stretch">
+			<componentElement>
+				<reportElement x="-20" y="10" width="490" height="55" uuid="d9e30884-fbee-43cb-b497-3cfa76808906"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Rodape" uuid="c2c96a01-ec05-49c8-bf81-1bbcd92ee3c7">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="55" width="490">
+						<image>
+							<reportElement x="0" y="5" width="490" height="50" uuid="04136a1e-c82c-4a25-9a0d-3a6347f6eb5e"/>
+							<imageExpression><![CDATA[$F{IMG_IMGFUNDO_IMGORG}]]></imageExpression>
+						</image>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+		</band>
+	</pageFooter>
+</jasperReport>
